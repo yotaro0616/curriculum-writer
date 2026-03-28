@@ -34,13 +34,17 @@
 
 ## カリキュラム（HOW）
 
-| Part | 概要 |
-|---|---|
-| Part 1: [タイトル] | [概要] |
-| Part 2: [タイトル] | [概要] |
-| Part 3: [タイトル] | [概要] |
+<!-- /setup で階層構造と内容を設定する -->
+<!-- 階層は教材の規模に応じて1〜3層から選択: -->
+<!--   3層: Part > Chapter > Section（大規模教材） -->
+<!--   2層: Chapter > Section（中規模教材） -->
+<!--   1層: Section のみ（小規模教材・ドキュメント集） -->
 
-Part > Chapter > Section の3層構造。各 Part の設計詳細は `OUTLINE.md` を参照。
+**階層構造**: [/setup で設定]
+
+[カリキュラムの表をここに記述する]
+
+各層の設計詳細は `OUTLINE.md` を参照。
 
 CLAUDE.md は教材の哲学（WHO / WHY / WHAT / HOW）を定義し、`OUTLINE.md` はその哲学を具体的な設計に落とし込む。執筆上の判断（題材の選択・構成のアレンジ・外部調査）は `OUTLINE.md` の設計に従いつつ、臨機応変に行うこと。
 
@@ -53,26 +57,33 @@ CLAUDE.md は教材の哲学（WHO / WHY / WHAT / HOW）を定義し、`OUTLINE.
 | Skill | 用途 |
 |---|---|
 | `/setup` | 初期設定（CLAUDE.md・OUTLINE.md・writing.md の作成） |
-| `/write` | 執筆（Part / Chapter / Section 単位） |
+| `/write` | 執筆（任意の階層単位） |
 | `/review` | レビュー（品質・整合性チェック） |
 | `/check-updates` | 公式ドキュメントとの鮮度チェック |
 
 ### フォルダ構造・命名規則
 
+<!-- 階層構造に応じてディレクトリ構造が変わる -->
+
 ```
 project-root/
 ├── CLAUDE.md                # 教材の哲学（WHO/WHY/WHAT/HOW/MAP）
-├── OUTLINE.md               # カリキュラム設計（Part/Chapter/Section）
+├── OUTLINE.md               # カリキュラム設計
 ├── .claude/
 │   ├── rules/writing.md     # 執筆ルール
 │   ├── skills/              # Skill 定義
 │   └── settings.json
 ├── curriculums/             # 教材本体
-│   └── part-XX_タイトル/chapter-XX_タイトル/X-X-X_タイトル.md
-└── assets/                  # 画像（assets/part-XX/chapter-XX/）
+└── assets/                  # 画像
 ```
 
-- Part: `part-XX_タイトル/`（01始まり、ゼロパディング）
-- Chapter: `chapter-XX_タイトル/`（Part 内で01始まり）
-- Section: `X-X-X_タイトル.md`（ゼロパディングなし）
-- 画像: 内容がわかる英語名（例: `install-confirmation.png`）
+**3層**（Part > Chapter > Section）:
+- `curriculums/part-XX_タイトル/chapter-XX_タイトル/X-X-X_タイトル.md`
+
+**2層**（Chapter > Section）:
+- `curriculums/chapter-XX_タイトル/X-X_タイトル.md`
+
+**1層**（Section のみ）:
+- `curriculums/X_タイトル.md`
+
+ディレクトリ名はゼロパディング（01始まり）。ファイル名のセクション番号はゼロパディングなし。画像は内容がわかる英語名。

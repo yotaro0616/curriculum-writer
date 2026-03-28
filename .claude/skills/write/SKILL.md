@@ -13,17 +13,31 @@ argument-hint: "[スコープ] [追加指示(任意)]"
 
 ## スコープの解釈
 
-| 入力形式 | 対象 | 例 |
-|---|---|---|
-| `Part番号` or `番号` | Part 全体 | `1`, `Part 2` |
-| `Part番号-Chapter番号` | Chapter | `2-1`, `Chapter 2-3` |
-| `Part番号-Chapter番号-Section番号` | Section | `2-3-5`, `Section 1-1-2` |
+CLAUDE.md の HOW セクションで定義された階層構造に基づいてスコープを判定する。
 
-ディレクトリパス: `curriculums/part-XX_タイトル/chapter-XX_タイトル/X-X-X_タイトル.md`（タイトルは OUTLINE.md から取得）
+**3層**（Part > Chapter > Section）:
+| 入力 | 対象 | 例 |
+|---|---|---|
+| 番号1つ | Part 全体 | `1`, `Part 2` |
+| 番号2つ | Chapter | `2-1` |
+| 番号3つ | Section | `2-1-3` |
+
+**2層**（Chapter > Section）:
+| 入力 | 対象 | 例 |
+|---|---|---|
+| 番号1つ | Chapter 全体 | `1`, `Chapter 2` |
+| 番号2つ | Section | `2-3` |
+
+**1層**（Section のみ）:
+| 入力 | 対象 | 例 |
+|---|---|---|
+| 番号1つ | Section | `1`, `3` |
+
+ディレクトリパスは CLAUDE.md のフォルダ構造・命名規則に従う。タイトルは OUTLINE.md から取得。
 
 ## 1. 準備
 
-1. `CLAUDE.md` を Read し、哲学（ペルソナ・コンセプト・ゴール）を確認
+1. `CLAUDE.md` を Read し、哲学（ペルソナ・コンセプト・ゴール）と階層構造を確認
 2. `OUTLINE.md` を Read し、対象スコープの設計を把握（ゴール、種類、公式ドキュメント URL）
 3. 公式ドキュメント URL を WebFetch。WebSearch で関連情報もリサーチ
 4. `curriculums/` に既存ファイルがあればサブエージェントで分析（用語の一貫性、前後との接続）
@@ -41,7 +55,7 @@ argument-hint: "[スコープ] [追加指示(任意)]"
 
 ## 3. 執筆
 
-CLAUDE.md の哲学を踏まえ、`.claude/rules/writing.md` のルール・テンプレートに沿って書く。Part / Chapter スコープの場合は、含まれる全 Section を順に執筆する。
+CLAUDE.md の哲学を踏まえ、`.claude/rules/writing.md` のルール・テンプレートに沿って書く。上位スコープの場合は、含まれる全 Section を順に執筆する。
 
 ## 4. 検証・完了
 
