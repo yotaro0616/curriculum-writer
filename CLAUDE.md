@@ -1,4 +1,4 @@
-<!-- {{TOPIC}}: /setup で設定する。例: "Claude Code", "Docker", "TypeScript" -->
+<!-- {{TOPIC}}: /setup の Phase 0 で確定する。例: "Claude Code", "Docker", "TypeScript" -->
 
 # [教材タイトルを記入]
 
