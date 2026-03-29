@@ -27,18 +27,18 @@ cd my-curriculum
 ### 抽象から具体へ
 
 ```mermaid
-flowchart LR
+flowchart TD
     A["CLAUDE.md\n哲学"]
 
     subgraph outline["OUTLINE.md — 構造設計"]
-        direction TB
+        direction LR
         B1["Chapter 1\n1-1 概念 / 1-2 ハンズオン"]
         B2["Chapter 2\n2-1 混合 / 2-2 概念"]
         B3["..."]
     end
 
     subgraph curr["curriculums/ — 教材本体"]
-        direction TB
+        direction LR
         C1["1-1.md"]
         C2["1-2.md"]
         C3["2-1.md"]
