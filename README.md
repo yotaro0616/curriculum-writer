@@ -29,13 +29,25 @@ cd my-curriculum
 ```mermaid
 flowchart TD
     A["CLAUDE.md — 哲学"]
-    B["OUTLINE.md — 構造"]
-    C["writing.md — ルール"]
-    D["curriculums/ — 教材本体"]
 
-    A -->|MECE 分解| B
-    B -->|執筆ルールに沿って| C
-    C -->|執筆| D
+    subgraph outline["OUTLINE.md — 構造"]
+        B1["Chapter 1"]
+        B2["Chapter 2"]
+        B3["Chapter N"]
+    end
+
+    subgraph curr["curriculums/ — 教材本体"]
+        C1["1-1.md"]
+        C2["1-2.md"]
+        C3["2-1.md"]
+        C4["2-2.md"]
+    end
+
+    A -->|MECE 分解| B1 & B2 & B3
+    B1 --> C1 & C2
+    B2 --> C3 & C4
+
+    W["writing.md — ルール"] -.->|執筆時に適用| curr
 ```
 
 | 層 | ファイル | 役割 |
