@@ -37,16 +37,13 @@ flowchart TD
         B3["… Chapter N"]
     end
 
-    subgraph row2[" "]
+    subgraph curr["curriculums/ — 教材本体"]
         direction LR
-        subgraph curr["curriculums/ — 教材本体"]
-            C1["1-1.md"]
-            C2["1-2.md"]
-            C3["2-1.md"]
-            C4["2-2.md"]
-            C5["… N-1.md, N-2.md"]
-        end
-        W["writing.md\nルール・人格・用語"]
+        C1["1-1.md"]
+        C2["1-2.md"]
+        C3["2-1.md"]
+        C4["2-2.md"]
+        C5["… N-1.md, N-2.md"]
     end
 
     A -->|MECE 分解| outline
@@ -54,9 +51,7 @@ flowchart TD
     B2 -->|執筆| C3 & C4
     B3 -->|執筆| C5
 
-    W -.->|執筆時に適用| curr
-
-    style row2 fill:none,stroke:none
+    W["writing.md\nルール・人格・用語"] -.->|執筆時に適用| curr
 ```
 
 | 層 | ファイル | 役割 |
