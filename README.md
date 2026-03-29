@@ -34,7 +34,7 @@ flowchart TD
         direction LR
         B1["Chapter 1\n1-1 概念 / 1-2 ハンズオン"]
         B2["Chapter 2\n2-1 混合 / 2-2 概念"]
-        B3["..."]
+        B3["… Chapter N"]
     end
 
     subgraph curr["curriculums/ — 教材本体"]
@@ -43,7 +43,7 @@ flowchart TD
         C2["1-2.md"]
         C3["2-1.md"]
         C4["2-2.md"]
-        C5["..."]
+        C5["… N-1.md, N-2.md"]
     end
 
     A -->|MECE 分解| outline
