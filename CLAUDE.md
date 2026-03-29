@@ -50,7 +50,7 @@ CLAUDE.md は教材の哲学（WHO / WHY / WHAT / HOW）を定義し、`OUTLINE.
 
 ## プロジェクトマップ（MAP）
 
-執筆ルールは `.claude/rules/writing-base.md`（共通）と `.claude/rules/writing.md`（教材固有）を参照。
+執筆ルールは `.claude/rules/writing.md` を参照。
 
 ### Skills
 
