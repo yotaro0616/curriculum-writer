@@ -46,7 +46,7 @@ flowchart TD
         C5["… N-1.md, N-2.md"]
     end
 
-    A -->|MECE 分解| outline
+    A -->|MECE 分解| B1 & B2 & B3
     B1 -->|執筆| C1 & C2
     B2 -->|執筆| C3 & C4
     B3 -->|執筆| C5
