@@ -44,8 +44,8 @@ flowchart TD
     end
 
     A -->|MECE 分解| B1 & B2 & B3
-    B1 --> C1 & C2
-    B2 --> C3 & C4
+    B1 -->|MECE 分解| C1 & C2
+    B2 -->|MECE 分解| C3 & C4
 
     W["writing.md — ルール"] -.->|執筆時に適用| curr
 ```
