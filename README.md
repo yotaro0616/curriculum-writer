@@ -100,13 +100,13 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    P0["Phase 0\nTOPIC・スコープ確定"] --> P1["Phase 1\n哲学の定義\nWHO/WHY/WHAT/HOW/MAP"]
-    P1 --> P2["Phase 2\nOUTLINE 構造化\nMECE 分解"]
-    P2 --> P3["Phase 3\nwriting.md\nルール調整"]
+    P0["Phase 0\nTOPIC・スコープ確定"] -->|承認| P1["Phase 1\n哲学の定義\nWHO/WHY/WHAT/HOW/MAP"]
+    P1 -->|承認| P2["Phase 2\nOUTLINE 構造化\nMECE 分解"]
+    P2 -->|承認| P3["Phase 3\nwriting.md\nルール調整"]
     P3 --> P4["Phase 4\n最終確認"]
 ```
 
-Phase 0 で TOPIC とスコープの外縁を固めてから、ペルソナ・コンセプト・ゴールを深掘りします。途中でスコープが変わった場合は Phase 0 に戻って再確認します。
+各 Phase の完了時にユーザーの承認を取ってから次に進みます。途中でスコープが変わった場合は Phase 0 に戻って再確認します。
 
 ### /write の流れ
 
