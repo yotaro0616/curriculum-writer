@@ -27,30 +27,31 @@ cd my-curriculum
 ### 抽象から具体へ
 
 ```mermaid
-flowchart TD
-    A["CLAUDE.md — 哲学"]
+flowchart LR
+    A["CLAUDE.md\n哲学"]
 
-    subgraph outline["OUTLINE.md — 構造"]
-        B1["Chapter 1"]
-        B2["Chapter 2"]
-        B3["Chapter 3"]
+    subgraph outline["OUTLINE.md — 構造設計"]
+        direction TB
+        B1["Chapter 1\n1-1 概念 / 1-2 ハンズオン"]
+        B2["Chapter 2\n2-1 混合 / 2-2 概念"]
+        B3["..."]
     end
 
     subgraph curr["curriculums/ — 教材本体"]
+        direction TB
         C1["1-1.md"]
         C2["1-2.md"]
         C3["2-1.md"]
         C4["2-2.md"]
-        C5["3-1.md"]
-        C6["3-2.md"]
+        C5["..."]
     end
 
-    A -->|MECE 分解| B1 & B2 & B3
-    B1 -->|MECE 分解| C1 & C2
-    B2 -->|MECE 分解| C3 & C4
-    B3 -->|MECE 分解| C5 & C6
+    A -->|MECE 分解| outline
+    B1 -->|執筆| C1 & C2
+    B2 -->|執筆| C3 & C4
+    B3 -->|執筆| C5
 
-    W["writing.md — ルール"] -.->|執筆時に適用| curr
+    W["writing.md\nルール・人格・用語"] -.->|執筆時に適用| curr
 ```
 
 | 層 | ファイル | 役割 |
