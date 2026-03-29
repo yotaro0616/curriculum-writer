@@ -33,7 +33,7 @@ flowchart TD
     subgraph outline["OUTLINE.md — 構造"]
         B1["Chapter 1"]
         B2["Chapter 2"]
-        B3["Chapter N"]
+        B3["Chapter 3"]
     end
 
     subgraph curr["curriculums/ — 教材本体"]
@@ -41,11 +41,14 @@ flowchart TD
         C2["1-2.md"]
         C3["2-1.md"]
         C4["2-2.md"]
+        C5["3-1.md"]
+        C6["3-2.md"]
     end
 
     A -->|MECE 分解| B1 & B2 & B3
     B1 -->|MECE 分解| C1 & C2
     B2 -->|MECE 分解| C3 & C4
+    B3 -->|MECE 分解| C5 & C6
 
     W["writing.md — ルール"] -.->|執筆時に適用| curr
 ```
