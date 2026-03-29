@@ -32,8 +32,8 @@ flowchart TD
 
     subgraph outline["OUTLINE.md — 構造設計"]
         direction LR
-        B1["Chapter 1\n1-1 概念 / 1-2 ハンズオン"]
-        B2["Chapter 2\n2-1 混合 / 2-2 概念"]
+        B1["Chapter 1\nSection 1-1 / 1-2"]
+        B2["Chapter 2\nSection 2-1 / 2-2"]
         B3["… Chapter N"]
     end
 
@@ -51,7 +51,8 @@ flowchart TD
     B2 -->|執筆| C3 & C4
     B3 -->|執筆| C5
 
-    W["writing.md\nルール・人格・用語"] -.->|執筆時に適用| curr
+    curr ~~~ W["writing.md\nルール・人格・用語"]
+    W -.->|執筆時に適用| curr
 ```
 
 | 層 | ファイル | 役割 |
