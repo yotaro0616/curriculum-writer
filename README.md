@@ -85,7 +85,7 @@ flowchart TD
 
 ---
 
-## 5つのスキル
+## 4つのスキル
 
 | スキル | やること | 入力例 |
 |---|---|---|
@@ -93,7 +93,6 @@ flowchart TD
 | `/write` | OUTLINE に基づいて執筆 | `/write Chapter 2-1`, `/write 全て` |
 | `/review` | 4観点でレビュー（自動修正しない） | `/review Part 1` |
 | `/check-updates` | 参考資料との鮮度チェック | `/check-updates` |
-| `/illustrate` | Gemini Pro で概念図を生成・挿入 | `/illustrate Part 2`, `/illustrate scan 2-1` |
 
 ### /setup の流れ
 
@@ -134,20 +133,6 @@ flowchart LR
 
 レビュー前に Grep ベースの機械的チェック（太字スペース・ダッシュ記号・言語指定なしコードブロック等）を自動実行し、誤検知を減らします。
 
-### /illustrate の流れ
-
-Gemini Pro の画像生成 API を使い、Mermaid では表現しにくい「直感的なメンタルモデル」を概念図として生成・挿入します。
-
-| モード | やること |
-|---|---|
-| `scan` | 指定範囲の Section を読み、AI 画像が効果的な箇所を特定して報告 |
-| `generate` | 指定した画像を生成し、対象 Section に挿入 |
-| フル | scan → ユーザー確認 → generate を一気通貫で実行 |
-
-画像は導入セクションの 🧠 直後に配置します。Mermaid（正確な処理フロー）と illustrate（メンタルモデル・俯瞰図）を使い分けます。
-
-> **前提**: `GEMINI_API_KEY` 環境変数の設定が必要です。[Google AI Studio](https://aistudio.google.com/apikey) で取得できます。
-
 ---
 
 ## ワークフロー
@@ -159,7 +144,6 @@ flowchart LR
     review -->|修正| write
     review --> publish["公開"]
     check["/check-updates\n（定期実行）"] -->|更新必要| write
-    illustrate["/illustrate"] -->|画像挿入| write
 ```
 
 ### 初回
@@ -189,10 +173,8 @@ project-root/
 │   │   ├── setup/            # /setup スキル
 │   │   ├── write/            # /write スキル
 │   │   ├── review/           # /review スキル
-│   │   ├── check-updates/    # /check-updates スキル
-│   │   └── illustrate/       # /illustrate スキル
+│   │   └── check-updates/    # /check-updates スキル
 │   └── settings.json
 ├── curriculums/              # 教材本体（階層構造に応じたディレクトリ）
-└── assets/
-    └── diagrams/             # /illustrate の生成画像・プロンプト
+└── assets/                   # 画像
 ```
