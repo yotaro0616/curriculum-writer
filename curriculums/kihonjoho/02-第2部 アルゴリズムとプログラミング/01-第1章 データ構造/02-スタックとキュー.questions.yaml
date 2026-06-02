@@ -1,0 +1,51 @@
+- body: "空のスタックに対して、push(A)、push(B)、push(C)、pop()、push(D)、pop() の操作を順に行った後、スタックの最上段にある要素はどれか"
+  category: "アルゴリズムとプログラミング"
+  status: published
+  explanation: |
+    順に操作を追っていきます。
+    push(A): [A]
+    push(B): [A, B]
+    push(C): [A, B, C]
+    pop()  : [A, B]        ← C が取り出される
+    push(D): [A, B, D]
+    pop()  : [A, B]        ← D が取り出される
+    最終状態の最上段は B です。
+
+    ア「A」はスタックの最下段にあり、最上段ではありません。
+    ウ「C」はすでに 1 回目の pop で取り出されています。
+    エ「D」も 2 回目の pop で取り出されています。
+  options:
+    - { body: "A", correct: false }
+    - { body: "B", correct: true }
+    - { body: "C", correct: false }
+    - { body: "D", correct: false }
+
+- body: "FIFO 方式でデータを管理するデータ構造として最も適切なものはどれか"
+  category: "アルゴリズムとプログラミング"
+  status: published
+  explanation: |
+    FIFO（First In, First Out、先入れ先出し）は、最初に入れた要素が最初に取り出される方式で、これに該当するのはキューです。enqueue で末尾に追加し、dequeue で先頭から取り出します。ジョブキューやメッセージキュー、印刷待ち行列など、到着順に公平に処理したい場面で使われます。
+
+    ア「ハッシュテーブル」はキーから値を高速に検索するためのデータ構造で、要素の入出力順序は管理しません。
+    イ「スタック」は LIFO（後入れ先出し）方式で、最後に入れた要素から取り出します。
+    ウ「優先度付きキュー」は名前にキューとつくものの、投入順ではなく優先度の高い順に取り出すため FIFO ではありません。
+  options:
+    - { body: "ハッシュテーブル", correct: false }
+    - { body: "スタック", correct: false }
+    - { body: "優先度付きキュー", correct: false }
+    - { body: "キュー", correct: true }
+
+- body: "両端キュー（deque）の特徴として最も適切なものはどれか"
+  category: "アルゴリズムとプログラミング"
+  status: published
+  explanation: |
+    両端キュー（deque）は、キューの両端（先頭・末尾）の両方から要素の追加と取り出しができるデータ構造です。push_front / push_back / pop_front / pop_back の 4 種類の操作を持ち、スタックとキューの両方の性質を兼ね備えます。
+
+    ア「LIFO 専用のデータ構造」は誤り。LIFO 専用は通常のスタックです。
+    イ「要素の取り出し順は要素の優先度で決まる」は誤り。これは優先度付きキューの説明です。
+    エ「メモリ上の連続領域でしか実装できない」は誤り。双方向リストや循環バッファなど複数の方法で実装でき、連続領域に限定されません。
+  options:
+    - { body: "LIFO 専用のデータ構造である", correct: false }
+    - { body: "要素の取り出し順は要素の優先度で決まる", correct: false }
+    - { body: "両端から要素の追加と取り出しができる", correct: true }
+    - { body: "メモリ上の連続領域でしか実装できない", correct: false }

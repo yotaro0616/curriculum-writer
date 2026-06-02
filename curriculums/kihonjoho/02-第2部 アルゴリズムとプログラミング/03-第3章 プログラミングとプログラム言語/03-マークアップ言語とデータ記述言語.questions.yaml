@@ -1,0 +1,38 @@
+- body: "XML に関する記述として最も適切なものはどれか"
+  category: "アルゴリズムとプログラミング"
+  status: published
+  explanation: |
+    XML（eXtensible Markup Language）の最大の特徴は、利用者が自由にタグ名を定義できる拡張性です。XML Schema や DTD で文書構造を厳密に検証でき、データ交換用途に向きます。
+
+    ア「タグの種類は HTML5 と同じ」は誤り。XML はタグ名を自分で定義します。ウ「カンマで区切る形式」は CSV の説明。エ「JavaScript のオブジェクトリテラルに由来」は JSON の説明です。
+  options:
+    - { body: "タグの種類は HTML5 仕様で固定されている", correct: false }
+    - { body: "利用者が独自のタグを定義でき、スキーマで構造を検証できる", correct: true }
+    - { body: "カンマで値を区切る表形式のデータ表現である", correct: false }
+    - { body: "JavaScript のオブジェクトリテラルに由来し、Web API のレスポンスの主流である", correct: false }
+
+- body: "JSON と XML の比較に関する記述のうち、適切なものはどれか"
+  category: "アルゴリズムとプログラミング"
+  status: published
+  explanation: |
+    JSON は文字列・数値・真偽値・null・配列・オブジェクトという 6 種類のデータ型を持ち、JavaScript との親和性が高く、XML より記述量が少なくデータサイズも小さい傾向があります。これが REST API で JSON が主流になっている理由です。
+
+    イ「JSON は XML より記述量が多い」は逆。ウ「XML は JSON より新しい規格」は誤りで、XML（1998 年標準化）の方が JSON より歴史が古い形式です。エ「JSON はスキーマ検証ができない」は不正確で、JSON Schema という別仕様で検証可能です。
+  options:
+    - { body: "JSON は XML よりデータサイズが小さく、JavaScript との親和性が高い", correct: true }
+    - { body: "JSON は XML より記述量が多くなる傾向がある", correct: false }
+    - { body: "XML は JSON より新しく開発された規格である", correct: false }
+    - { body: "JSON はスキーマ検証の手段が一切存在しない", correct: false }
+
+- body: "YAML 形式に関する記述として最も適切なものはどれか"
+  category: "アルゴリズムとプログラミング"
+  status: published
+  explanation: |
+    YAML はインデントによって階層構造を表現するデータ記述形式で、人間が読みやすいことを重視して設計されています。`#` で始まる行はコメントとして扱うことができ、Docker Compose や Kubernetes、GitHub Actions などの設定ファイルとして広く使われています。
+
+    ア「ブラウザが直接解釈してページを描画」は HTML の説明。イ「ファイル拡張子は .xml」は YAML ではなく XML の拡張子。エ「コメントを記述できない」は JSON の特徴で、YAML はコメントを書けます。
+  options:
+    - { body: "ブラウザが直接解釈してページを描画するマークアップ言語である", correct: false }
+    - { body: "ファイル拡張子は通常 .xml が使われる", correct: false }
+    - { body: "インデントで階層を表現し、コメントを書くことができる", correct: true }
+    - { body: "コメントを記述できず、設定ファイル用途には向かない", correct: false }

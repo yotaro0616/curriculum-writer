@@ -1,0 +1,49 @@
+- body: "次の擬似コードの計算量(時間計算量)はどれか。for i = 1 to n: for j = 1 to n: x = x + a[i] * b[j]"
+  category: "アルゴリズムとプログラミング"
+  status: published
+  explanation: |
+    ウが正解です。外側のループが n 回、内側のループが n 回回るため、内側の処理(x = x + a[i] * b[j])は n × n = n^2 回実行されます。
+    1 回あたりの処理は定数時間なので、全体の計算量は O(n^2) です。
+
+    ア「O(n)」は単一ループに相当する計算量で、二重ループには当てはまりません。
+    イ「O(log n)」は二分探索など範囲が半分ずつ縮む処理の計算量で、ここでは現れません。
+    エ「O(n^3)」は三重ループの計算量で、本問は二重ループなので過大です。
+  options:
+    - { body: "O(n)", correct: false }
+    - { body: "O(log n)", correct: false }
+    - { body: "O(n^2)", correct: true }
+    - { body: "O(n^3)", correct: false }
+
+- body: "計算量のオーダを増加が遅いものから順に並べた組合せとして正しいものはどれか"
+  category: "アルゴリズムとプログラミング"
+  status: published
+  explanation: |
+    ア「O(1) < O(log n) < O(n) < O(n log n) < O(n^2) < O(2^n)」が正解です。
+    O(1)は定数、O(log n)は対数、O(n)は線形、O(n log n)はソートなど、
+    O(n^2)は二重ループ、O(2^n)は指数時間という順で増加が速くなります。
+
+    イは O(n) と O(log n) の位置が逆で、線形より対数のほうが速いです。
+    ウは O(2^n) と O(n^2) の位置が逆で、指数のほうが多項式より速く増加します。
+    エは O(n) と O(1) の位置が逆で、定数のほうが線形より速い(増加が遅い)です。
+  options:
+    - { body: "O(1) < O(log n) < O(n) < O(n log n) < O(n^2) < O(2^n)", correct: true }
+    - { body: "O(1) < O(n) < O(log n) < O(n log n) < O(n^2) < O(2^n)", correct: false }
+    - { body: "O(1) < O(log n) < O(n) < O(n log n) < O(2^n) < O(n^2)", correct: false }
+    - { body: "O(n) < O(1) < O(log n) < O(n log n) < O(n^2) < O(2^n)", correct: false }
+
+- body: "あるアルゴリズムの実行ステップ数が T(n) = 3n^2 + 100n + 1000 で表されるとき、O 記法による計算量はどれか"
+  category: "アルゴリズムとプログラミング"
+  status: published
+  explanation: |
+    エが正解です。O 記法では「定数項」「低次の項」「定数倍」をすべて無視し、最も支配的な項(最高次の項)だけを残します。
+    T(n) = 3n^2 + 100n + 1000 のうち、十分大きい n に対して支配的なのは 3n^2 の項です。
+    定数 3 も無視するので、O 記法では O(n^2) と表記します。
+
+    ア「O(1)」は定数時間で、データ量に依存しないオーダです。3n^2 の項があるため定数オーダにはなりません。
+    イ「O(n)」は線形オーダで、最高次の項が n のときの表記です。本問では n^2 が支配的です。
+    ウ「O(n log n)」はマージソートなどの線形対数オーダで、3n^2 の項とは一致しません。
+  options:
+    - { body: "O(1)", correct: false }
+    - { body: "O(n)", correct: false }
+    - { body: "O(n log n)", correct: false }
+    - { body: "O(n^2)", correct: true }
