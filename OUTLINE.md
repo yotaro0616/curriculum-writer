@@ -151,10 +151,11 @@ CLAUDE.md の哲学（WHO / WHY / WHAT / HOW）を、Part > Chapter > Section �
 
 - **2-2-1 継承**
   - 種類: 概念
-  - ゴール: `extends`・`super`・オーバーライド・`Object` クラス・`@Override` を理解し、継承で共通化できる
+  - ゴール: `extends`・`super`・オーバーライド・`Object` クラス（`equals` / `hashCode` / `toString` の契約）・`@Override` を理解し、継承で共通化できる
   - 前提: [2-1-2]
   - 参考資料: [dev.java — Learn](https://dev.java/learn/)
   - Laravel 対比: Eloquent モデルが `extends Model` していた意味を、継承の理解で腑に落とす
+  - 注記: `equals` / `hashCode` の契約はここを正式な学習場所とする（`Set` / `Map` のキー [1-3-1] と JPA エンティティ [3-4-1] の前提になる定番のつまずき所）。深入りはせず契約と既定実装の意味に絞り、`record` による自動生成は 2-4-1 で接続する
 - **2-2-2 抽象クラス**
   - 種類: 概念
   - ゴール: `abstract` クラス / メソッドを理解し、共通の骨組みを定義して具象クラスに実装させる設計ができる
@@ -201,6 +202,7 @@ CLAUDE.md の哲学（WHO / WHY / WHAT / HOW）を、Part > Chapter > Section �
   - 前提: [2-4-2]
   - 参考資料: [dev.java — Learn](https://dev.java/learn/)
   - Laravel 対比: Eloquent コレクションの `map` / `filter` と Stream の対応
+  - 注記: 1 Section に Optional・関数型インターフェース・ラムダ・`Stream` の 4 トピックが乗る、Part 2 で最も密度の高い Section。分割はせず（Chapter / Section 数は据え置く）、各トピックを入門スコープに絞って深追いしない。記述順は ラムダ → 関数型インターフェース → `Stream`（宣言的なコレクション操作）→ `Optional`（null 安全の締め）を推奨。`Stream` は `map` / `filter` / `collect` 程度に留め、収集器の詳細や並列化は扱わない
 
 ---
 
@@ -284,6 +286,7 @@ CLAUDE.md の哲学（WHO / WHY / WHAT / HOW）を、Part > Chapter > Section �
   - 前提: [3-2-2]
   - 参考資料: [Spring Data JPA Reference](https://docs.spring.io/spring-data/jpa/reference/index.html)
   - Laravel 対比: Eloquent モデル / マイグレーションと、エンティティ / スキーマ管理の対応
+  - 注記: エンティティの `equals` / `hashCode` は定番の罠（自動採番 ID で実装すると永続化前後で同一性が崩れる）。契約自体は 2-2-1 で学習済みの前提とし、ここではエンティティ特有の注意を ⚠️ で短く添える（深入りはしない）
 - **3-4-2 リレーションとリポジトリ**
   - 種類: 概念
   - ゴール: `@OneToMany` / `@ManyToOne` / `@ManyToMany`・`JpaRepository`・派生クエリ・`@Query`（JPQL）・`Pageable` によるページネーション / ソートを理解し、関連を含むデータ操作ができる
@@ -354,6 +357,7 @@ CLAUDE.md の哲学（WHO / WHY / WHAT / HOW）を、Part > Chapter > Section �
   - 前提: [4-2-1, 3-3-1, 3-4-2]
   - 参考資料: [Spring Boot — Testing](https://docs.spring.io/spring-boot/reference/testing/index.html)
   - Laravel 対比: Feature テスト・`actingAs` と、`MockMvc`・`@SpringBootTest` の対応
+  - 注記: Spring Boot 4 ではモック Bean のアノテーションが変わっている。`@MockBean` / `@SpyBean`（`spring-boot-test` 由来）は Spring Framework 6.2 / Spring Boot 3.4 で非推奨化され、`@MockitoBean` / `@MockitoSpyBean`（`spring-test` 由来）へ置き換わった。4.0 系では `@MockitoBean` を使う（世の中の記事は `@MockBean` が多いので注意）。実際の提供状況は /write 時に依存ツリーで確認する
 
 ### Chapter 4-3: 運用の土台（2 Section）
 
@@ -462,6 +466,7 @@ CLAUDE.md の哲学（WHO / WHY / WHAT / HOW）を、Part > Chapter > Section �
   - 前提: [5-2-2, 5-2-4, 3-5-1, 3-5-2]
   - 参考資料: [Thymeleaf Documentation](https://www.thymeleaf.org/documentation.html)
   - Laravel 対比: Blade で一覧を表示した経験を Thymeleaf（`th:each`）で再現する。画面は一覧表示のみに絞り、API を主役に保つ
+  - 注記: 画面（HTML）の認証は API と運び方が異なる。API はステートレス JWT（`Authorization: Bearer` ヘッダ）だが、ブラウザのページ遷移ではこのヘッダが飛ばず、同じ仕組みでは「ログイン中ユーザー」を解決できない。**既定は、ログイン時（5-2-3 / 5-2-4）に JWT を `HttpOnly` Cookie にも載せ、この 1 ルートだけ Cookie からトークンを読んで認証する** 方式とする（読み取り専用 GET のため CSRF の実害は小さい。`SameSite` を付ける）。代替の session ベース第2 `SecurityFilterChain`（`@Order` で API と分離）はよりリアルだが最小スコープ外。最終選定は /write で確定する。この「API と画面で認証の運び方が違う」こと自体を、JSON API と画面描画型 MVC の違いを示す教材ポイントとして扱う
 
 ### Chapter 5-3: テストと仕上げ（2 Section）
 
