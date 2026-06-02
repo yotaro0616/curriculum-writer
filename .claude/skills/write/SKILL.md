@@ -13,34 +13,17 @@ argument-hint: "[スコープ] [追加指示(任意)]"
 
 ## スコープの解釈
 
-CLAUDE.md の HOW セクションで定義された階層構造に基づいてスコープを判定する。
+本教材は 3層（Part > Chapter > Section）。スコープは次の 3 パターンで指定する（番号のみでも可）。
 
-プレフィックス付きの指定を推奨する（曖昧さを排除するため）。番号のみの入力も階層構造に基づいて解釈する。
+| 入力 | 対象 |
+|---|---|
+| `Part 2`（または `2`） | Part 全体 |
+| `Chapter 2-1`（または `2-1`） | Chapter 全体 |
+| `Section 2-1-3`（または `2-1-3`） | Section 単体 |
 
-**3層**（Part > Chapter > Section）:
-| 入力（推奨） | 番号のみ | 対象 |
-|---|---|---|
-| `全て`, `残り全部` | — | 全 Section |
-| `Part 2` | `2` | Part 全体 |
-| `Chapter 2-1` | `2-1` | Chapter 全体 |
-| `Section 2-1-3` | `2-1-3` | Section 単体 |
+`全て` / `残り全部` は全 Section が対象（`curriculums/` に既存ファイルがある Section はスキップ）。
 
-**2層**（Chapter > Section）:
-| 入力（推奨） | 番号のみ | 対象 |
-|---|---|---|
-| `全て`, `残り全部` | — | 全 Section |
-| `Chapter 2` | `2` | Chapter 全体 |
-| `Section 2-3` | `2-3` | Section 単体 |
-
-**1層**（Section のみ）:
-| 入力（推奨） | 番号のみ | 対象 |
-|---|---|---|
-| `全て`, `残り全部` | — | 全 Section |
-| `Section 3` | `3` | Section 単体 |
-
-「残り全部」の場合は `curriculums/` に既存ファイルがある Section をスキップする。
-
-ディレクトリパスは CLAUDE.md のフォルダ構造・命名規則に従う。タイトルは OUTLINE.md から取得。
+ディレクトリパス・タイトルは CLAUDE.md の命名規則と OUTLINE.md に従う。
 
 ## 1. 準備
 

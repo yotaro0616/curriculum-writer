@@ -14,9 +14,12 @@
 const fs = require("fs");
 const path = require("path");
 
+// モデル名は Gemini API の現行 GA 版（2026-06 時点）。
+// 旧 "gemini-2.0-flash-preview-image-generation" は廃止済み。
+// 利用可能なモデルは `GET .../v1beta/models` で確認できる。
 const MODELS = {
-  flash: "gemini-2.0-flash-preview-image-generation",
-  pro: "gemini-3-pro-image-preview",
+  flash: "gemini-3.1-flash-image",
+  pro: "gemini-3-pro-image",
 };
 
 // プロジェクトルートを検出（.git ディレクトリを探す）
