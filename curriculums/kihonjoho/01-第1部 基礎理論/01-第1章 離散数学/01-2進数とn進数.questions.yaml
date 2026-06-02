@@ -1,0 +1,45 @@
+- body: "10 進数 25 を 2 進数で表現するとどれか"
+  category: "基礎理論"
+  status: published
+  explanation: |
+    25 を 2 で割り続けて余りを下から並べると 11001 になります。
+    25 ÷ 2 = 12 余り 1
+    12 ÷ 2 = 6 余り 0
+    6 ÷ 2 = 3 余り 0
+    3 ÷ 2 = 1 余り 1
+    1 ÷ 2 = 0 余り 1
+    検算: 1×16 + 1×8 + 0×4 + 0×2 + 1×1 = 25
+
+    イ「10011」は 19、ウ「10101」は 21、エ「11010」は 26 となり、いずれも 25 ではありません。
+  options:
+    - { body: "11001", correct: true }
+    - { body: "10011", correct: false }
+    - { body: "10101", correct: false }
+    - { body: "11010", correct: false }
+
+- body: "16 進数 0x2A を 10 進数で表すとどれか"
+  category: "基礎理論"
+  status: published
+  explanation: |
+    0x2A は 2 × 16¹ + 10 × 16⁰ = 32 + 10 = 42 です。16 進数の A は 10 を表すことを忘れないでください。
+
+    ア「26」は 0x1A、イ「52」は 0x34、エ「62」は 0x3E なので、いずれも 0x2A とは一致しません。
+  options:
+    - { body: "26", correct: false }
+    - { body: "52", correct: false }
+    - { body: "42", correct: true }
+    - { body: "62", correct: false }
+
+- body: "1 バイトのデータで表現できる異なる値の最大数はいくつか"
+  category: "基礎理論"
+  status: published
+  explanation: |
+    1 byte = 8 bit なので、2 の 8 乗 = 256 通りの値を表現できます。
+    符号なし整数なら 0〜255、符号あり整数（2 の補数表現）なら -128〜127 の範囲を扱えますが、いずれも値の総数は 256 です。
+
+    ア「128」は 7 bit で表現可能な数、イ「65,536」は 16 bit（2 byte）で表現できる値の数、ウ「512」は 9 bit で表現できる値の数です。
+  options:
+    - { body: "128", correct: false }
+    - { body: "65,536", correct: false }
+    - { body: "512", correct: false }
+    - { body: "256", correct: true }

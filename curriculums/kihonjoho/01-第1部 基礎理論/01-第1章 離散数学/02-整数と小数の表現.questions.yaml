@@ -1,0 +1,41 @@
+- body: "8 ビットの符号付き 2 進数で -7 を 2 の補数表現で表すとどれか"
+  category: "基礎理論"
+  status: published
+  explanation: |
+    手順は「7 を 2 進数で書く → ビット反転 → 1 を足す」です。
+    7 を 2 進数で書く: 00000111
+    ビット反転: 11111000
+    1 を足す: 11111001
+
+    ア「11111001」が正解です。イ「10000111」は符号ビット方式（先頭ビットだけ符号として使う方式）の表現で、現代の CPU では採用されていません。ウ「11111000」はビット反転のみで 1 を足し忘れた値、エ「00000111」は +7 です。
+  options:
+    - { body: "11111001", correct: true }
+    - { body: "10000111", correct: false }
+    - { body: "11111000", correct: false }
+    - { body: "00000111", correct: false }
+
+- body: "IEEE 754 の単精度浮動小数点数（32 bit）の指数部のビット数として正しいものはどれか"
+  category: "基礎理論"
+  status: published
+  explanation: |
+    IEEE 754 単精度は「符号部 1 bit + 指数部 8 bit + 仮数部 23 bit = 合計 32 bit」の構成です。倍精度（64 bit）の場合は「符号部 1 bit + 指数部 11 bit + 仮数部 52 bit」になります。
+
+    ア「1」は符号部、ウ「11」は倍精度の指数部、エ「23」は単精度の仮数部のビット数です。
+  options:
+    - { body: "1", correct: false }
+    - { body: "8", correct: true }
+    - { body: "11", correct: false }
+    - { body: "23", correct: false }
+
+- body: "浮動小数点演算において、絶対値の大きく異なる 2 数の加算で、小さい方の値が結果に反映されない現象を何と呼ぶか"
+  category: "基礎理論"
+  status: published
+  explanation: |
+    絶対値が大きく異なる数同士の加減算で、小さい方の値が指数合わせの過程で仮数部から押し出されて失われる現象を「情報落ち」と呼びます。
+
+    ア「桁あふれ」は表現範囲を超えること、イ「桁落ち」はほぼ等しい数の減算で有効桁が大幅に失われること、エ「丸め誤差」は仮数部に収まらない下位桁を切り捨てる際に生じる誤差です。
+  options:
+    - { body: "桁あふれ", correct: false }
+    - { body: "桁落ち", correct: false }
+    - { body: "情報落ち", correct: true }
+    - { body: "丸め誤差", correct: false }

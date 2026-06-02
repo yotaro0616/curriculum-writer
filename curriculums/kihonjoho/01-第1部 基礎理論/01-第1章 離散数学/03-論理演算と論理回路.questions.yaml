@@ -1,0 +1,42 @@
+- body: "次の真理値表が表す論理演算はどれか。A=0,B=0 で 0、A=0,B=1 で 1、A=1,B=0 で 1、A=1,B=1 で 0"
+  category: "基礎理論"
+  status: published
+  explanation: |
+    2 入力が異なるときだけ 1 を出力するのは XOR（排他的論理和）です。
+
+    イ「AND」は両方 1 のときだけ 1、ウ「NAND」は両方 1 のときだけ 0 を出力する演算で、いずれも問題の表とは異なります。エ「OR」は少なくとも一方が 1 なら 1 になるので、A=1, B=1 のときは 1 を出力します。
+  options:
+    - { body: "XOR", correct: true }
+    - { body: "AND", correct: false }
+    - { body: "NAND", correct: false }
+    - { body: "OR", correct: false }
+
+- body: "半加算器における和 S の論理式として正しいものはどれか（A と B は 1 桁の 2 進数入力）"
+  category: "基礎理論"
+  status: published
+  explanation: |
+    半加算器の和 S は A XOR B、桁上がり C は A AND B です。たとえば A=1, B=1 のとき S=0, C=1（つまり 1+1=10）となり、2 進数の足し算と一致します。
+
+    ア「A AND B」は桁上がり C の式、イ「A OR B」は半加算器とは無関係、エ「NOT (A AND B)」は NAND であり、いずれも半加算器の和の式ではありません。
+  options:
+    - { body: "A AND B", correct: false }
+    - { body: "A OR B", correct: false }
+    - { body: "A XOR B", correct: true }
+    - { body: "NOT (A AND B)", correct: false }
+
+- body: "ド・モルガンの法則として正しいものはどれか"
+  category: "基礎理論"
+  status: published
+  explanation: |
+    ド・モルガンの法則は次の 2 つです。
+    NOT (A AND B) = (NOT A) OR (NOT B)
+    NOT (A OR B) = (NOT A) AND (NOT B)
+
+    したがってエが正解です。ア・イ・ウはいずれも NOT を分配する際に AND と OR が入れ替わるという法則のポイントを反映していません。
+
+    ア「NOT (A AND B) = (NOT A) AND (NOT B)」は AND を OR に変えていないため誤り、イ「A AND (B OR C) = (A AND B) OR C」は分配法則の誤った形、ウ「NOT (A OR B) = (NOT A) OR (NOT B)」も OR を AND に変えていないため誤りです。
+  options:
+    - { body: "NOT (A AND B) = (NOT A) AND (NOT B)", correct: false }
+    - { body: "A AND (B OR C) = (A AND B) OR C", correct: false }
+    - { body: "NOT (A OR B) = (NOT A) OR (NOT B)", correct: false }
+    - { body: "NOT (A AND B) = (NOT A) OR (NOT B)", correct: true }

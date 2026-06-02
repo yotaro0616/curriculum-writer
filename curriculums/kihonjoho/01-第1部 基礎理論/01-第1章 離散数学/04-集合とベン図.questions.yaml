@@ -1,0 +1,39 @@
+- body: "集合 A = {1, 2, 3, 4} と集合 B = {3, 4, 5, 6} の積集合 A ∩ B として正しいものはどれか"
+  category: "基礎理論"
+  status: published
+  explanation: |
+    積集合は両方の集合に含まれる要素の集合です。A と B の両方に含まれるのは 3 と 4 です。
+
+    イ「{1, 2}」は差集合 A − B、ウ「{1, 2, 3, 4, 5, 6}」は和集合 A ∪ B、エ「{5, 6}」は差集合 B − A です。
+  options:
+    - { body: "{3, 4}", correct: true }
+    - { body: "{1, 2}", correct: false }
+    - { body: "{1, 2, 3, 4, 5, 6}", correct: false }
+    - { body: "{5, 6}", correct: false }
+
+- body: "ある会社の社員 100 人のうち、自動車免許を持つ人は 60 人、自転車を持つ人は 50 人、両方を持つ人は 30 人だった。少なくとも一方を持つ人は何人か"
+  category: "基礎理論"
+  status: published
+  explanation: |
+    包除原理 |A ∪ B| = |A| + |B| − |A ∩ B| を使います。
+    |免許 ∪ 自転車| = 60 + 50 − 30 = 80 人
+
+    ア「30」は両方を持つ人の数、イ「50」は自転車を持つ人の数、エ「110」は |A| + |B| で重複を引いていない誤った計算です。
+  options:
+    - { body: "30", correct: false }
+    - { body: "50", correct: false }
+    - { body: "80", correct: true }
+    - { body: "110", correct: false }
+
+- body: "集合論におけるド・モルガンの法則として正しいものはどれか（集合 A の補集合を A^c と表記する）"
+  category: "基礎理論"
+  status: published
+  explanation: |
+    ド・モルガンの法則は (A ∪ B)^c = A^c ∩ B^c および (A ∩ B)^c = A^c ∪ B^c です。補集合を取ると ∪ と ∩ が入れ替わるのが特徴です。
+
+    ア「(A ∪ B)^c = A^c ∪ B^c」は ∪ と ∩ が入れ替わっていないため誤り、イ「(A − B)^c = A^c − B^c」は差集合に対するド・モルガンの法則ではない誤った形、ウ「(A ∩ B)^c = A^c ∩ B^c」も ∪ と ∩ が入れ替わっていないため誤りです。
+  options:
+    - { body: "(A ∪ B)^c = A^c ∪ B^c", correct: false }
+    - { body: "(A − B)^c = A^c − B^c", correct: false }
+    - { body: "(A ∩ B)^c = A^c ∩ B^c", correct: false }
+    - { body: "(A ∪ B)^c = A^c ∩ B^c", correct: true }
