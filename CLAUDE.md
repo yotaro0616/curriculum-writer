@@ -41,6 +41,7 @@
 - **現代的な Java**（record・enum・Optional・ラムダ・Stream）を理解し、不変データ・null 安全・宣言的なコレクション操作を簡潔に書ける
 - Spring Boot の **DI コンテナ・アノテーション駆動・オートコンフィギュレーション** の仕組みを理解し、「なぜ動くのか」を自分の言葉で説明できる
 - Spring MVC で **REST API** を設計・実装できる（ルーティング、DTO、バリデーション、例外ハンドリング、ステータスコード設計）
+- Spring MVC + Thymeleaf で **サーバーサイドレンダリング（画面描画）** の基本を扱え、JSON を返す API と HTML を返す画面の違いを説明できる（業務系案件への備え）
 - Spring Data JPA で **データアクセス層** を実装できる（エンティティ、リレーション、Repository、トランザクション、N+1 対策）
 - **レイヤードアーキテクチャ**（Controller・Service・Repository）で責務を分離した設計ができる
 - Spring Security で **認証・認可** を実装できる（JWT 入門レベルを含む）
@@ -69,11 +70,11 @@
 |---|---|---|
 | Part 1 | Java 言語の基礎 | オリエンテーション（なぜ Java / Spring か・Laravel との対応マップ・本教材の歩き方）から入り、Java の全体像（静的型付け・JVM・コンパイル）、**基本文法（変数・データ型・制御構文・メソッド・配列など、Java での書き方を省略せず解説）**、コレクションと例外処理までを扱い、Java を読み書きできる土台をつくる |
 | Part 2 | オブジェクト指向と現代的な Java | 本格的なオブジェクト指向（クラス・カプセル化・継承・抽象クラス・インターフェース・ポリモーフィズム）と現代的な Java（record・enum・ジェネリクス・Optional・Stream）。読者最大のギャップを埋め、Spring を理解する設計の土台をつくる |
-| Part 3 | Spring Boot で REST API を作る | DI コンテナと骨格（Laravel ファサード／サービスコンテナの「魔法」を解く）、Web 層（Spring MVC・DTO・バリデーション・例外ハンドリング）、データアクセス層（Spring Data JPA・トランザクション・N+1）。フレームワーク本体を体系的に理解し、API の縦串を通す |
+| Part 3 | Spring Boot で REST API を作る | DI コンテナと骨格（Laravel ファサード／サービスコンテナの「魔法」を解く）、Web 層（Spring MVC・DTO・バリデーション・例外ハンドリング）、データアクセス層（Spring Data JPA・トランザクション・N+1）。フレームワーク本体を体系的に理解し、API の縦串を通す。最後に Spring MVC + Thymeleaf で**サーバーサイドレンダリング（画面描画）**の最小構成にも触れ、「Spring Boot ＝ API だけ」という誤解を防ぐ |
 | Part 4 | 実務に耐える品質をつくる | セキュリティ（認証・認可・JWT 入門）、テスト（JUnit / Mockito / MockMvc）、運用の土台（例外設計・ログ・設定の外部化・Docker パッケージング） |
 | Part 5 | 総合ハンズオン（タスク管理 REST API） | 全知識を統合し、認証付きタスク管理 REST API をゼロから設計・実装・テストする。AI（Claude Code）活用を前提とした実践 |
 
-各 Part は 2〜4 の Chapter で構成する（全 17 Chapter / 42 Section）。Part 1 から 4 の Section は原則「概念」種別、Part 5 は「ハンズオン」種別とする。
+各 Part は 2〜4 の Chapter で構成する（全 18 Chapter / 45 Section）。Part 1 から 4 の Section は原則「概念」種別、Part 5 は「ハンズオン」種別とする。
 
 各 Section の種類・ゴール・前提・参考資料・Laravel 対比は `OUTLINE.md` で確定済み。
 
@@ -85,8 +86,8 @@ CLAUDE.md は教材の哲学（WHO / WHY / WHAT / HOW）を定義し、`OUTLINE.
 
 本教材で使用する技術スタック（環境・バージョン・導入方法）は次のとおり。個々の技術で何を習得するかは WHAT（ゴール）を参照。
 
-- **Java**: 21 LTS（OpenJDK）。本教材の対象言語。最新 LTS は Java 25 だが、Java 17 と並んで広く採用され、新規開発での採用が最も伸びている 21 を採用（2026年6月時点）。Eclipse Temurin の 21 は少なくとも 2027 年 9 月まで無償アップデートが提供される（Adoptium の LTS ポリシー。Amazon Corretto・Azul ならさらに長期）
-- **Spring Boot**: 4.0.x（2025年11月 GA の最新安定版。JDK 17 以上が必須で、本教材の Java 21 で動作）。本教材の中核フレームワーク。現場では 3.x もまだ広く稼働するが、3.5 系の OSS サポートが 2026年6月で終了するため、新規学習では寿命の長い 4.0.x を採用する
+- **Java**: 21 LTS（OpenJDK）。本教材の対象言語。最新 LTS は Java 25 だが、Java 17 と並んで広く採用され、新規開発での採用が最も伸びている 21 を採用（2026年6月時点）。Eclipse Temurin の 21 は少なくとも 2027 年 9 月まで無償アップデートが提供される（Adoptium の LTS ポリシー。Amazon Corretto・Azul ならさらに長期）。教材のコード例は **Java 17 でも通用する書き方を基本**とし（record・Optional・Stream は 17 で利用可）、21 専用機能は使用時に明示。8 / 11 との差分は要所でコラム補足する
+- **Spring Boot**: 4.0.x（2025年11月 GA の最新安定版。JDK 17 以上が必須で、本教材の Java 21 で動作）。本教材の中核フレームワーク。現場では 3.x もまだ広く稼働するが、3.5 系の OSS サポートが 2026年6月で終了するため、新規学習では寿命の長い 4.0.x を採用する。ただし現場遭遇率は 3.x が高いため、各所で **3.x への読み替え**（Jackson 2・設定差など）と **2.x→3.x の javax→jakarta 移行**差分をコラムで補足する
 - **ビルドツール**: Maven（依存管理・ビルド・プロジェクト構成）。Spring Initializr の既定ビルドツールであり、宣言的な XML（Composer の `composer.json` に近い）で構成を読みやすく示せるため、本教材でも Maven を採用する
 - **データアクセス**: Spring Data JPA / Hibernate
 - **データベース**: MySQL（Docker で提供。Laravel 時代と同じ DBMS）

@@ -10,6 +10,7 @@ CLAUDE.md の哲学（WHO / WHY / WHAT / HOW）を、Part > Chapter > Section �
 - **種類**: Part 1〜4 は原則「概念」。Part 5（総合ハンズオン）は「ハンズオン」。各 Part / Chapter の先頭 Section は「グループ全体像」を含む（writing.md 準拠）。
 - **Why → What → How**: 各技術はこの順で解説。Part / Chapter 冒頭で全体像（地図）を先に示す。
 - **参考資料**: 一次情報（公式ドキュメント）を優先。下記「主要参考資料」を Section ごとに紐付ける。時間で変わる情報・バージョンは /write 時に再確認する。
+- **バージョン方針（案件接続）**: Java は **17 で通用する書き方を基本**とし、21 専用機能（仮想スレッド・switch パターンマッチング・record パターン等）を使う場合は明示する（record・Optional・Stream は 17 で利用可なので通常どおり使う）。`var` など旧 LTS（8 / 11）との差分は要所で**差分コラム**を添える。Spring Boot は **4.0.x をメイン**にしつつ、現場遭遇率の高い **3.x への読み替え**（Jackson 2・設定差など）と **2.x→3.x の javax→jakarta 移行**を差分コラムで補足する。
 
 ### 種類の凡例
 
@@ -45,9 +46,9 @@ CLAUDE.md の哲学（WHO / WHY / WHAT / HOW）を、Part > Chapter > Section �
 |---|---|---|---|---|
 | Part 1 | Java 言語の基礎 | 3 | 8 | 概念 |
 | Part 2 | オブジェクト指向と現代的な Java | 4 | 9 | 概念 |
-| Part 3 | Spring Boot で REST API を作る | 4 | 11 | 概念 |
+| Part 3 | Spring Boot で REST API を作る | 5 | 13 | 概念 |
 | Part 4 | 実務に耐える品質をつくる | 3 | 6 | 概念 |
-| Part 5 | 総合ハンズオン（タスク管理 REST API） | 3 | 8 | ハンズオン |
+| Part 5 | 総合ハンズオン（タスク管理 REST API） | 3 | 9 | ハンズオン |
 
 学習の流れ: **言語に慣れる（P1）→ オブジェクト指向で設計する（P2）→ Spring で API を組む（P3）→ 品質を備える（P4）→ ゼロから作る（P5）**。
 
@@ -296,6 +297,23 @@ CLAUDE.md の哲学（WHO / WHY / WHAT / HOW）を、Part > Chapter > Section �
   - 参考資料: [Spring Data JPA Reference](https://docs.spring.io/spring-data/jpa/reference/index.html)
   - Laravel 対比: `with()` による N+1 対策は既習。トランザクションは新規概念として導入
 
+### Chapter 3-5: サーバーサイドレンダリング入門（Spring MVC + Thymeleaf）（2 Section）
+
+**ゴール**: Spring Boot は JSON だけでなく画面（HTML）も返せることを理解し、Spring MVC + Thymeleaf で最小のサーバーサイドレンダリングを組める。業務系・SIer 案件で多い画面描画型の構成に備える。
+
+- **3-5-1 画面を返す Spring MVC**
+  - 種類: 概念
+  - ゴール: `@Controller`（`@RestController` との違い）・ビュー解決・`Model` でのデータ受け渡しを理解し、「JSON を返す API」と「HTML 画面を返す MVC」の違いを説明できる
+  - 前提: [3-3-1]
+  - 参考資料: [Spring — Web on Servlet Stack](https://docs.spring.io/spring-framework/reference/web/webmvc.html)
+  - Laravel 対比: コントローラが view を返す Laravel（`return view(...)`）と、`@Controller` + `Model` + テンプレートの対応。`@RestController` は「戻り値を常に JSON 化する `@Controller`」だと位置づける
+- **3-5-2 Thymeleaf テンプレートの基本**
+  - 種類: 概念
+  - ゴール: Thymeleaf の式・変数展開・繰り返し / 条件・フラグメント（レイアウト）を理解し、`Model` で渡したデータを画面に描画できる
+  - 前提: [3-5-1]
+  - 参考資料: [Thymeleaf Documentation](https://www.thymeleaf.org/documentation.html)
+  - Laravel 対比: Blade（`{{ }}`・`@foreach`・`@if`・`@extends`）と Thymeleaf（`th:text`・`th:each`・`th:if`・フラグメント）の対応
+
 ---
 
 ## Part 4: 実務に耐える品質をつくる
@@ -379,8 +397,11 @@ CLAUDE.md の哲学（WHO / WHY / WHAT / HOW）を、Part > Chapter > Section �
 | 認証・認可（JWT） | 4-1-1, 4-1-2 |
 | テスト | 4-2-1, 4-2-2 |
 | ログ・設定・Docker 起動 | 4-3-1, 4-3-2 |
+| タスク一覧の画面表示（Thymeleaf） | 3-5-1, 3-5-2 |
 
 **依存関係**: 5-1（設計・初期化）→ 5-2（実装）→ 5-3（テスト・仕上げ）の順。5-2 内はデータ層 → ロジック / API → 認証（Security 設定・ログイン → JWT・認可）の順で積み上げる。
+
+**画面表示について**: 主軸は REST API だが、5-2-5 で `タスク一覧` のみを Thymeleaf で画面表示する（**必須・読み取り専用**）。同じデータを「JSON で返す API」と「HTML で返す画面」の両方で扱うことで、API 開発と画面描画型 MVC の違いを実装レベルで体感し、業務系案件への対応力を高める。画面は一覧表示のみに絞り、API を主役に保つ。
 
 ### Chapter 5-1: 設計とプロジェクト初期化（2 Section）
 
@@ -402,9 +423,9 @@ CLAUDE.md の哲学（WHO / WHY / WHAT / HOW）を、Part > Chapter > Section �
   - Laravel 対比: `sail up` 相当を Docker Compose で。Initializr は Laravel の新規作成に相当
   - 注記: Spring Initializr の既定ビルドツールは Maven なのでそのまま使う（Gradle に変えない）。既定の Java バージョンは時期により変動するため、生成時に Java 21 を明示的に選ぶ（/write 時に実画面で確認。本教材は Maven / Java 21 採用）
 
-### Chapter 5-2: 実装（4 Section）
+### Chapter 5-2: 実装（5 Section）
 
-**ゴール**: データ層からロジック・API・認証までを積み上げ、動く API を完成させる。
+**ゴール**: データ層からロジック・API・認証までを積み上げて動く API を完成させ、最後に最小の画面（Thymeleaf）まで作って API と画面描画の違いを体感する。
 
 - **5-2-1 ドメインとデータアクセス**
   - 種類: ハンズオン
@@ -434,6 +455,13 @@ CLAUDE.md の哲学（WHO / WHY / WHAT / HOW）を、Part > Chapter > Section �
   - 前提: [5-2-3]
   - 参考資料: [Spring Security Reference](https://docs.spring.io/spring-security/reference/index.html)
   - Laravel 対比: Sanctum のトークン発行とポリシーによる「自分の資源のみ操作」を、JWT + 認可で再現
+- **5-2-5 タスク一覧画面（Thymeleaf）**
+  - 種類: ハンズオン
+  - 逆リンク: 3-5-1, 3-5-2
+  - ゴール: ログイン中ユーザーのタスク一覧を、`@Controller` + Thymeleaf で **読み取り専用の HTML 画面** として表示する。5-2-2 で作った「JSON を返す API」と同じデータを「HTML を返す画面」として並べ、API と画面描画型 MVC の違いを実装して体感する
+  - 前提: [5-2-2, 5-2-4, 3-5-1, 3-5-2]
+  - 参考資料: [Thymeleaf Documentation](https://www.thymeleaf.org/documentation.html)
+  - Laravel 対比: Blade で一覧を表示した経験を Thymeleaf（`th:each`）で再現する。画面は一覧表示のみに絞り、API を主役に保つ
 
 ### Chapter 5-3: テストと仕上げ（2 Section）
 
