@@ -85,7 +85,7 @@ flowchart TD
 
 ---
 
-## 5つのスキル
+## 6つのスキル
 
 | スキル | やること | 入力例 |
 |---|---|---|
@@ -93,7 +93,8 @@ flowchart TD
 | `/write` | OUTLINE に基づいて執筆 | `/write Chapter 2-1`, `/write 全て` |
 | `/review` | 4観点でレビュー（自動修正しない） | `/review Part 1` |
 | `/check-updates` | 参考資料との鮮度チェック | `/check-updates` |
-| `/illustrate` | Gemini Pro で概念図を生成・挿入 | `/illustrate Part 2`, `/illustrate scan 2-1` |
+| `/illustrate` | Gemini で概念図を生成・挿入 | `/illustrate Part 2`, `/illustrate plan 2-1` |
+| `/github-pages` | MkDocs Material で GitHub Pages に公開 | `/github-pages new`, `/github-pages deploy` |
 
 ### /setup の流れ
 
@@ -136,17 +137,29 @@ flowchart LR
 
 ### /illustrate の流れ
 
-Gemini Pro の画像生成 API を使い、Mermaid では表現しにくい「直感的なメンタルモデル」を概念図として生成・挿入します。
+Gemini（3 Pro Image）で、Mermaid では表現しにくい「直感的なメンタルモデル」を概念図として生成・挿入します。
 
 | モード | やること |
 |---|---|
-| `scan` | 指定範囲の Section を読み、AI 画像が効果的な箇所を特定して報告 |
-| `generate` | 指定した画像を生成し、対象 Section に挿入 |
-| フル | scan → ユーザー確認 → generate を一気通貫で実行 |
+| `plan` | 指定範囲の対象 Section を列挙し、中心概念・タイプ・画像名を計画として報告（生成しない・コスト確認ゲート） |
+| `generate` | スコープ内の未生成 Section を一括生成・挿入（`--yes` で確認スキップ、`--force` で再生成） |
+| フル | plan → ユーザー確認 → generate を一気通貫で実行 |
 
-画像は導入セクションの 🧠 直後に配置します。Mermaid（正確な処理フロー）と illustrate（メンタルモデル・俯瞰図）を使い分けます。
+画像は導入セクションの 🧠 直後に配置し、生成済み Section は再実行時にスキップします（冪等）。Mermaid（正確な処理フロー）と illustrate（メンタルモデル・俯瞰図）を使い分けます。画像の密度方針（各概念 Section に 1 枚 / 判断ベース）は `/setup` で選べます。
 
 > **前提**: `GEMINI_API_KEY` 環境変数の設定が必要です。[Google AI Studio](https://aistudio.google.com/apikey) で取得できます。
+
+### /github-pages の流れ
+
+教材を MkDocs Material + GitHub Actions で GitHub Pages に公開します。`curriculums/`（日本語パス）を `build_docs.py` が英語スラッグの `docs/` に変換し、`mkdocs build --strict` でビルド、`main` への push で GitHub Actions が自動デプロイします。
+
+| 依頼 | やること |
+|---|---|
+| 新規構築 | mkdocs.yml・ナビ・テーマ色を生成 → ローカル検証 → 公開 |
+| 更新 | `curriculums/` を編集して push（CI が自動再ビルド） |
+| デプロイ確認 | `gh run watch` と公開 URL の疎通確認 |
+
+> **注**: 同梱スクリプトは 3層構成（Part > Chapter > Section）前提です。公開は外向き操作のため、push・公開化の各ゲートでユーザー確認を取ります。
 
 ---
 
@@ -157,7 +170,7 @@ flowchart LR
     setup["/setup"] --> write["/write"]
     write --> review["/review"]
     review -->|修正| write
-    review --> publish["公開"]
+    review --> publish["/github-pages\n（公開）"]
     check["/check-updates\n（定期実行）"] -->|更新必要| write
     illustrate["/illustrate"] -->|画像挿入| write
 ```
@@ -190,7 +203,8 @@ project-root/
 │   │   ├── write/            # /write スキル
 │   │   ├── review/           # /review スキル
 │   │   ├── check-updates/    # /check-updates スキル
-│   │   └── illustrate/       # /illustrate スキル
+│   │   ├── illustrate/       # /illustrate スキル
+│   │   └── github-pages/     # /github-pages スキル
 │   └── settings.json
 ├── curriculums/              # 教材本体（階層構造に応じたディレクトリ）
 └── assets/

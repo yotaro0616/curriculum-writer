@@ -1,0 +1,6 @@
+.DS_Store
+
+# MkDocs build output
+site/
+docs/part-*/
+docs/assets/

@@ -1,0 +1,111 @@
+/* テーマカラー（{{THEME_NOTE}} 例: Java Blue #007396 / Java Orange #ED8B00）
+   下の :root と slate の色だけを、その教材の技術ブランドカラーに差し替える。
+   PRIMARY=ヘッダー/サイドバー、ACCENT=リンク/ホバー。light/dark は ±15〜20% 明度。 */
+:root {
+  --md-primary-fg-color: {{PRIMARY}};
+  --md-primary-fg-color--light: {{PRIMARY_LIGHT}};
+  --md-primary-fg-color--dark: {{PRIMARY_DARK}};
+  --md-accent-fg-color: {{ACCENT}};
+  --md-accent-fg-color--transparent: {{ACCENT_TRANSPARENT}};
+}
+
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: {{PRIMARY}};
+  --md-primary-fg-color--light: {{PRIMARY_LIGHT}};
+  --md-primary-fg-color--dark: {{PRIMARY_DARK}};
+  --md-accent-fg-color: {{ACCENT}};
+  --md-accent-fg-color--transparent: {{ACCENT_TRANSPARENT}};
+}
+
+/* ホームページのヒーローセクション */
+.hero {
+  text-align: center;
+  padding: 2rem 0 1rem;
+}
+
+.hero p:first-of-type {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--md-primary-fg-color);
+}
+
+/* フッターの "Made with Material for MkDocs" を非表示 */
+.md-copyright {
+  display: none;
+}
+
+/* 見出しの視認性を改善 */
+.md-typeset h1 {
+  font-weight: 700;
+  color: var(--md-default-fg-color);
+}
+
+.md-typeset h2 {
+  font-weight: 600;
+  color: var(--md-default-fg-color);
+  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  padding-bottom: 0.4rem;
+}
+
+.md-typeset h3 {
+  font-weight: 600;
+  color: var(--md-default-fg-color);
+}
+
+/* ダークモード: テキストの視認性を改善 */
+[data-md-color-scheme="slate"] .md-typeset {
+  color: rgba(255, 255, 255, 0.87);
+}
+
+[data-md-color-scheme="slate"] .md-typeset h1,
+[data-md-color-scheme="slate"] .md-typeset h2,
+[data-md-color-scheme="slate"] .md-typeset h3 {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+[data-md-color-scheme="slate"] .md-typeset h2 {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-md-color-scheme="slate"] .md-typeset code {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ヘッダーロゴ: SVG を非表示にしつつリンクエリアをタイトル全体に広げる */
+.md-header__button.md-logo {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  z-index: 1;
+  opacity: 0;
+}
+
+.md-header__button.md-logo svg {
+  display: none;
+}
+
+.md-header__inner {
+  position: relative;
+}
+
+.md-header__ellipsis {
+  cursor: pointer;
+}
+
+/* フッター前/次ナビの視認性を改善 */
+.md-footer__link {
+  padding: 1rem 1.5rem;
+  border-radius: 0.4rem;
+  transition: background-color 0.2s;
+}
+
+.md-footer__link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.md-footer__title {
+  font-size: 0.9rem;
+  font-weight: 600;
+}

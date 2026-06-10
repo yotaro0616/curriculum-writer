@@ -60,7 +60,8 @@ CLAUDE.md は教材の哲学（WHO / WHY / WHAT / HOW）を定義し、`OUTLINE.
 | `/write` | 執筆（任意の階層単位） |
 | `/review` | レビュー（品質・整合性チェック） |
 | `/check-updates` | 公式ドキュメントとの鮮度チェック |
-| `/illustrate` | Gemini Pro による概念図の生成・挿入 |
+| `/illustrate` | Gemini による教材概念図の生成・挿入 |
+| `/github-pages` | MkDocs Material + GitHub Actions で教材を GitHub Pages に公開 |
 
 ### フォルダ構造・命名規則
 
