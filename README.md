@@ -85,7 +85,7 @@ flowchart TD
 
 ---
 
-## 6つのスキル
+## 7つのスキル
 
 | スキル | やること | 入力例 |
 |---|---|---|
@@ -94,6 +94,7 @@ flowchart TD
 | `/review` | 4観点でレビュー（自動修正しない） | `/review Part 1` |
 | `/check-updates` | 参考資料との鮮度チェック | `/check-updates` |
 | `/illustrate` | Gemini で概念図を生成・挿入 | `/illustrate Part 2`, `/illustrate plan 2-1` |
+| `/animate` | Remotion で Section 解説動画を生成・挿入 | `/animate Chapter 1`, `/animate plan 2-1` |
 | `/github-pages` | MkDocs Material で GitHub Pages に公開 | `/github-pages new`, `/github-pages deploy` |
 
 ### /setup の流れ
@@ -149,6 +150,20 @@ Gemini（3 Pro Image）で、Mermaid では表現しにくい「直感的なメ�
 
 > **前提**: `GEMINI_API_KEY` 環境変数の設定が必要です。[Google AI Studio](https://aistudio.google.com/apikey) で取得できます。
 
+### /animate の流れ
+
+Remotion で、静止画では表しにくい「時間軸を持つ説明」（対比の展開・処理の流れ・状態変化）を Section 解説動画（1.5〜3分・1080p）として生成・挿入します。`/illustrate` の概念図を動画の素材としても再利用します。
+
+| モード | やること |
+|---|---|
+| `plan` | 対象 Section とシーン構成案を提示（生成しない・コスト確認ゲート） |
+| `generate` | スコープ内の未生成 Section を一括生成（`--yes` で確認スキップ、`--force` で再生成） |
+| フル | plan → ユーザー確認 → generate を一気通貫で実行 |
+
+動画は Section タイトル直後に配置し、生成済み Section は再実行時にスキップします（冪等）。Remotion ワークスペースは `video/` にあります。
+
+> **前提**: `GEMINI_API_KEY`（ナレーション TTS）と Remotion ライセンス（量産・公開時は Company License）が必要です。詳細は `.claude/skills/animate/SKILL.md`。
+
 ### /github-pages の流れ
 
 教材を MkDocs Material + GitHub Actions で GitHub Pages に公開します。`curriculums/`（日本語パス）を `build_docs.py` が英語スラッグの `docs/` に変換し、`mkdocs build --strict` でビルド、`main` への push で GitHub Actions が自動デプロイします。
@@ -173,6 +188,7 @@ flowchart LR
     review --> publish["/github-pages\n（公開）"]
     check["/check-updates\n（定期実行）"] -->|更新必要| write
     illustrate["/illustrate"] -->|画像挿入| write
+    animate["/animate"] -->|動画挿入| write
 ```
 
 ### 初回
@@ -204,9 +220,11 @@ project-root/
 │   │   ├── review/           # /review スキル
 │   │   ├── check-updates/    # /check-updates スキル
 │   │   ├── illustrate/       # /illustrate スキル
+│   │   ├── animate/          # /animate スキル
 │   │   └── github-pages/     # /github-pages スキル
 │   └── settings.json
 ├── curriculums/              # 教材本体（階層構造に応じたディレクトリ）
-└── assets/
-    └── diagrams/             # /illustrate の生成画像・プロンプト
+├── assets/
+│   └── diagrams/             # /illustrate の生成画像・プロンプト
+└── video/                    # /animate の Remotion ワークスペース（Section 解説動画）
 ```
