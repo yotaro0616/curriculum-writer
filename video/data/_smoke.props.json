@@ -1,0 +1,18 @@
+{
+  "_doc": "セットアップ動作確認用のサンプル props（Studio の既定表示にも使う）。実 Section の props は TTS スクリプトが storyboard から生成する。",
+  "sectionId": "0-0-0",
+  "sectionLabel": "セットアップ確認",
+  "title": "サンプル",
+  "scenes": [
+    {
+      "id": "smoke-title",
+      "type": "title",
+      "sectionNo": "0-0-0",
+      "title": "動画パイプライン",
+      "subtitle": "セットアップ動作確認用のサンプルです",
+      "narration": "セットアップ動作確認用のサンプルです。",
+      "audioFrames": 80,
+      "totalFrames": 110
+    }
+  ]
+}
