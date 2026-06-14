@@ -1,0 +1,10 @@
+node_modules
+dist
+.DS_Store
+.env
+
+# Ignore the output video from Git but not videos you import into src/.
+out
+
+# 生成物（TTS 音声・props・レンダ済み動画）
+public/audio/
