@@ -3,6 +3,7 @@ import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { slide } from "@remotion/transitions/slide";
 import {
   AbsoluteFill,
+  Img,
   interpolate,
   staticFile,
   useCurrentFrame,
@@ -19,7 +20,7 @@ import { NestScene } from "./scenes/NestScene";
 import { OutroScene } from "./scenes/OutroScene";
 import { TitleScene } from "./scenes/TitleScene";
 
-export const TRANSITION_FRAMES = 14;
+export const TRANSITION_FRAMES = 9;
 export const DEFAULT_SCENE_FRAMES = 240;
 
 const SceneContent = ({
@@ -49,40 +50,23 @@ const SceneContent = ({
   }
 };
 
-/** 背景の奥行きレイヤー: 淡い色味のオーブ + ごく薄いドットグリッド */
+/**
+ * 背景（純白）。奥行きはコンポーネントの段差で出すため、背景はテクスチャを
+ * 持たせない。完全な平板を避ける程度に、ほぼ不可視のクールな光だけ置く。
+ */
 const Backdrop = () => {
   const frame = useCurrentFrame();
-  const orb = (
-    color: string,
-    size: number,
-    cx: number,
-    cy: number,
-    k: number,
-    opacity: number,
-  ) => (
-    <div
-      style={{
-        position: "absolute",
-        width: size,
-        height: size,
-        borderRadius: "50%",
-        background: color,
-        filter: "blur(130px)",
-        opacity,
-        left: cx + Math.sin(frame / (120 * k)) * 60,
-        top: cy + Math.cos(frame / (150 * k)) * 44,
-      }}
-    />
-  );
   return (
-    <AbsoluteFill>
-      {orb("#BFE5F2", 760, 1150, -220, 1, 0.5)}
-      {orb("#FFE2BD", 560, -160, 640, 1.4, 0.4)}
-      <AbsoluteFill
+    <AbsoluteFill style={{ background: theme.bg2 }}>
+      <div
         style={{
-          backgroundImage:
-            "radial-gradient(rgba(0,115,150,0.08) 1.4px, transparent 1.4px)",
-          backgroundSize: "34px 34px",
+          position: "absolute",
+          width: 1700,
+          height: 1700,
+          borderRadius: "50%",
+          background: `radial-gradient(circle, ${theme.haze} 0%, transparent 68%)`,
+          right: -360 + Math.sin(frame / 340) * 18,
+          top: -460,
         }}
       />
     </AbsoluteFill>
@@ -98,9 +82,10 @@ const ProgressBar = () => {
         position: "absolute",
         top: 0,
         left: 0,
-        height: 7,
+        height: 4,
         width: (frame / durationInFrames) * width,
-        background: `linear-gradient(90deg, ${theme.primaryDeep}, ${theme.accent})`,
+        background: theme.accentGrad,
+        opacity: 0.95,
       }}
     />
   );
@@ -117,7 +102,9 @@ const EndFade = () => {
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
   );
   return (
-    <AbsoluteFill style={{ background: theme.bg2, opacity, pointerEvents: "none" }} />
+    <AbsoluteFill
+      style={{ background: theme.bg2, opacity, pointerEvents: "none" }}
+    />
   );
 };
 
@@ -137,6 +124,22 @@ const SectionChip = ({ label }: { label: string }) => (
   </div>
 );
 
+/**
+ * 全シーン左上に固定するブランドロゴ（横長ワードマーク。サイトのヘッダー風）。
+ * 画像は brand.ts の logo（= theme.logo）で差し替える。明面基調なので隅に大きめに置く。
+ */
+const BrandHeader = () => {
+  if (!theme.logo) return null; // ロゴ未設定のプロジェクトでは何も出さない
+  return (
+    <div style={{ position: "absolute", top: 40, left: 38 }}>
+      <Img
+        src={staticFile(theme.logo)}
+        style={{ height: 32, width: "auto", opacity: 0.88 }}
+      />
+    </div>
+  );
+};
+
 export const SectionVideo = ({
   sectionId,
   sectionLabel,
@@ -153,9 +156,12 @@ export const SectionVideo = ({
         {scene.type !== "title" ? (
           <SectionChip label={`${sectionId} ${title}`} />
         ) : null}
+        <BrandHeader />
         <CaptionOverlay
           narration={scene.narration}
-          audioFrames={scene.audioFrames ?? scene.totalFrames ?? DEFAULT_SCENE_FRAMES}
+          audioFrames={
+            scene.audioFrames ?? scene.totalFrames ?? DEFAULT_SCENE_FRAMES
+          }
         />
         {scene.audioSrc ? <Audio src={staticFile(scene.audioSrc)} /> : null}
       </TransitionSeries.Sequence>
@@ -176,7 +182,7 @@ export const SectionVideo = ({
   return (
     <AbsoluteFill
       style={{
-        background: `radial-gradient(1500px 1000px at 50% 30%, ${theme.bg2} 0%, ${theme.bg1} 75%)`,
+        background: theme.bg2,
         fontFamily: theme.fontJa,
       }}
     >

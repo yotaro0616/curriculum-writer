@@ -16,20 +16,22 @@ export const TitleScene = ({
   return (
     <AbsoluteFill
       style={{
+        background: theme.emerald,
         justifyContent: "center",
         alignItems: "center",
         fontFamily: theme.fontJa,
       }}
     >
-      <div style={{ ...springIn(frame, fps, 4), marginBottom: 36 }}>
+      <div style={{ ...springIn(frame, fps, 8), marginBottom: 38 }}>
         <span
           style={{
-            border: `2px solid ${theme.panelBorder}`,
+            background: theme.panelGrad,
+            boxShadow: `${theme.edge}, ${theme.elevSoft}`,
             borderRadius: 999,
-            padding: "10px 30px",
+            padding: "12px 34px",
             fontSize: 30,
             color: theme.dim,
-            letterSpacing: 1,
+            letterSpacing: 1.2,
           }}
         >
           {sectionLabel}
@@ -38,7 +40,7 @@ export const TitleScene = ({
 
       <div
         style={{
-          ...springIn(frame, fps, 12),
+          ...springIn(frame, fps, 16),
           display: "flex",
           alignItems: "baseline",
           gap: 36,
@@ -49,15 +51,18 @@ export const TitleScene = ({
             fontFamily: theme.fontMono,
             fontSize: 64,
             fontWeight: 700,
-            color: theme.accent,
-            textShadow: "0 6px 26px rgba(237,139,0,0.3)",
+            backgroundImage: theme.accentGrad,
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            color: "transparent",
           }}
         >
           {scene.sectionNo}
         </span>
         <h1
           style={{
-            fontSize: 88,
+            fontSize: 90,
             fontWeight: 700,
             color: theme.text,
             margin: 0,
@@ -70,21 +75,22 @@ export const TitleScene = ({
 
       <div
         style={{
-          height: 6,
-          width: 760,
-          marginTop: 44,
-          background: `linear-gradient(90deg, ${theme.primaryDeep}, ${theme.accent})`,
-          borderRadius: 3,
-          transform: `scaleX(${grow(frame, 26, 18)})`,
+          height: 4,
+          width: 700,
+          marginTop: 46,
+          background: theme.accentGrad,
+          borderRadius: 2,
+          transform: `scaleX(${grow(frame, 30, 18)})`,
         }}
       />
 
       <p
         style={{
-          ...springIn(frame, fps, 38),
+          ...springIn(frame, fps, 42),
           fontSize: 42,
           color: theme.dim,
           marginTop: 44,
+          letterSpacing: 0.5,
         }}
       >
         {scene.subtitle}

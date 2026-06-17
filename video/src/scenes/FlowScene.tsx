@@ -7,15 +7,14 @@ import { SceneHeading } from "./SceneHeading";
 const StepBox = ({ step }: { step: FlowStep }) => (
   <div
     style={{
-      background: theme.panel,
-      border: `2.5px solid ${step.emphasis ? theme.accent : theme.panelBorder}`,
+      background: theme.panelGrad,
       borderRadius: 16,
       padding: "26px 36px",
       textAlign: "center",
       minWidth: 200,
       boxShadow: step.emphasis
-        ? "0 0 0 6px rgba(237,139,0,0.12), 0 16px 38px rgba(16,42,56,0.12)"
-        : theme.shadow,
+        ? `${theme.edge}, 0 0 0 1.5px ${theme.accent}, 0 0 0 7px ${theme.accentSoft}, ${theme.elev}`
+        : `${theme.edge}, ${theme.elev}`,
     }}
   >
     <div
@@ -23,7 +22,7 @@ const StepBox = ({ step }: { step: FlowStep }) => (
         fontFamily: theme.fontMono,
         fontSize: 36,
         fontWeight: 700,
-        color: step.emphasis ? theme.accent : theme.text,
+        color: step.emphasis ? theme.accentDeep : theme.text,
       }}
     >
       {step.label}
@@ -42,7 +41,7 @@ const Arrow = ({ progress }: { progress: number }) => (
       style={{
         width: 56,
         height: 5,
-        background: theme.primary,
+        background: theme.lineStrong,
         transform: `scaleX(${progress})`,
         transformOrigin: "left",
       }}
@@ -51,7 +50,7 @@ const Arrow = ({ progress }: { progress: number }) => (
       style={{
         width: 0,
         height: 0,
-        borderLeft: `16px solid ${theme.primary}`,
+        borderLeft: `16px solid ${theme.lineStrong}`,
         borderTop: "11px solid transparent",
         borderBottom: "11px solid transparent",
         opacity: progress > 0.9 ? 1 : 0,
@@ -114,14 +113,13 @@ export const FlowScene = ({ scene }: { scene: FlowSceneType }) => {
                 <Arrow progress={grow(frame, fanoutBase + j * 12, 12)} />
                 <div
                   style={{
-                    border: `2px solid ${theme.panelBorder}`,
-                    background: theme.panel,
+                    background: theme.panelGrad,
                     borderRadius: 999,
                     padding: "14px 34px",
                     fontSize: 28,
                     color: theme.text,
                     marginLeft: 8,
-                    boxShadow: "0 10px 26px rgba(16,42,56,0.08)",
+                    boxShadow: `${theme.edge}, ${theme.elevSoft}`,
                   }}
                 >
                   {os.label}
@@ -146,16 +144,26 @@ export const FlowScene = ({ scene }: { scene: FlowSceneType }) => {
           <div
             style={{
               ...springIn(frame, fps, Math.round(audioFrames * 0.84)),
-              border: `2px solid ${theme.accent}`,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 16,
               borderRadius: 14,
-              padding: "18px 44px",
+              padding: "16px 40px",
               fontSize: 38,
               fontWeight: 700,
-              color: theme.accent,
-              background: "rgba(237,139,0,0.08)",
-              boxShadow: "0 14px 36px rgba(237,139,0,0.18)",
+              color: theme.accentDeep,
+              background: theme.panelGrad,
+              boxShadow: `${theme.edge}, ${theme.elev}`,
             }}
           >
+            <span
+              style={{
+                width: 12,
+                height: 12,
+                borderRadius: 3,
+                background: theme.accent,
+              }}
+            />
             {scene.tagline}
           </div>
         </div>

@@ -10,74 +10,85 @@ import { theme } from "../theme";
 import type { NestScene as NestSceneType } from "../types";
 import { SceneHeading } from "./SceneHeading";
 
-const SIZES: [number, number][] = [
-  [400, 220],
-  [740, 420],
-  [1080, 620],
+// layers は内側→外側の順（[0]=最も内側）。各層は上揃えで入れ子にし、
+// ラベルは各ボックスの上に置く（内側ボックスが親のラベルを覆わないようにする）。
+const GEOM = [
+  { top: 440, width: 430, height: 218 }, // inner（中核クラス）
+  { top: 322, width: 720, height: 410 }, // middle（名前空間）
+  { top: 200, width: 1000, height: 570 }, // outer（ディレクトリ）
 ];
 
 export const NestScene = ({ scene }: { scene: NestSceneType }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const audioFrames = scene.audioFrames ?? 400;
-  const appearAt = [0.04, 0.34, 0.6].map((f) => Math.round(audioFrames * f));
-  const colors = [theme.accent, theme.primary, "#7E9AA8"];
+  // 外側（容れ物）から順に出す
+  const appearFrac = [0.5, 0.3, 0.08]; // index 0=inner が最後
+  const n = scene.layers.length;
 
   return (
     <AbsoluteFill style={{ fontFamily: theme.fontJa }}>
       <SceneHeading heading={scene.heading} />
       {scene.layers.map((layer, i) => {
-        const [w, h] = SIZES[i] ?? SIZES[SIZES.length - 1];
-        const f = Math.max(0, frame - (appearAt[i] ?? 0));
+        const g = GEOM[i] ?? GEOM[GEOM.length - 1];
+        const isInner = i === 0;
+        const appearAt = Math.round(audioFrames * (appearFrac[i] ?? 0.1));
+        const f = Math.max(0, frame - appearAt);
         const s = spring({
           frame: f,
           fps,
-          config: { damping: 13, stiffness: 120, mass: 0.8 },
+          config: { damping: 26, stiffness: 120, mass: 0.85 },
         });
         const opacity = interpolate(f, [0, 10], [0, 1], {
           extrapolateLeft: "clamp",
           extrapolateRight: "clamp",
         });
-        const isInner = i === 0;
+
+        // 配色: 外=白＋クールな枠、内=ティールで強調（濃淡フェードにしない）
+        const border = isInner ? theme.accent : i === 1 ? "#A7B2C0" : "#CBD3DC";
+        const labelColor = isInner ? theme.accentText : theme.text;
+
         return (
           <div
             key={layer.label}
             style={{
               position: "absolute",
               left: "50%",
-              top: "54%",
-              width: w,
-              height: h,
-              // 内側レイヤーほど手前に描く（外側の半透明背景に覆われないように）
-              zIndex: scene.layers.length - i,
-              transform: `translate(-50%, -50%) scale(${0.86 + 0.14 * s})`,
+              top: g.top,
+              width: g.width,
+              height: g.height,
+              zIndex: n - i,
+              transform: `translateX(-50%) scale(${0.94 + 0.06 * s})`,
+              transformOrigin: "center top",
               opacity,
-              border: `3px solid ${colors[i]}`,
-              borderRadius: 22,
-              background: isInner ? "rgba(237,139,0,0.07)" : "rgba(255,255,255,0.55)",
-              boxShadow: isInner ? "0 0 0 8px rgba(237,139,0,0.1)" : "none",
+              border: `${isInner ? 2 : 1.5}px solid ${border}`,
+              borderRadius: 20,
+              background: isInner ? theme.emerald : "#FFFFFF",
+              boxShadow: isInner
+                ? `0 0 0 5px ${theme.accentSoft}, ${theme.elev}`
+                : theme.elevSoft,
               display: "flex",
               flexDirection: "column",
               justifyContent: isInner ? "center" : "flex-start",
               alignItems: isInner ? "center" : "flex-start",
-              padding: isInner ? 0 : "20px 32px",
+              padding: isInner ? 0 : "22px 30px",
             }}
           >
             <div
               style={{
                 fontFamily: theme.fontMono,
-                fontSize: isInner ? 48 : 38,
+                fontSize: isInner ? 48 : 34,
                 fontWeight: 700,
-                color: colors[i],
+                color: labelColor,
               }}
             >
               {layer.label}
             </div>
             <div
               style={{
-                fontSize: isInner ? 26 : 24,
+                fontSize: isInner ? 25 : 22,
                 color: theme.dim,
-                marginTop: 8,
+                marginTop: 7,
               }}
             >
               {layer.desc}
@@ -90,7 +101,7 @@ export const NestScene = ({ scene }: { scene: NestSceneType }) => {
         <div
           style={{
             position: "absolute",
-            bottom: 150,
+            bottom: 186,
             left: 0,
             right: 0,
             display: "flex",
@@ -99,9 +110,9 @@ export const NestScene = ({ scene }: { scene: NestSceneType }) => {
         >
           <div
             style={{
-              ...springIn(frame, fps, Math.round(audioFrames * 0.84)),
+              ...springIn(frame, fps, Math.round(audioFrames * 0.86)),
               fontFamily: theme.fontMono,
-              fontSize: 44,
+              fontSize: 40,
               fontWeight: 700,
               color: theme.text,
             }}

@@ -3,9 +3,8 @@
 教材の各 Section から「解説スライド + ナレーション + 字幕」の mp4 を生成する Remotion ワークスペース。
 使い方の全体は `.claude/skills/animate/SKILL.md` を参照。
 
-> ⚠️ **Remotion ライセンス**: 従業員 4 名以上の企業での利用は Company License が必要です。
-> 評価（PoC）は無償ですが、「技術スタックに組み込む決定」をした時点で課金対象になります。
-> 量産・公開の前に [remotion.pro](https://www.remotion.pro/license) でライセンスを取得してください。
+> 📝 **Remotion ライセンス**: Remotion は一定規模の企業利用で Company License が必要になります。
+> 本プロジェクトはライセンス判断をプロジェクトオーナーの責任で進める方針です（詳細は [remotion.pro](https://www.remotion.pro/license)）。
 
 ## パイプライン
 
@@ -37,6 +36,11 @@ npx remotion render src/index.ts SectionVideo out/<sectionId>.mp4 \
 | `src/anim.ts` | モーションプリセット（spring の強さ等） |
 | `src/scenes/` | シーン型。新しい見せ方が必要になったらここに追加 |
 
-- TTS エンジンは差し替え可能（`scripts/tts-voicevox.mjs` が同一 CLI 契約の代替実装。無料・ローカル・要クレジット表記）
+- TTS エンジンは差し替え可能（同一 CLI 契約）:
+  - `scripts/tts-gcloud.mjs` — Google Cloud Chirp 3 HD（**日本語ネイティブ・放送品質**・要 `GOOGLE_TTS_API_KEY`）。声は `voice.json` の `gcloudVoice`（`ja-JP-Chirp3-HD-<名前>`）
+  - `scripts/tts-gemini.mjs` — Gemini（要 `GEMINI_API_KEY`）。口調は `stylePrompt`
+  - `scripts/tts-openai.mjs` — OpenAI `gpt-4o-mini-tts`（要 `OPENAI_API_KEY`。滑らかだが日本語は非ネイティブ感あり）。口調は `stylePrompt`→instructions
+  - `scripts/tts-voicevox.mjs` — VOICEVOX（無料・ローカル・ネイティブ・要クレジット表記）
+  - 話速は全エンジン共通で `data/voice.json` の `tempo`（atempo 倍率）。生音声は `scene-NN.raw.wav` に保持され、tempo 変更は再合成不要
 - 生成物（`public/audio/` と `out/`）は git 管理外。コミットするのは storyboard JSON と設定のみ
 - 配信は GitHub Releases を想定（mp4 はリポジトリにコミットしない）

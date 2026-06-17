@@ -8,7 +8,11 @@ export const KeypointScene = ({ scene }: { scene: KeypointSceneType }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const audioFrames = scene.audioFrames ?? 300;
-  const accents = [theme.primary, theme.accent];
+  // 2項対比: 1枚目はティールアクセント、2枚目は無彩色の濃スレート（色は1つに集約）
+  const accents = [theme.accent, theme.markNeutral];
+  // 各カードの登場タイミング（ナレーションで各概念に触れる位置に合わせる）
+  const revealAt = (i: number) =>
+    Math.round(audioFrames * (scene.revealAt?.[i] ?? 0.04 + i * 0.42));
 
   return (
     <AbsoluteFill style={{ fontFamily: theme.fontJa }}>
@@ -30,26 +34,55 @@ export const KeypointScene = ({ scene }: { scene: KeypointSceneType }) => {
           <div
             key={card.title}
             style={{
-              ...springIn(frame, fps, 10 + i * Math.round(audioFrames * 0.3)),
+              ...springIn(frame, fps, revealAt(i)),
+              position: "relative",
               width: 660,
-              background: theme.panel,
-              border: `2px solid ${accents[i % accents.length]}`,
+              background: theme.emerald,
               borderRadius: 20,
-              padding: "54px 56px",
-              boxShadow: theme.shadow,
+              padding: "52px 54px 54px",
+              boxShadow: `${theme.edge}, ${theme.elev}`,
+              overflow: "hidden",
             }}
           >
+            {/* 上辺の細いアクセントタブ（色はここだけ） */}
             <div
               style={{
-                fontSize: 46,
-                fontWeight: 700,
-                color: accents[i % accents.length],
-                marginBottom: 28,
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 4,
+                background: accents[i % accents.length],
+              }}
+            />
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 16,
+                marginBottom: 26,
               }}
             >
-              {card.title}
+              <div
+                style={{
+                  width: 13,
+                  height: 13,
+                  borderRadius: 3,
+                  background: accents[i % accents.length],
+                }}
+              />
+              <div style={{ fontSize: 46, fontWeight: 700, color: theme.text }}>
+                {card.title}
+              </div>
             </div>
-            <div style={{ fontSize: 38, lineHeight: 1.7, color: theme.text }}>
+            <div
+              style={{
+                fontSize: 37,
+                lineHeight: 1.75,
+                color: theme.text,
+                whiteSpace: "pre-line",
+              }}
+            >
               {card.body}
             </div>
           </div>

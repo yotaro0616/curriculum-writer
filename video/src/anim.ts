@@ -2,6 +2,12 @@ import { Easing, interpolate, spring } from "remotion";
 
 export const EASE = Easing.bezier(0.16, 1, 0.3, 1);
 
+/**
+ * 子要素を連鎖的に出すときの 1 要素あたりの遅延（フレーム）。
+ * 「動き＝ブランド」: 全シーンでこの間隔を使い、所作を統一する。
+ */
+export const STAGGER = 3;
+
 const clamp = {
   extrapolateLeft: "clamp" as const,
   extrapolateRight: "clamp" as const,
@@ -34,12 +40,14 @@ export const springIn = (
   const s = spring({
     frame: f,
     fps,
-    config: { damping: 13, stiffness: 130, mass: 0.7 },
+    // 過減衰気味（damping を critical 以上に）にして跳ねを消し、
+    // すっと収まる近未来・大人の所作にする
+    config: { damping: 26, stiffness: 120, mass: 0.85 },
   });
-  const opacity = interpolate(f, [0, 9], [0, 1], clamp);
+  const opacity = interpolate(f, [0, 11], [0, 1], clamp);
   return {
     opacity,
-    transform: `translateY(${(1 - s) * 40}px) scale(${0.94 + 0.06 * s})`,
+    transform: `translateY(${(1 - s) * 24}px) scale(${0.975 + 0.025 * s})`,
   };
 };
 

@@ -17,6 +17,7 @@ export const SceneHeading = ({ heading }: { heading?: string }) => {
           fontWeight: 700,
           color: theme.text,
           margin: 0,
+          letterSpacing: 0.5,
           fontFamily: theme.fontJa,
         }}
       >
@@ -24,11 +25,11 @@ export const SceneHeading = ({ heading }: { heading?: string }) => {
       </h2>
       <div
         style={{
-          height: 5,
-          width: 96,
+          height: 3,
+          width: 84,
           marginTop: 18,
-          background: theme.accent,
-          borderRadius: 3,
+          background: theme.accentGrad,
+          borderRadius: 2,
           transform: `scaleX(${grow(frame, 10, 14)})`,
           transformOrigin: "left",
         }}

@@ -24,7 +24,7 @@ export const FigureScene = ({ scene }: { scene: FigureSceneType }) => {
         style={{
           ...springIn(frame, fps, 8),
           position: "absolute",
-          top: 230,
+          top: 205,
           left: 0,
           right: 0,
           display: "flex",
@@ -33,13 +33,13 @@ export const FigureScene = ({ scene }: { scene: FigureSceneType }) => {
       >
         <div
           style={{
-            width: 1380,
-            height: 700,
+            width: 1360,
+            height: 648,
             borderRadius: 18,
             overflow: "hidden",
-            border: `1.5px solid ${theme.panelBorder}`,
+            border: `1px solid ${theme.panelBorder}`,
             background: "#fff",
-            boxShadow: "0 26px 64px rgba(16,42,56,0.16)",
+            boxShadow: `0 0 0 1px rgba(16,22,40,0.03), ${theme.elevHigh}`,
           }}
         >
           <Img
@@ -49,6 +49,7 @@ export const FigureScene = ({ scene }: { scene: FigureSceneType }) => {
               height: "100%",
               objectFit: "contain",
               transform: `scale(${scale})`,
+              scale: 0.973255,
             }}
           />
         </div>

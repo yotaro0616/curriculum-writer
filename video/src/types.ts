@@ -16,6 +16,8 @@ export type SceneBase = {
 export type CodePane = {
   label: string;
   labelColor?: string;
+  /** IDE ウィンドウのタブに出すファイル名（省略時は label を使う） */
+  file?: string;
   lines: string[];
   /** 0 始まりの行番号。コンパイルエラー演出を付ける行 */
   errorLine?: number;
@@ -32,11 +34,15 @@ export type TitleScene = SceneBase & {
 export type CodeCompareScene = SceneBase & {
   type: "codeCompare";
   left: CodePane;
+  /** 右ペインが登場するタイミング（audioFrames に対する 0〜1 の比。ナレーションで右の話に移る位置に合わせる。既定 0.45） */
+  rightAt?: number;
   right: CodePane;
 };
 
 export type KeypointScene = SceneBase & {
   type: "keypoint";
+  /** 各カードが登場するタイミング（audioFrames に対する 0〜1 の比の配列。ナレーションで各概念に触れる位置に合わせる） */
+  revealAt?: number[];
   cards: { title: string; body: string }[];
 };
 

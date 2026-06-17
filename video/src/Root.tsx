@@ -5,8 +5,10 @@ import {
   TRANSITION_FRAMES,
 } from "./SectionVideo";
 import type { SectionVideoProps } from "./types";
-// Studio の既定表示。Section を作り始めたら最新の <id>.props.json に差し替えてよい
-// （レンダリングは --props で渡すため、この import は既定値にすぎない）
+// Studio の既定表示。全シーン型を含む実セクション（1-2）を既定にして、
+// `npx remotion studio` を開くだけでデザインをライブ確認・スクラブできるようにする。
+// デザイン調整は Studio のホットリロードで回し、mp4 は確定後に1回だけ焼く
+// （レンダリングは --props で渡すため、この import は既定値にすぎない）。
 import propsJson from "../data/_smoke.props.json";
 
 const FPS = 30;

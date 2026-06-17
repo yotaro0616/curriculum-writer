@@ -10,7 +10,7 @@ export const OutroScene = ({ scene }: { scene: OutroSceneType }) => {
   const audioFrames = scene.audioFrames ?? 400;
 
   return (
-    <AbsoluteFill style={{ fontFamily: theme.fontJa }}>
+    <AbsoluteFill style={{ background: theme.emerald, fontFamily: theme.fontJa }}>
       <SceneHeading heading={scene.heading} />
       <div
         style={{
@@ -35,13 +35,13 @@ export const OutroScene = ({ scene }: { scene: OutroSceneType }) => {
           >
             <div
               style={{
-                width: 16,
-                height: 16,
+                width: 14,
+                height: 14,
                 marginTop: 18,
                 background: theme.accent,
                 borderRadius: 4,
                 flexShrink: 0,
-                boxShadow: "0 0 0 5px rgba(237,139,0,0.14)",
+                boxShadow: `0 0 0 5px ${theme.accentSoft}`,
               }}
             />
             <div style={{ fontSize: 40, lineHeight: 1.6, color: theme.text }}>
@@ -63,7 +63,9 @@ export const OutroScene = ({ scene }: { scene: OutroSceneType }) => {
           <span style={{ fontSize: 30, color: theme.dim, marginRight: 20 }}>
             次のセクション
           </span>
-          <span style={{ fontSize: 34, color: theme.accent, fontWeight: 700 }}>
+          <span
+            style={{ fontSize: 34, color: theme.accentText, fontWeight: 700 }}
+          >
             ▶ {scene.next}
           </span>
         </div>

@@ -75,21 +75,28 @@ export const CaptionOverlay = ({
     return null;
   }
 
-  const opacity = interpolate(frame, [current.start, current.start + 4], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-  const progress = (frame - current.start) / current.dur;
-  const revealed = Math.min(
-    current.text.length,
-    Math.ceil(progress * current.text.length * 1.06),
+  // カラオケ送りは廃止。セグメント単位でフェードイン／アウトし、わずかに持ち上げる
+  const clamp = {
+    extrapolateLeft: "clamp" as const,
+    extrapolateRight: "clamp" as const,
+  };
+  const fadeIn = interpolate(frame, [current.start, current.start + 5], [0, 1], clamp);
+  const fadeOut = interpolate(
+    frame,
+    [current.start + current.dur - 6, current.start + current.dur],
+    [1, 0],
+    clamp,
   );
+  const opacity = Math.min(fadeIn, fadeOut);
+  const lift = interpolate(frame, [current.start, current.start + 9], [7, 0], clamp);
+  // 字幕は句点「。」を出さない（字幕の慣習）。末尾の読点も落とす
+  const display = current.text.replace(/。/g, "").replace(/[、，]\s*$/, "").trim();
 
   return (
     <div
       style={{
         position: "absolute",
-        bottom: 52,
+        bottom: 56,
         left: 0,
         right: 0,
         display: "flex",
@@ -99,22 +106,25 @@ export const CaptionOverlay = ({
     >
       <div
         style={{
-          maxWidth: 1560,
-          background: "rgba(13,33,44,0.92)",
-          borderLeft: `6px solid ${theme.accent}`,
-          borderRadius: 10,
-          padding: "16px 34px",
+          maxWidth: 1500,
+          background: theme.captionBg,
+          backdropFilter: "blur(10px)",
+          WebkitBackdropFilter: "blur(10px)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          borderRadius: 14,
+          padding: "18px 44px",
           fontSize: 38,
+          fontWeight: 500,
+          letterSpacing: 0.4,
           lineHeight: 1.5,
+          color: "#FFFFFF",
           fontFamily: theme.fontJa,
-          boxShadow: "0 12px 34px rgba(16,42,56,0.22)",
+          boxShadow: "0 18px 44px rgba(7,24,30,0.30)",
           opacity,
+          transform: `translateY(${lift}px)`,
         }}
       >
-        <span style={{ color: "#FFFFFF" }}>{current.text.slice(0, revealed)}</span>
-        <span style={{ color: "rgba(255,255,255,0.42)" }}>
-          {current.text.slice(revealed)}
-        </span>
+        {display}
       </div>
     </div>
   );
