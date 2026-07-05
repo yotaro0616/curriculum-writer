@@ -48,6 +48,7 @@ Phase 1 に入る前に、教材の対象を固める。ここが曖昧だと WH
 - **TOPIC**: 何を教えるか（例: Vercel デプロイ、Laravel、Docker）
 - **スコープの外縁**: 含むものと含まないもの（例: 「フロントのデプロイのみ。バックエンドは含まない」）
 - **対象技術の確定**: 具体的なツール・フレームワーク・バージョン
+- **公開方式**: GitHub 直読み / GitHub Pages（MkDocs Material）/ LMS 等。表現様式（絵文字 or admonition）の決定材料になる（確定は Phase 3。後から様式を変えると全 Section の横断修正になるため、ここで早期に方向を出す）
 
 深掘りの例:
 - 「○○まで含めますか？それとも○○に絞りますか？」
@@ -172,6 +173,10 @@ OUTLINE.md を生成し、ユーザーに提示して承認を得てから Phase
 7. **画像の密度方針**（`/illustrate` を使う場合）: 各「概念」Section に 1 枚ずつ生成するか、判断ベースで効果的な箇所のみにするかを選び、`.claude/skills/illustrate/references/criteria.md` の密度方針プレースホルダに反映する
 8. **ブランドの一元設定**: 教材のキーカラー・トーンを決め、3箇所へ反映する — `video/src/brand.ts`（動画）・`.claude/skills/illustrate/references/style-guide.md` の配色（概念図）・`.claude/skills/github-pages/assets/custom.css`（公開サイト）。ここで揃えると図・動画・サイトの見た目が一貫する
 9. **write スキルのスコープ表**: `.claude/skills/write/SKILL.md` の「スコープの解釈」の表を、選択した階層構造に合わせて調整する（不要な行を削る）
+10. **表現様式**: Phase 0 の公開方式に応じて選択する — 絵文字（既定・GitHub 直読み向け） / admonition（MkDocs Material・LMS 向け）。admonition の場合の作業: writing.md「表現様式」の対応表を正に確定し、テンプレート・種類ごとの差分の絵文字プレフィックスを admonition 記法に読み替える方針を明記・review / lint（`scripts/lint_curriculum.py`）を `--style admonition` に切り替え・mkdocs.yml のコンテンツタブ連動を確認する
+11. **アークモード**: 見出しの Why をどこが担うか — モード2（概要駆動・既定: 概要 → なぜ〇〇を使うのか → 〇〇とは何か → How） / モード1（導入駆動: `## 導入:` が Why を担う）。writing.md「見出しの設計」のコメントに決定を記録する
+12. **ハンズオンの検証モデル**: コピペ再現型（既定・学習者がコードを直接書く教材） / AI委任型（学習者が AI に開発を委任する教材）。writing.md「ハンズオンの検証モデル」のコメントに決定を記録する
+13. **やってみようの執筆タイミング**: A（Part 単位2パス・推奨） / B（本文と同一パス）。writing.md「種類ごとの差分 > 概念」のコメントに決定を記録する
 
 ---
 

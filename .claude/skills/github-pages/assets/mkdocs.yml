@@ -26,6 +26,7 @@ theme:
     text: Noto Sans JP
     code: JetBrains Mono
   features:
+    - navigation.instant
     - navigation.tabs
     - navigation.sections
     - navigation.expand
@@ -34,6 +35,7 @@ theme:
     - search.suggest
     - search.highlight
     - content.code.copy
+    - content.tabs.link
     - toc.follow
   icon: {}
 
