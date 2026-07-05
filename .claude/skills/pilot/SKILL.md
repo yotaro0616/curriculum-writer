@@ -25,7 +25,7 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 3. **コード表示ルール**: {{TOPIC}} 固有の言語指定（blade, jsonc 等）を追加
 4. **図表の形式**: ASCII フロー図 or Mermaid
 5. **Section あたりの目安文字数**
-6. **表現様式**: 絵文字（既定・GitHub 直読み向け） / admonition（MkDocs・LMS 向け）。RESEARCH.md Phase 0 の公開方式に従う。admonition の場合は対応表を正に確定し、review / lint を `--style admonition` に切り替える
+6. **表現様式**: 絵文字（既定・GitHub 直読み向け） / admonition（MkDocs・LMS 向け）。RESEARCH.md Phase 0 の公開方式に従う。admonition の場合は対応表を正に確定し、`PROGRESS.md` frontmatter の `config.style` を `admonition` にする（lint・hook・CI・/review が自動で追随する）
 7. **アークモード**: モード2（概要駆動・既定） / モード1（導入駆動）
 8. **ハンズオンの検証モデル**: コピペ再現型（既定） / AI委任型
 9. **やってみようの執筆タイミング**: A（Part 単位2パス・推奨） / B（本文と同一パス）
@@ -52,7 +52,7 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 ## 4. 検証
 
 - **公開形式プレビュー**: /github-pages を使う予定なら実レンダして確認（admonition・タブ・Mermaid の描画）。GitHub 直読みなら GitHub 上の表示を確認
-- **機械チェック**: lint・textlint がテンプレートの定型と衝突しないか（誤検出があれば allows を調整）
+- **機械チェック**: `npm ci` で textlint を有効化し、lint・textlint がテンプレートの定型と衝突しないか確認する（誤検出があれば `.textlintrc.json` の allows を調整。既知: 行頭の太字語＋半角スペース（broken-bold の修正形）は no-ai-emphasis-patterns と衝突しやすい）
 - **学習者視点の通読**: `.claude/agents/learner-persona` で通読させ、つまずき・未定義用語・例示/実践の混乱を収集
 - **メディアの様式**（使う場合）: /illustrate・/animate を1点ずつ試し、図・動画のトーンを確認
 

@@ -26,7 +26,7 @@
           {
             "type": "command",
             "command": "python3 -B \"${CLAUDE_PROJECT_DIR}/.claude/hooks/post-edit-lint.py\"",
-            "timeout": 120
+            "timeout": 200
           }
         ]
       }

@@ -14,6 +14,8 @@ gates:
 adaptive:
   research: full         # full | light | skipped（理由を1行で添える）
   pilot: planned         # planned | done | skipped
+config:
+  style: emoji           # emoji | admonition（機械チェックが読む様式の単一ソース。/pilot が確定）
 ---
 
 ## 進捗表（G3 承認時に /outline が Section 一覧を展開する）
