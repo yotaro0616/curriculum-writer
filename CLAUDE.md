@@ -34,13 +34,13 @@
 
 ## カリキュラム（HOW）
 
-<!-- /setup で階層構造と内容を設定する -->
+<!-- /define で階層構造と内容を設定する -->
 <!-- 階層は教材の規模に応じて1〜3層から選択: -->
 <!--   3層: Part > Chapter > Section（大規模教材） -->
 <!--   2層: Chapter > Section（中規模教材） -->
 <!--   1層: Section のみ（小規模教材・ドキュメント集） -->
 
-**階層構造**: [/setup で設定]
+**階層構造**: [/define で設定]
 
 [カリキュラムの表をここに記述する]
 
@@ -56,10 +56,16 @@ CLAUDE.md は教材の哲学（WHO / WHY / WHAT / HOW）を定義し、`OUTLINE.
 
 | Skill | 用途 |
 |---|---|
-| `/setup` | 初期設定（CLAUDE.md・OUTLINE.md・writing.md の作成） |
+| `/setup` | 上流フェーズのルーター（PROGRESS.md から次フェーズを案内） |
+| `/research` | 設計前調査（RESEARCH.md・ゲート G1） |
+| `/define` | 哲学の定義（CLAUDE.md・ゲート G2） |
+| `/outline` | 構造設計（OUTLINE.md・ゲート G3）と見出し骨子の JIT 充填 |
+| `/pilot` | 試作と様式ロック（writing.md 確定・ゲート G4＝量産解禁） |
 | `/write` | 執筆（任意の階層単位） |
-| `/review` | レビュー（品質・整合性チェック） |
-| `/check-updates` | 公式ドキュメントとの鮮度チェック |
+| `/review` | レビュー（品質・整合性チェック・改訂の検収） |
+| `/revise` | 改訂の変更管理（提案 → 適用 → アーカイブ。changes/） |
+| `/status` | 進捗の同期・報告（PROGRESS.md） |
+| `/check-updates` | 公式ドキュメントとの鮮度チェック（🔴🟡 は /revise へ） |
 | `/illustrate` | Gemini による教材概念図の生成・挿入 |
 | `/animate` | Remotion による Section 解説動画の生成・挿入 |
 | `/github-pages` | MkDocs Material + GitHub Actions で教材を GitHub Pages に公開 |
@@ -73,11 +79,16 @@ CLAUDE.md は教材の哲学（WHO / WHY / WHAT / HOW）を定義し、`OUTLINE.
 ```
 project-root/
 ├── CLAUDE.md                # 教材の哲学（WHO/WHY/WHAT/HOW/MAP）
-├── OUTLINE.md               # カリキュラム設計
+├── RESEARCH.md              # 設計前調査（/research が生成。裏取りの正）
+├── OUTLINE.md               # カリキュラム設計（骨格 + 見出し骨子 + 付録）
+├── PROGRESS.md              # ゲート承認と進捗（/status が同期）
+├── changes/                 # 改訂の変更管理（/revise。archive/ に履歴）
 ├── .claude/
 │   ├── rules/writing.md     # 執筆ルール
 │   ├── skills/              # Skill 定義
+│   ├── agents/              # カスタムエージェント（レビュアー・検証者）
 │   └── settings.json
+├── scripts/                 # lint 等の共通スクリプト
 ├── curriculums/             # 教材本体
 └── assets/                  # 画像
 ```

@@ -18,7 +18,7 @@ cd my-curriculum
 /write Chapter 1
 ```
 
-`/setup` を実行すると、対話を通じて CLAUDE.md（哲学）・OUTLINE.md（構造）・writing.md（執筆ルール）が生成されます。あとは `/write` で書き、`/review` でチェックするだけです。
+`/setup`（ルーター）が上流フェーズを順に案内します: `/research`（調査 → RESEARCH.md）→ `/define`（哲学 → CLAUDE.md）→ `/outline`（構造 → OUTLINE.md）→ `/pilot`（試作 → writing.md 様式ロック）。各ゲートを承認したら `/write` で量産し、`/review` でチェックします。小規模教材ではフェーズの省略（適応的深度）も提案されます。
 
 ---
 
@@ -77,39 +77,46 @@ flowchart TD
 
 | 種類 | 内容 | 選択基準 |
 |---|---|---|
-| **概念** | 意義・仕組み・使い方を解説 | 手を動かす要素がない |
-| **ハンズオン** | 概念で学んだ機能を実践 | 事前に概念 Section で学んだ内容を実践する |
-| **混合** | 概念を学びながらすぐに手を動かす | 概念と実践を分けると不自然 |
+| **概念** | 意義・仕組み・使い方を解説（コードは読む例）。末尾に任意の小実践「やってみよう」を置ける | 分かるが目的（5〜15分の試行で定着するなら＋やってみよう） |
+| **ハンズオン** | 既習の複数機能を束ねて成果物を作る統合実践 | 既習機能の組み合わせで成果物を作る |
+| **混合** | 概念解説と実践を同一 Section 内で前半・後半に分けて構成 | 説明と操作が不可分（環境構築・初回体験） |
 
-すべての種類で共通の骨格（🎯学習目標 → 導入/🧠 → 本文 → ✨まとめ）を持ち、種類ごとに本文の構成が異なります。ハンズオン・混合では `## 🏃 実践` > `### 🏃 Step N` の統一された Step 構造を使います。
+すべての種類で共通の骨格（🎯学習目標 → Why ブロック（🧠）→ 本文 → ✨まとめ）を持ち、種類ごとに本文の構成が異なります。学習者が実行するコード・コマンドは 🏃 見出し（実践 / Step / やってみよう）の配下にのみ置きます（位置ルール）。
 
 ---
 
-## 7つのスキル
+## スキル一覧
 
 | スキル | やること | 入力例 |
 |---|---|---|
-| `/setup` | 教材の哲学定義 → 構造設計 → 執筆ルール調整 | `/setup` |
+| `/setup` | 上流フェーズのルーター（次フェーズの案内・PROGRESS 管理） | `/setup` |
+| `/research` | 設計前調査（トピックマップ・題材候補・出典付き） | `/research`, `/research light` |
+| `/define` | 哲学の定義（WHO/WHY/WHAT/HOW/MAP → CLAUDE.md） | `/define` |
+| `/outline` | 構造設計（骨格）と見出し骨子の JIT 充填 | `/outline`, `/outline 2-1` |
+| `/pilot` | writing.md 調整 → 代表 Chapter 試作 → 様式ロック | `/pilot` |
 | `/write` | OUTLINE に基づいて執筆 | `/write Chapter 2-1`, `/write 全て` |
-| `/review` | 4観点でレビュー（自動修正しない） | `/review Part 1` |
-| `/check-updates` | 参考資料との鮮度チェック | `/check-updates` |
+| `/review` | 5観点でレビュー（自動修正しない）・改訂の検収 | `/review Part 1` |
+| `/revise` | 改訂の変更管理（提案 → 適用 → アーカイブ） | `/revise 章を3節に分割したい` |
+| `/status` | 進捗の同期・報告 | `/status` |
+| `/check-updates` | 参考資料との鮮度チェック（🔴🟡 は /revise へ） | `/check-updates` |
 | `/illustrate` | Gemini で概念図を生成・挿入 | `/illustrate Part 2`, `/illustrate plan 2-1` |
 | `/animate` | Remotion で Section 解説動画を生成・挿入 | `/animate Chapter 1`, `/animate plan 2-1` |
 | `/github-pages` | MkDocs Material で GitHub Pages に公開 | `/github-pages new`, `/github-pages deploy` |
 
-### /setup の流れ
-
-対話形式で5つの Phase を進めます。
+### 上流パイプライン（/setup がルーティング）
 
 ```mermaid
 flowchart LR
-    P0["Phase 0\nTOPIC・スコープ確定"] -->|承認| P1["Phase 1\n哲学の定義\nWHO/WHY/WHAT/HOW/MAP"]
-    P1 -->|承認| P2["Phase 2\nOUTLINE 構造化\nMECE 分解"]
-    P2 -->|承認| P3["Phase 3\nwriting.md\nルール調整"]
-    P3 --> P4["Phase 4\n最終確認"]
+    R["/research\n調査\nRESEARCH.md"] -->|G1 承認| D["/define\n哲学\nCLAUDE.md"]
+    D -->|G2 承認| O["/outline\n骨格\nOUTLINE.md"]
+    O -->|G3 承認| P["/pilot\n試作・様式ロック\nwriting.md"]
+    P -->|G4 承認 = 量産解禁| W["/write 量産"]
+    O2["/outline 2-1\n見出し骨子の充填（JIT）"] -.->|各 Chapter の執筆直前| W
 ```
 
-各 Phase の完了時にユーザーの承認を取ってから次に進みます。途中でスコープが変わった場合は Phase 0 に戻って再確認します。
+- 人間が承認するのは各ゲートの成果物だけ。承認状態は `PROGRESS.md` に記録され、`/write` が量産前に検査します
+- 裏取り（公式ドキュメントの実取得・トピックマップ化）は上流の責務です。見出し骨子は調査に基づいて執筆直前に設計し、執筆時の「方針合わせ」はその確認に短縮されます
+- 小規模教材では `/research light` や `/pilot` 省略を `/setup` が提案します（省略も PROGRESS に記録）
 
 ### /write の流れ
 
@@ -121,8 +128,9 @@ flowchart LR
     W4 -.->|提案| R["/review"]
 ```
 
-- 参考資料から数値・仕様を箇条書きで整理し、記憶ではなくその整理結果を参照して書く
-- 大規模スコープでは Chapter 単位で方針合わせと中間チェックを行う
+- 準備の最初に PROGRESS のゲート（G4 量産解禁）と OUTLINE の見出し骨子を検査する（未承認なら該当フェーズを案内）
+- 参考資料は RESEARCH.md を正として参照し、Web 取得は差分確認に留める。記憶ではなく整理結果を参照して書く
+- セルフチェック後に AI 臭チェックと独立レビュアー（サブエージェント）のゲートを通す
 - 完了後に `/review` の実行を提案する
 
 ### /review の観点
@@ -130,11 +138,12 @@ flowchart LR
 | 観点 | 内容 |
 |---|---|
 | ルール準拠 | writing.md のテンプレート・文体に従っているか |
-| 設計との整合 | OUTLINE.md のゴール・種類と一致しているか |
+| 設計との整合 | OUTLINE.md のゴール・種類・見出し骨子と一致しているか |
 | 正確性 | 参考資料の表記に従っているか |
-| 実践フォロー可能性 | ハンズオンを読者だけで完遂できるか |
+| 実践フォロー可能性 | ハンズオンを読者だけで完遂できるか（実機検証は handson-verifier エージェント） |
+| 文体・AI 臭 | 談話レベルの AI 臭（命題型見出し・両論併記・リズム均一等）がないか |
 
-レビュー前に Grep ベースの機械的チェック（太字スペース・ダッシュ記号・言語指定なしコードブロック等）を自動実行し、誤検知を減らします。
+レビュー前に共通 lint（`scripts/lint_curriculum.py`）を実行します。同じ検査は執筆時の PostToolUse hook・PR 時の CI でも自動実行されます。/revise の適用後は「変更スコープモード」（網羅性・正確性・整合性の3軸）で検収します。
 
 ### /illustrate の流れ
 
@@ -182,26 +191,29 @@ Remotion で、静止画では表しにくい「時間軸を持つ説明」（�
 
 ```mermaid
 flowchart LR
-    setup["/setup"] --> write["/write"]
+    setup["/setup（ルーター）"] --> up["/research → /define\n→ /outline → /pilot"]
+    up -->|G4 量産解禁| write["/write"]
     write --> review["/review"]
     review -->|修正| write
     review --> publish["/github-pages\n（公開）"]
-    check["/check-updates\n（定期実行）"] -->|更新必要| write
+    check["/check-updates\n（定期実行）"] -->|🔴🟡| revise["/revise\n（変更管理）"]
+    revise -->|承認済み提案| write
     illustrate["/illustrate"] -->|画像挿入| write
     animate["/animate"] -->|動画挿入| write
+    status["/status"] -.->|進捗同期| write
 ```
 
 ### 初回
 
-1. `/setup` で対話的に CLAUDE.md・OUTLINE.md・writing.md を生成
-2. `/write` で Section を執筆（Part / Chapter / Section 単位、または全体一括）
-3. `/review` でレビュー、指摘を修正
+1. `/setup` が上流4フェーズ（調査 → 哲学 → 構造 → 試作）をゲート承認付きで案内
+2. 各 Chapter の執筆直前に `/outline <Chapter>` で見出し骨子を充填
+3. `/write` で執筆（Part / Chapter / Section 単位）、`/review` でレビュー
 
 ### メンテナンス
 
 - 参考資料がオンラインの場合: `/check-updates` を月1回実行
-- 破壊的変更が見つかったら `/write` で即修正
-- 構成変更が必要な場合は `/setup` を再実行
+- 🔴（破壊的変更）・🟡（主要な変更）は `/revise` で提案を作成 → 承認 → 適用 → アーカイブ（読者向け CHANGELOG に記録）
+- 単一 Section 内に閉じる軽微な修正のみ `/write` で直接対応
 
 ---
 
@@ -210,19 +222,20 @@ flowchart LR
 ```
 project-root/
 ├── CLAUDE.md                 # 哲学（WHO/WHY/WHAT/HOW/MAP）
-├── OUTLINE.md                # 構造設計
+├── RESEARCH.md               # 設計前調査（/research が生成。裏取りの正）
+├── OUTLINE.md                # 構造設計（骨格 + 見出し骨子 + 付録）
+├── PROGRESS.md               # ゲート承認と進捗（/status が同期）
+├── changes/                  # /revise の変更提案（archive/ に適用履歴）
 ├── README.md
 ├── .claude/
 │   ├── rules/writing.md      # 執筆ルール（文体・テンプレート・用語）
-│   ├── skills/
-│   │   ├── setup/            # /setup スキル
-│   │   ├── write/            # /write スキル
-│   │   ├── review/           # /review スキル
-│   │   ├── check-updates/    # /check-updates スキル
-│   │   ├── illustrate/       # /illustrate スキル
-│   │   ├── animate/          # /animate スキル
-│   │   └── github-pages/     # /github-pages スキル
-│   └── settings.json
+│   ├── skills/               # 13スキル（setup/research/define/outline/pilot/
+│   │                         #   write/review/revise/status/check-updates/
+│   │                         #   illustrate/animate/github-pages）
+│   ├── agents/               # カスタムエージェント（independent-reviewer /
+│   │                         #   learner-persona / handson-verifier）
+│   └── settings.json         # 権限 + PostToolUse hook（編集時 lint）
+├── scripts/                  # lint_curriculum.py（機械チェックの単一の正）等
 ├── curriculums/              # 教材本体（階層構造に応じたディレクトリ）
 ├── assets/
 │   └── diagrams/             # /illustrate の生成画像・プロンプト
