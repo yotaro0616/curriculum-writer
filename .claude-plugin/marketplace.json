@@ -1,0 +1,21 @@
+{
+  "name": "curriculum-writer",
+  "description": "教材執筆フレームワーク（curriculum-writer）の内部配布マーケットプレイス",
+  "owner": {
+    "name": "yotaro0616",
+    "email": "yotaro.t@estra.jp"
+  },
+  "plugins": [
+    {
+      "name": "cw",
+      "source": "./",
+      "description": "教材執筆フレームワークのスキル・エージェント一式（/cw:write・/cw:review など。commit = 新バージョンとして自動更新）",
+      "skills": "./.claude/skills",
+      "agents": [
+        "./.claude/agents/handson-verifier.md",
+        "./.claude/agents/independent-reviewer.md",
+        "./.claude/agents/learner-persona.md"
+      ]
+    }
+  ]
+}

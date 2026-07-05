@@ -29,7 +29,7 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 7. **アークモード**: モード2（概要駆動・既定） / モード1（導入駆動）
 8. **ハンズオンの検証モデル**: コピペ再現型（既定） / AI委任型
 9. **やってみようの執筆タイミング**: A（Part 単位2パス・推奨） / B（本文と同一パス）
-10. **画像の密度方針**（/illustrate を使う場合）: criteria.md に反映
+10. **画像の方針**（/illustrate を使う場合）: 経路（Claude Design 手動＋/design-ingest（既定） / 生成AI（Gemini・OpenAI））と密度（[A] 各概念 Section 1枚 / [B] 判断ベース / [C] 概念アンカーごと）を選び、`.claude/skills/illustrate/references/criteria.md` の決定記録に反映する
 11. **ブランドの一元設定**: キーカラーを決めて3箇所へ反映（video/src/brand.ts・illustrate style-guide・github-pages custom.css）
 12. **write スキルのスコープ表**: 階層構造に合わせて調整
 13. **本文で使わない表現**: 制度名・組織名等の除外方針（あれば）

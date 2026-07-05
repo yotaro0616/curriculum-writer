@@ -7,14 +7,14 @@ Claude Code のスキルを使って、技術教材の設計から執筆・レ�
 ## クイックスタート
 
 ```bash
-# 1. クローン
-git clone https://github.com/yotaro0616/curriculum-writer.git my-curriculum
+# 1. テンプレートから教材リポジトリを作成（推奨。クローンでも可）
+gh repo create my-curriculum --template yotaro0616/curriculum-writer --private --clone
 cd my-curriculum
 
-# 2. Claude Code で対話的にセットアップ
+# 2. Claude Code で対話的にセットアップ（上流フェーズを案内）
 /setup
 
-# 3. 執筆
+# 3. 執筆（G4 様式ロック後に量産）
 /write Chapter 1
 ```
 
@@ -99,9 +99,11 @@ flowchart TD
 | `/revise` | 改訂の変更管理（提案 → 適用 → アーカイブ） | `/revise 章を3節に分割したい` |
 | `/status` | 進捗の同期・報告 | `/status` |
 | `/check-updates` | 参考資料との鮮度チェック（🔴🟡 は /revise へ） | `/check-updates` |
-| `/illustrate` | Gemini で概念図を生成・挿入 | `/illustrate Part 2`, `/illustrate plan 2-1` |
+| `/illustrate` | 概念図の計画・作成・挿入（既定: Claude Design 手動 / 選択式: 生成AI） | `/illustrate plan 2-1`, `/illustrate Part 2` |
+| `/design-ingest` | claude.ai/Design で作った図の zip を自動取り込み・挿入 | `/design-ingest`, `/design-ingest --dry-run` |
 | `/animate` | Remotion で Section 解説動画を生成・挿入 | `/animate Chapter 1`, `/animate plan 2-1` |
 | `/github-pages` | MkDocs Material で GitHub Pages に公開 | `/github-pages new`, `/github-pages deploy` |
+| `/fw-sync` | 展開済み教材プロジェクトへ FW 更新を選択的に取り込む | `/fw-sync` |
 
 ### 上流パイプライン（/setup がルーティング）
 
@@ -145,19 +147,16 @@ flowchart LR
 
 レビュー前に共通 lint（`scripts/lint_curriculum.py`）を実行します。同じ検査は執筆時の PostToolUse hook・PR 時の CI でも自動実行されます。/revise の適用後は「変更スコープモード」（網羅性・正確性・整合性の3軸）で検収します。
 
-### /illustrate の流れ
+### /illustrate の流れ（2経路）
 
-Gemini（3 Pro Image）で、Mermaid では表現しにくい「直感的なメンタルモデル」を概念図として生成・挿入します。
+Mermaid では表現しにくい「直感的なメンタルモデル」を概念図として計画・作成・挿入します。作成経路は2つあり、`/pilot` で既定を選びます。
 
-| モード | やること |
+| 経路 | やること |
 |---|---|
-| `plan` | 指定範囲の対象 Section を列挙し、中心概念・タイプ・画像名を計画として報告（生成しない・コスト確認ゲート） |
-| `generate` | スコープ内の未生成 Section を一括生成・挿入（`--yes` で確認スキップ、`--force` で再生成） |
-| フル | plan → ユーザー確認 → generate を一気通貫で実行 |
+| **Claude Design（既定）** | `/illustrate plan` が概念アンカーごとの作図依頼リストを出す → claude.ai/design で作図（部分修正・複数案比較・デザインシステムで統一）→ zip 書き出し → `/design-ingest` が自動検出・配置・タグ挿入まで実施 |
+| **生成AI（選択式）** | Gemini / OpenAI の API で生成（`generate-image.js`。プロバイダは Part 内で統一）。`GEMINI_API_KEY` または `OPENAI_API_KEY` が必要 |
 
-画像は導入セクションの 🧠 直後に配置し、生成済み Section は再実行時にスキップします（冪等）。Mermaid（正確な処理フロー）と illustrate（メンタルモデル・俯瞰図）を使い分けます。画像の密度方針（各概念 Section に 1 枚 / 判断ベース）は `/setup` で選べます。
-
-> **前提**: `GEMINI_API_KEY` 環境変数の設定が必要です。[Google AI Studio](https://aistudio.google.com/apikey) で取得できます。
+画像は Why ブロックの 🧠 直後に配置し（追加図は該当 `##` 見出し末尾）、取り込み済みは SHA-256 で判定してスキップします（冪等）。密度方針（[A] 各概念 Section 1枚 / [B] 判断ベース / [C] 概念アンカーごと=1 Section 複数図）は `/pilot` で選びます。
 
 ### /animate の流れ
 
@@ -217,6 +216,28 @@ flowchart LR
 
 ---
 
+## 配布・更新（2層構成）
+
+| 層 | 中身 | 配布方法 | 更新 |
+|---|---|---|---|
+| **配布物** | skills・agents（`.claude/`） | Claude Code plugin `cw`（このリポジトリが marketplace を兼ねる） | marketplace の auto-update で起動時に自動配布 |
+| **生成物の雛形** | CLAUDE.md・OUTLINE.md・writing.md・curriculums/・video/ 等の骨格 | GitHub テンプレートリポジトリ（`gh repo create --template`） | `/fw-sync` で diff を確認しながら選択的に取り込み |
+
+- 現在は**段階導入の第1段階**（マニフェスト整備済み）。plugin 運用へ完全移行するまでは従来どおりテンプレート同梱の `.claude/skills` が有効です。導入手順と残りの移行ステップは `.claude-plugin/README.md` を参照
+- 下流の教材プロジェクトで生まれた改善は、従来どおり **FW への PR** で還流します（plugin 移行後は、マージすれば全プロジェクトに次回起動で届きます）
+
+## オーダーメイド教材（企業別展開）
+
+企業・組織向けに教材を作る場合は、**1教材 = 1リポジトリ**を維持したまま `CONTEXT.md`（企業コンテキスト）を追加します。
+
+1. テンプレートから企業別リポジトリを作成
+2. `CONTEXT.md` に事業・受講者の実像・現場スタック・用語 / NG 用語・研修の制約を記入（`/research`・`/define` が必読入力にする）
+3. 以降は共通フロー（/setup → 上流4フェーズ → /write）。既存の社内資料がある場合は `/research` のギャップ分析（Extend / Create New / Restructure）を使う
+
+> ⚠️ 内部検討資料（価格・競合比較等）は教材リポジトリに含めず別管理にしてください（public リポジトリに内部資料が残った実例があります）。
+
+---
+
 ## ファイル構成
 
 ```
@@ -225,19 +246,21 @@ project-root/
 ├── RESEARCH.md               # 設計前調査（/research が生成。裏取りの正）
 ├── OUTLINE.md                # 構造設計（骨格 + 見出し骨子 + 付録）
 ├── PROGRESS.md               # ゲート承認と進捗（/status が同期）
+├── CONTEXT.md                # 企業コンテキスト（オーダーメイド時のみ。汎用教材では削除）
 ├── changes/                  # /revise の変更提案（archive/ に適用履歴）
 ├── README.md
 ├── .claude/
 │   ├── rules/writing.md      # 執筆ルール（文体・テンプレート・用語）
-│   ├── skills/               # 13スキル（setup/research/define/outline/pilot/
+│   ├── skills/               # 15スキル（setup/research/define/outline/pilot/
 │   │                         #   write/review/revise/status/check-updates/
-│   │                         #   illustrate/animate/github-pages）
+│   │                         #   illustrate/design-ingest/animate/github-pages/fw-sync）
 │   ├── agents/               # カスタムエージェント（independent-reviewer /
 │   │                         #   learner-persona / handson-verifier）
 │   └── settings.json         # 権限 + PostToolUse hook（編集時 lint）
+├── .claude-plugin/           # plugin 配布マニフェスト（cw。marketplace 兼用）
 ├── scripts/                  # lint_curriculum.py（機械チェックの単一の正）等
 ├── curriculums/              # 教材本体（階層構造に応じたディレクトリ）
 ├── assets/
-│   └── diagrams/             # /illustrate の生成画像・プロンプト
+│   └── diagrams/             # 概念図（output/ 画像・prompts/ 依頼文の記録）
 └── video/                    # /animate の Remotion ワークスペース（Section 解説動画）
 ```

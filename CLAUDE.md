@@ -66,9 +66,11 @@ CLAUDE.md は教材の哲学（WHO / WHY / WHAT / HOW）を定義し、`OUTLINE.
 | `/revise` | 改訂の変更管理（提案 → 適用 → アーカイブ。changes/） |
 | `/status` | 進捗の同期・報告（PROGRESS.md） |
 | `/check-updates` | 公式ドキュメントとの鮮度チェック（🔴🟡 は /revise へ） |
-| `/illustrate` | Gemini による教材概念図の生成・挿入 |
+| `/illustrate` | 概念図の計画・作成・挿入（既定: Claude Design / 選択式: 生成AI） |
+| `/design-ingest` | claude.ai/Design で作図した zip の自動取り込み・挿入 |
 | `/animate` | Remotion による Section 解説動画の生成・挿入 |
 | `/github-pages` | MkDocs Material + GitHub Actions で教材を GitHub Pages に公開 |
+| `/fw-sync` | FW 更新の選択的取り込み（展開済みプロジェクト側で実行） |
 
 <!-- スキルを追加・削除したら、この表も必ず更新する（更新漏れが実際に起きた） -->
 
@@ -82,6 +84,7 @@ project-root/
 ├── RESEARCH.md              # 設計前調査（/research が生成。裏取りの正）
 ├── OUTLINE.md               # カリキュラム設計（骨格 + 見出し骨子 + 付録）
 ├── PROGRESS.md              # ゲート承認と進捗（/status が同期）
+├── CONTEXT.md               # 企業コンテキスト（オーダーメイド時のみ）
 ├── changes/                 # 改訂の変更管理（/revise。archive/ に履歴）
 ├── .claude/
 │   ├── rules/writing.md     # 執筆ルール
