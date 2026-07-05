@@ -16,6 +16,8 @@ adaptive:
   pilot: planned         # planned | done | skipped
 config:
   style: emoji           # emoji | admonition（機械チェックが読む様式の単一ソース。/pilot が確定）
+  illustrate: null       # /illustrate の経路/密度（例: "claude-design / C"。/pilot が確定）
+  brand: null            # キーカラー（例: "#0EA5E9"）。brand.ts 等 3 箇所への反映は /pilot 手順を参照
 ---
 
 ## 進捗表（G3 承認時に /outline が Section 一覧を展開する）
