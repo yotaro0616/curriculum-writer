@@ -167,7 +167,7 @@ Mermaid では表現しにくい「直感的なメンタルモデル」を概念
 | **Claude Design（既定）** | `/illustrate plan` が概念アンカーごとの作図依頼リストを出す → claude.ai/design で作図（部分修正・複数案比較・デザインシステムで統一）→ zip 書き出し → `/design-ingest` が自動検出・配置・タグ挿入まで実施 |
 | **生成AI（選択式）** | Gemini / OpenAI の API で生成（`generate-image.js`。プロバイダは Part 内で統一）。`GEMINI_API_KEY` または `OPENAI_API_KEY` が必要 |
 
-画像は Why ブロックの 🧠 直後に配置し（追加図は該当 `##` 見出し末尾）、取り込み済みは SHA-256 で判定してスキップします（冪等）。密度方針（[A] 各概念 Section 1枚 / [B] 判断ベース / [C] 概念アンカーごと=1 Section 複数図）は `/pilot` で選びます。
+画像は Why ブロックの 🧠 直後（🧠 が無い Section では Why ブロック本文の末尾）に配置し、追加図は該当 `##` 見出し末尾に置きます。配置済みかどうかは Section 内のファイル名既出で判定してスキップし（冪等）、`/design-ingest` の画像差し替え要否のみ SHA-256 で判定します。密度方針（[A] 各概念 Section 1枚 / [B] 判断ベース / [C] 概念アンカーごと=1 Section 複数図）は `/pilot` で選び、`PROGRESS.md` の `config.illustrate` に記録します。
 
 ### /animate の流れ
 

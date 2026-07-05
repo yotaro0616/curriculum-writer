@@ -50,9 +50,9 @@ node .claude/skills/design-ingest/scripts/ingest-design.js --dry-run
 node .claude/skills/design-ingest/scripts/ingest-design.js
 ```
 
-- Section 指定: `--section 2-1-4`（番号プレフィックス一致。`--section 2-1` で Chapter 単位の絞り込みも可）
+- Section 指定: `--section 2-1-4` または位置引数 `2-1-4`（番号プレフィックス一致。`--section 2-1` で Chapter 単位の絞り込みも可）
 - zip 明示: `--zip "/path/to/export.zip"` または第1引数にパス
-- zip を退避しない: `--no-archive`（既定では取り込み済み zip を `~/Downloads/_design_ingested/` へ移動し、次回の誤検出を防ぐ）
+- zip を退避しない: `--no-archive`（既定では取り込み済み zip を `~/Downloads/_design_ingested/` へ移動し、次回の誤検出を防ぐ。取り込み対象が 0 枚だった zip は退避しない）
 - 該当 zip が無い場合はエラーにならず「対象なし」を報告して終了する（書き出し前に実行しても安全）
 
 スクリプトは末尾に `===INGEST_RESULT_JSON===` 行＋ JSON を出力する。**この JSON を解析して次のステップに進む**。各 `items[]` の主なフィールド:
@@ -62,7 +62,7 @@ node .claude/skills/design-ingest/scripts/ingest-design.js
 | `name` | 画像ファイル名（例: `2-1-4-http-request.png`） |
 | `section` | 対応 Section 番号（例: `2-1-4`。命名から判定。教材の階層 1〜3層に対応） |
 | `sectionFile` | 対応 Section の .md パス（見つからなければ `null`） |
-| `action` | `new` / `updated` / `unchanged`（リポジトリ既存とのハッシュ比較） |
+| `action` | `new` / `updated` / `unchanged`（リポジトリ既存との SHA-256 比較。画像コピーの要否判定であり、タグ挿入の冪等判定は `tagPresent` / `needsTag`） |
 | `tagPresent` | その Section に画像タグが既にあるか（`true`/`false`/`null`） |
 | `relPath` | Section から画像への相対パス（タグにそのまま使う） |
 | `needsTag` | `true` のものだけ次でタグ挿入が必要 |
@@ -84,55 +84,32 @@ node .claude/skills/design-ingest/scripts/ingest-design.js
 
 ## 挿入位置とパス
 
-`/illustrate`「両経路共通の規約」と同一。
-
-**代表図**: Why ブロック配下の 🧠 ブロッククオートの直後、`---` 区切りの直前に挿入する（アンカーは常に 🧠。アークモードがモード2なら「なぜ〇〇を使うのか」配下、モード1なら「導入:」配下にある）。
-
-<!-- /pilot で admonition 様式を選んだ場合: 🧠 は !!! quote "現場での考え方" になるため、挿入位置は「quote ブロックの直後・次の --- の直前」と読み替える。quote が無い Section では Why ブロック本文の末尾（--- の直前）に挿入する -->
-
-**追加図**（密度方針 [C]）: 該当する `##` 見出しセクションの末尾、次の `##` 見出しまたは `---` の直前に挿入する。
-
-```markdown
-## 導入: [見出し]
-
-[導入テキスト]
-
-### 🧠 [人格名]はこう考える
-
-> [語り]
-
-![alt テキスト](<relPath>)  ← 代表図はここ（🧠 直後・--- の直前）
-
----
-
-## [本文の見出し]
-```
+規約の正は `/illustrate` SKILL.md「両経路共通の規約」（代表図 = Why ブロックの 🧠 直後・追加図 = 該当 `##` 見出し末尾・admonition 様式の読み替えを含む）。ここには本スキルが実行する挿入アルゴリズムだけを置く。
 
 挿入アルゴリズム（代表図）:
 
-1. Why ブロック配下の 🧠 見出しとそのブロッククオートを探す
+1. Why ブロック配下の 🧠 見出しとそのブロッククオートを探す（🧠 が無い Section では Why ブロック本文の末尾を挿入点とする）
 2. その後ろの最初の `---` 行（ブロックを閉じる区切り）を探す
 3. その `---` の直前に、画像タグを単独行で挿入する（前後に空行）
 4. パスは JSON の `relPath` をそのまま使う（3層なら `../../../assets/diagrams/output/<name>`、2層なら `../../`、1層なら `../`）
+
+追加図（密度方針 [C]）は該当する `##` 見出しセクションの末尾（次の `##` または `---` の直前）に挿入する。
 
 ⚠️ **冪等性（重複挿入の防止）**: 挿入前に、その Section ファイルに画像ファイル名が既出でないか必ず確認する。スクリプトの `tagPresent` / `needsTag` で判定済みだが、手動挿入時も二重挿入しないこと。`action: updated`（同名で中身だけ新しい）は、ファイルが差し替わるだけでタグは変えない。
 
 ## 命名規則
 
-`/illustrate` と同一: `<section番号>-<concept-slug>`（英語・ハイフン区切り。番号は教材の階層 1〜3層に従う。スラッグは数字始まりを避ける）。
-
-- Section 番号を接頭にすることで、画像と Section が自動対応する（このスキルの自動配置の前提）
-- 構図・内容を変える改版は `<name>-v2` の別名で管理する（`/illustrate` の `references/criteria.md`「5. 画像の規範」）
+`/illustrate` SKILL.md「両経路共通の規約 > 命名規則」を正とする（`<section番号>-<concept-slug>`。Section 番号接頭がこのスキルの自動対応の前提）。
 
 ## スクリプトのオプション
 
 ```bash
-node .claude/skills/design-ingest/scripts/ingest-design.js [zip] [オプション]
+node .claude/skills/design-ingest/scripts/ingest-design.js [zip | section番号] [オプション]
 ```
 
 | オプション | 既定 | 説明 |
 |---|---|---|
-| `[zip]` / `--zip <path>` | 自動検出 | 取り込む zip。未指定なら `~/Downloads` から図を含む最新 zip を検出 |
+| `[zip \| section番号]` / `--zip <path>` | 自動検出 | 位置引数は zip パス、または Section 番号（`2-1-4` 形式は `--section` として解釈）。zip 未指定なら `~/Downloads` から図を含む最新 zip を検出 |
 | `--section <番号>` | (全件) | 指定 Section の図だけ取り込む（番号プレフィックス一致） |
 | `--downloads <dir>` | `~/Downloads` | zip 検出元 |
 | `--output <dir>` | `<repo>/assets/diagrams/output` | 配置先 |
@@ -144,13 +121,13 @@ node .claude/skills/design-ingest/scripts/ingest-design.js [zip] [オプショ�
 
 ## コミット規律
 
-コミットはこのパスの成果物のみ（配置した画像＋挿入タグ＋（あれば）依頼文記録。例: `design-ingest(2-1): 概念図を取り込み・挿入`）。本文執筆・動画の変更と混載しない。
+`/illustrate` SKILL.md「両経路共通の規約 > 図の役割分担とコミット規律」と同一（このパスの成果物のみ。例: `design-ingest(2-1): 概念図を取り込み・挿入`）。
 
 ## 注意
 
 - **zip の自動検出は「内容ベース」**。zip 名に依存せず、`assets/diagrams/output/` 配下の画像、または Section 番号始まりの画像を含む最新 zip を選ぶ。取り込んだ zip は退避するので、次回の再検出で誤って同じものを拾わない。無関係な zip を誤検出した場合は `--zip` で明示する（`--dry-run` で先に確認すると確実）
 - **Section が未執筆の画像**は配置だけ行い、タグ挿入は保留して報告する（`sectionFile: null`）。画像は配置済みなので、Section を書いた後に挿入規約に従ってタグを挿入する（退避済み zip を `--zip` で指定して再実行してもよい）
-- **図の役割分担は `/illustrate` と同じ**。主役は本文中の Mermaid（正確な仕組み）で、概念図は導入 🧠 直後の代表図（密度方針 [C] では `##` 見出し単位の追加図も可）
+- **図の役割分担は `/illustrate` と同じ**。主役は本文中の Mermaid（正確な仕組み）で、概念図は Why ブロックの 🧠 直後の代表図（密度方針 [C] では `##` 見出し単位の追加図も可）
 
 ## 発展（任意）: DesignSync 直結で手動ダウンロードも無くす
 
