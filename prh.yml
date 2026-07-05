@@ -1,0 +1,20 @@
+# 教材本文（curriculums/**/*.md）の表記・文言辞書（textlint-rule-prh が参照）
+# .claude/rules/writing.md の用語テーブルと同期（/setup で用語追加時にここも更新）
+#
+# 書き方:
+#   - expected: 正しい表記（--fix 時の置換先。本フレームワークでは自動修正しない）
+#     pattern:  検出パターン（/正規表現/ 可）
+#     prh:      理由・出典（writing.md / ai-slop-curriculum.md の該当ルール）
+
+version: 1
+
+rules:
+  # ---- 用語（writing.md「用語・表記」テーブルと同期） ----
+  - expected: セクション
+    pattern: /\bSection\b/
+    prh: 教材本文ではカタカナ表記「セクション」を使う（内部ドキュメントでは英語。writing.md「用語・表記」）
+
+  # ---- 過剰ヘッジ（ai-slop-curriculum.md「立場のチェック」。裏取りした内容は言い切る） ----
+  - expected: です
+    pattern: /と(?:も)?言えるでしょう/
+    prh: 過剰ヘッジ。裏取りした内容は断定で書く（ai-slop-curriculum.md「過剰ヘッジ」）

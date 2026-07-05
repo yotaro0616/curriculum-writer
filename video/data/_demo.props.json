@@ -1,0 +1,171 @@
+{
+  "_doc": "全シーン型デモ（音声なし）。Studio の Composition `demo` の既定 props で、title〜outro の全シーン型を1つずつ含む。デザイン調整（theme/brand/scenes）はこれで確認する。実 Section の props は TTS スクリプトが storyboard から生成する。lint は `node scripts/lint-storyboard.mjs data/_demo.props.json --lenient` で通す（シーン数・字数の件数系は警告扱い）。",
+  "sectionId": "demo",
+  "sectionLabel": "全シーン型デモ",
+  "title": "シーン型カタログ",
+  "scenes": [
+    {
+      "id": "demo-title",
+      "type": "title",
+      "sectionNo": "0-0",
+      "title": "シーン型カタログ",
+      "subtitle": "全シーン型の表示を1つずつ確認するデモです",
+      "narration": "全シーン型の表示を確認するデモです。デザイン調整はこの動画をスタジオで開いて行います。",
+      "audioFrames": 130,
+      "totalFrames": 154
+    },
+    {
+      "id": "demo-figure",
+      "type": "figure",
+      "heading": "figure: 概念図の額装",
+      "src": "figures/_demo-figure.svg",
+      "alt": "デモ用の概念図",
+      "narration": "figure シーンは、生成済みの概念図を額装して見せます。画像は事前に素材フォルダへコピーして参照します。",
+      "audioFrames": 160,
+      "totalFrames": 184
+    },
+    {
+      "id": "demo-keypoint",
+      "type": "keypoint",
+      "heading": "keypoint: 二項対立の整理",
+      "revealAt": [0.05, 0.45],
+      "cards": [
+        {
+          "title": "概念 A",
+          "body": "1枚目はアクセント色\n定義や特徴を並べる"
+        },
+        {
+          "title": "概念 B",
+          "body": "2枚目は無彩色\n対になる概念を置く"
+        }
+      ],
+      "narration": "keypoint シーンは二つの概念を左右のカードで対比します。ナレーションが各概念に触れる位置でカードが登場します。",
+      "audioFrames": 220,
+      "totalFrames": 244
+    },
+    {
+      "id": "demo-code-compare",
+      "type": "codeCompare",
+      "heading": "codeCompare: コードの対比",
+      "left": {
+        "label": "変更前",
+        "file": "src/example.js",
+        "lines": [
+          "const items = load();",
+          "let total = 0;",
+          "for (const item of items) {",
+          "  total += item.prise;",
+          "}"
+        ],
+        "errorLine": 3,
+        "caption": "タイプミスでエラーになる例"
+      },
+      "rightAt": 0.45,
+      "right": {
+        "label": "変更後",
+        "file": "src/example.js",
+        "lines": [
+          "const items = load();",
+          "let total = 0;",
+          "for (const item of items) {",
+          "  total += item.price;",
+          "}"
+        ],
+        "caption": "修正後のコード"
+      },
+      "narration": "codeCompare シーンは二つのコードを IDE 風のウィンドウで対比します。エラー行の演出と、右ペインの遅延登場を確認します。",
+      "audioFrames": 260,
+      "totalFrames": 284
+    },
+    {
+      "id": "demo-terminal",
+      "type": "terminal",
+      "heading": "terminal: コマンドと AI 操作の実演",
+      "windowTitle": "ターミナル",
+      "lines": [
+        { "cmd": "pwd", "note": "現在地を確認" },
+        { "out": "/Users/you/projects" },
+        { "comment": "シェル行のほか、AI エージェントのセッション行も出せます" },
+        { "user": "README の誤字を直して" },
+        { "claude": "README.md を確認して修正します。" },
+        { "tool": "Read(README.md)", "result": "12 行を読み込み" },
+        {
+          "approve": "Edit(README.md) — 誤字を1箇所修正",
+          "options": ["はい", "いいえ、別の方法を伝える"]
+        }
+      ],
+      "narration": "terminal シーンはコマンドの入力と出力を上から順に実演します。ユーザーの指示、応答、ツール実行、承認ゲートまでの一連の流れを確認します。",
+      "audioFrames": 420,
+      "totalFrames": 444
+    },
+    {
+      "id": "demo-terminal-compare",
+      "type": "terminalCompare",
+      "heading": "terminalCompare: 指示の良し悪しの対比",
+      "left": {
+        "windowTitle": "Claude Code",
+        "lines": [
+          { "user": "いい感じにまとめて" },
+          { "claude": "対象が特定できません。どのファイルをまとめますか。" }
+        ],
+        "caption": "あいまいな指示"
+      },
+      "right": {
+        "windowTitle": "Claude Code",
+        "lines": [
+          { "user": "docs/notes.md を3点の箇条書きに要約して" },
+          { "claude": "3点に要約しました。" }
+        ],
+        "caption": "対象と形式を指定",
+        "good": true
+      },
+      "rightAt": 0.45,
+      "narration": "terminalCompare シーンは二つのセッションを左右に並べます。良い側の枠とキャプションがアクセント色で強調されます。",
+      "audioFrames": 300,
+      "totalFrames": 324
+    },
+    {
+      "id": "demo-flow",
+      "type": "flow",
+      "heading": "flow: 処理の流れ",
+      "steps": [
+        { "label": "入力", "sub": "データを受け取る" },
+        { "label": "処理", "sub": "変換する", "emphasis": true },
+        { "label": "出力", "sub": "結果を返す" }
+      ],
+      "fanout": [{ "label": "保存" }, { "label": "通知" }],
+      "fanoutAt": [0.55, 0.7],
+      "tagline": "流れは左から右へ一直線に",
+      "narration": "flow シーンは処理の流れを矢印でつなぎます。分岐先のチップは、ナレーションで各項目を言う位置に合わせて1枚ずつ出します。",
+      "audioFrames": 280,
+      "totalFrames": 304
+    },
+    {
+      "id": "demo-nest",
+      "type": "nest",
+      "heading": "nest: 包含関係",
+      "layers": [
+        { "label": "関数", "desc": "処理の最小単位" },
+        { "label": "モジュール", "desc": "関数をまとめる" },
+        { "label": "パッケージ", "desc": "配布の単位" }
+      ],
+      "formula": "パッケージ ⊃ モジュール ⊃ 関数",
+      "narration": "nest シーンは包含関係を入れ子の枠で見せます。外側の容れ物から順に登場します。",
+      "audioFrames": 220,
+      "totalFrames": 244
+    },
+    {
+      "id": "demo-outro",
+      "type": "outro",
+      "points": [
+        "全シーン型の表示を確認した",
+        "配色とフォントは brand.ts で差し替える",
+        "実セクションは storyboard から生成する"
+      ],
+      "next": "1-1 サンプルセクション",
+      "narration": "以上で全シーン型の確認は完了です。次のセクションでは、実際の教材から動画を生成します。",
+      "audioFrames": 180,
+      "totalFrames": 204
+    }
+  ]
+}

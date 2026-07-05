@@ -8,8 +8,8 @@ export type Token = { text: string; cls: string };
 const KEYWORDS = new Set([
   "class", "interface", "trait", "enum", "extends", "implements", "use",
   "namespace", "function", "fn", "return", "yield", "new", "clone", "instanceof",
-  "public", "private", "protected", "static", "final", "abstract", "const", "readonly",
-  "if", "else", "elseif", "for", "foreach", "while", "do", "switch", "case", "default",
+  "public", "private", "protected", "static", "final", "abstract", "const", "let", "readonly",
+  "if", "else", "elseif", "for", "of", "foreach", "while", "do", "switch", "case", "default",
   "break", "continue", "as", "match", "throw", "try", "catch", "finally",
   "echo", "print", "require", "require_once", "include", "include_once",
   "void", "int", "float", "string", "bool", "array", "object", "mixed", "callable", "iterable", "self", "parent",

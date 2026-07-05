@@ -17,6 +17,13 @@ export const FigureScene = ({ scene }: { scene: FigureSceneType }) => {
   const totalFrames = scene.totalFrames ?? 450;
   const scale = interpolate(frame, [0, totalFrames], [1, 1.05]);
 
+  // 見出しがある図は見出しの下に置く。見出しがない図（焼き込みタイトル付きの概念図）は
+  // 上に見出しぶんの空白が残って間延びするので、画面の縦中央に大きめに置く。
+  const hasHeading = !!scene.heading;
+  const figW = hasHeading ? 1152 : 1500;
+  const figH = hasHeading ? 648 : 844; // 16:9（元画像 1600×900 と同比＝トリミングなし）
+  const top = hasHeading ? 205 : Math.round((1080 - figH) / 2);
+
   return (
     <AbsoluteFill style={{ fontFamily: theme.fontJa }}>
       <SceneHeading heading={scene.heading} />
@@ -24,7 +31,7 @@ export const FigureScene = ({ scene }: { scene: FigureSceneType }) => {
         style={{
           ...springIn(frame, fps, 8),
           position: "absolute",
-          top: 205,
+          top,
           left: 0,
           right: 0,
           display: "flex",
@@ -33,8 +40,8 @@ export const FigureScene = ({ scene }: { scene: FigureSceneType }) => {
       >
         <div
           style={{
-            width: 1360,
-            height: 648,
+            width: figW,
+            height: figH,
             borderRadius: 18,
             overflow: "hidden",
             border: `1px solid ${theme.panelBorder}`,
@@ -47,9 +54,8 @@ export const FigureScene = ({ scene }: { scene: FigureSceneType }) => {
             style={{
               width: "100%",
               height: "100%",
-              objectFit: "contain",
+              objectFit: "cover",
               transform: `scale(${scale})`,
-              scale: 0.973255,
             }}
           />
         </div>

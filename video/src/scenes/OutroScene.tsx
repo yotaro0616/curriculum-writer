@@ -15,12 +15,12 @@ export const OutroScene = ({ scene }: { scene: OutroSceneType }) => {
       <div
         style={{
           position: "absolute",
-          top: 280,
+          top: 236,
           left: 240,
           right: 240,
           display: "flex",
           flexDirection: "column",
-          gap: 44,
+          gap: 30,
         }}
       >
         {scene.points.map((point, i) => (
@@ -44,7 +44,7 @@ export const OutroScene = ({ scene }: { scene: OutroSceneType }) => {
                 boxShadow: `0 0 0 5px ${theme.accentSoft}`,
               }}
             />
-            <div style={{ fontSize: 40, lineHeight: 1.6, color: theme.text }}>
+            <div style={{ fontSize: 40, lineHeight: 1.5, color: theme.text }}>
               {point}
             </div>
           </div>

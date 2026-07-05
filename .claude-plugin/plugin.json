@@ -1,0 +1,8 @@
+{
+  "name": "cw",
+  "description": "教材執筆フレームワーク（curriculum-writer）のスキル・エージェント一式。上流設計（research/define/outline/pilot）から執筆・レビュー・鮮度管理・公開までのワークフローを提供する。",
+  "author": {
+    "name": "yotaro0616",
+    "email": "yotaro.t@estra.jp"
+  }
+}

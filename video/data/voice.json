@@ -1,5 +1,7 @@
 {
-  "_doc": "ナレーションの声設定。stylePrompt は writing.md のメンター人格（[人格名]）に合わせて /setup 時に調整する（例:「落ち着いた口調でていねいに解説するように」）。voice は Gemini TTS のプリビルト音声名。",
+  "_doc": "ナレーションの声設定。既定エンジン＝Google Chirp 3 HD（scripts/tts-gcloud.mjs, 要 GOOGLE_TTS_API_KEY）。理由: 呼び出しをまたいでも声が一貫し、シーン間・動画間で声がぶれないため（生成型の Gemini preview は同じ voice でも毎回読み方が揺れるので既定にしない）。gcloudVoice が Chirp の声。voice / stylePrompt は代替エンジン（Gemini / OpenAI）用の予備設定で、stylePrompt は writing.md のメンター人格（[人格名]）に合わせて /setup 時に調整する。tempo は atempo 倍率で、音声を作り直さず話速だけ変えられる。",
+  "gcloudVoice": "ja-JP-Chirp3-HD-Charon",
+  "tempo": 1,
   "voice": "Charon",
   "stylePrompt": "あなたはプロのナレーターです。次の日本語ナレーション原稿を、落ち着いた口調で、聞き取りやすい速さで読み上げてください。原稿にない言葉は付け加えないでください。"
 }

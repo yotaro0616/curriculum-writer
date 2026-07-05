@@ -11,19 +11,26 @@
 ```text
 curriculums/.../<sectionId>_*.md（Section 本文）
   → data/<sectionId>.storyboard.json   … シーン分割 + ナレーション台本（Claude が執筆）
-  → scripts/tts-gemini.mjs             … TTS 音声生成 + 実測尺の埋め込み
+  → scripts/lint-storyboard.mjs        … 機械検証（シーン数・字数・型名・figure 参照）
+  → scripts/tts-gcloud.mjs             … TTS 音声生成（既定: Chirp 3 HD・声が一貫）+ 実測尺の埋め込み
   → data/<sectionId>.props.json        … レンダリング入力（音声長を反映済み）
+  → npx remotion studio                … 書き出し前プレビュー（必須ゲート）
   → npx remotion render                … mp4 出力
+  → scripts/qa-stills.mjs              … 各シーン中間フレームの一括 QA スチール
 ```
 
 ## コマンド
 
 ```bash
 npm install                                    # 初回のみ
-node scripts/tts-gemini.mjs <sectionId>        # 音声生成（要 GEMINI_API_KEY）
-npx remotion studio --port 3333                # プレビュー
+node scripts/lint-storyboard.mjs <sectionId>   # storyboard の機械検証（TTS の前に）
+node scripts/tts-gcloud.mjs <sectionId>        # 音声生成（既定: Chirp 3 HD・要 GOOGLE_TTS_API_KEY）
+node scripts/caption-times.mjs <sectionId> [語...]  # 字幕タイミング診断（revealAt 調整用）
+npx remotion studio --port 3333                # プレビュー（書き出し前の必須ゲート）
 npx remotion render src/index.ts SectionVideo out/<sectionId>.mp4 \
   --props=data/<sectionId>.props.json          # レンダリング
+node scripts/qa-stills.mjs <sectionId>         # QA スチール一括書き出し（out/qa/）
+node scripts/make-vtt.mjs <sectionId>          # WebVTT 字幕生成（任意・out/<id>.vtt）
 ```
 
 ## プロジェクトごとのカスタマイズポイント
@@ -42,5 +49,6 @@ npx remotion render src/index.ts SectionVideo out/<sectionId>.mp4 \
   - `scripts/tts-openai.mjs` — OpenAI `gpt-4o-mini-tts`（要 `OPENAI_API_KEY`。滑らかだが日本語は非ネイティブ感あり）。口調は `stylePrompt`→instructions
   - `scripts/tts-voicevox.mjs` — VOICEVOX（無料・ローカル・ネイティブ・要クレジット表記）
   - 話速は全エンジン共通で `data/voice.json` の `tempo`（atempo 倍率）。生音声は `scene-NN.raw.wav` に保持され、tempo 変更は再合成不要
-- 生成物（`public/audio/` と `out/`）は git 管理外。コミットするのは storyboard JSON と設定のみ
+- **`data/*.props.json` はコミットする**: TTS の実測尺（`audioFrames` / `totalFrames`）を含み、再レンダ・QA スチール・字幕生成に必要なため（`public/audio/` と `out/` は ignore のまま）
+- 生成物（`public/audio/` と `out/`）は git 管理外。コミットするのは storyboard JSON・props JSON と設定
 - 配信は GitHub Releases を想定（mp4 はリポジトリにコミットしない）

@@ -17,5 +17,19 @@
       "Bash(git clean -f:*)",
       "Bash(rm -rf:*)"
     ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/scripts/hooks/post-edit-lint.py\"",
+            "timeout": 120
+          }
+        ]
+      }
+    ]
   }
 }

@@ -28,6 +28,7 @@ import {
 import { execFileSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadDict, spokenForScene } from "./pronounce.mjs";
 
 const args = process.argv.slice(2);
 const sectionId = args.find((a) => !a.startsWith("--"));
@@ -62,6 +63,7 @@ const TAIL_PADDING_SEC = 0.8;
 
 const storyboardPath = resolve(root, `data/${sectionId}.storyboard.json`);
 const storyboard = JSON.parse(readFileSync(storyboardPath, "utf8"));
+const dict = loadDict(resolve(root, "data/pronunciation.json"));
 const audioDir = resolve(root, `public/audio/${sectionId}`);
 mkdirSync(audioDir, { recursive: true });
 
@@ -147,7 +149,7 @@ const main = async () => {
     const rawPath = resolve(audioDir, rawFile);
 
     if (force || !existsSync(rawPath)) {
-      const pcm = await synthesize(scene.reading ?? scene.narration);
+      const pcm = await synthesize(spokenForScene(scene, dict));
       writeFileSync(rawPath, pcmToWav(pcm, SAMPLE_RATE));
       await sleep(600);
     } else {

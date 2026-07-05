@@ -1,0 +1,16 @@
+{
+  "name": "curriculum-writer",
+  "private": true,
+  "description": "教材執筆フレームワークの機械チェック基盤（textlint）。書式・構造は scripts/lint_curriculum.py が担う",
+  "scripts": {
+    "lint": "npm run lint:format && npm run lint:text",
+    "lint:format": "python3 scripts/lint_curriculum.py curriculums",
+    "lint:text": "find curriculums -name '*.md' -exec textlint --no-color {} +"
+  },
+  "devDependencies": {
+    "@textlint-ja/textlint-rule-preset-ai-writing": "^1.4.0",
+    "textlint": "^15.2.2",
+    "textlint-rule-preset-ja-technical-writing": "^12.0.2",
+    "textlint-rule-prh": "^6.1.0"
+  }
+}
