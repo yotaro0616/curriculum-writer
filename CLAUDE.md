@@ -64,6 +64,8 @@ CLAUDE.md は教材の哲学（WHO / WHY / WHAT / HOW）を定義し、`OUTLINE.
 | `/animate` | Remotion による Section 解説動画の生成・挿入 |
 | `/github-pages` | MkDocs Material + GitHub Actions で教材を GitHub Pages に公開 |
 
+<!-- スキルを追加・削除したら、この表も必ず更新する（更新漏れが実際に起きた） -->
+
 ### フォルダ構造・命名規則
 
 <!-- 階層構造に応じてディレクトリ構造が変わる -->

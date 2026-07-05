@@ -170,6 +170,8 @@ OUTLINE.md を生成し、ユーザーに提示して承認を得てから Phase
 5. **Section あたりの目安文字数**: 教材の性質に応じて設定（例: 最低 4,000 文字）
 6. **その他**: 必要に応じて絵文字・検証観点等を調整
 7. **画像の密度方針**（`/illustrate` を使う場合）: 各「概念」Section に 1 枚ずつ生成するか、判断ベースで効果的な箇所のみにするかを選び、`.claude/skills/illustrate/references/criteria.md` の密度方針プレースホルダに反映する
+8. **ブランドの一元設定**: 教材のキーカラー・トーンを決め、3箇所へ反映する — `video/src/brand.ts`（動画）・`.claude/skills/illustrate/references/style-guide.md` の配色（概念図）・`.claude/skills/github-pages/assets/custom.css`（公開サイト）。ここで揃えると図・動画・サイトの見た目が一貫する
+9. **write スキルのスコープ表**: `.claude/skills/write/SKILL.md` の「スコープの解釈」の表を、選択した階層構造に合わせて調整する（不要な行を削る）
 
 ---
 
