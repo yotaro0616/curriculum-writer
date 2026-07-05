@@ -15,7 +15,6 @@ export type SceneBase = {
 
 export type CodePane = {
   label: string;
-  labelColor?: string;
   /** IDE ウィンドウのタブに出すファイル名（省略時は label を使う） */
   file?: string;
   lines: string[];
@@ -73,7 +72,9 @@ export type TerminalScene = SceneBase & {
   lines: TermLine[];
 };
 
-/** ターミナル比較の1ペイン（指示の良し悪しと出力差を左右で見せる） */
+/** ターミナル比較の1ペイン（指示の良し悪しと出力差を左右で見せる）。
+ *  lines に使えるのは user / claude / comment / out の4種のみ
+ *  （シェル行 cmd・ツール実行 tool・承認 approve は terminal シーン専用。lint も検査する） */
 export type TerminalPane = {
   /** タイトルバー中央の文字。省略時は "Claude Code" */
   windowTitle?: string;

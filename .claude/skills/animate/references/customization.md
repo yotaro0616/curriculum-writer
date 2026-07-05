@@ -40,7 +40,7 @@ animate の `video/` は **汎用エンジン**（シーン型・モーション
 読み上げは `narration` から自動生成され、ここの辞書で **英語・記号だけカタカナ化**する（漢字は残す＝ネイティブ TTS のアクセント保持）。**題材のドメイン用語を追加**する（例: `Eloquent→エロクアント`）。大小文字は無視。
 
 ## TTS エンジンの選択
-日本語のネイティブ感が要るなら **Google Chirp 3 HD（`tts-gcloud.mjs`）** を推奨（`ja-JP-Chirp3-HD-<名前>`）。ほかに `tts-gemini.mjs`・`tts-openai.mjs`（英語寄りの訛りに注意）・`tts-voicevox.mjs`（無料・ローカル）。いずれも同一 CLI 契約で、`voice.json` の `tempo` と `pronunciation.json` を共有する。各エンジンの API キーは環境変数（`GOOGLE_TTS_API_KEY` 等）。声の聴き比べは `scripts/voice-sample.mjs`。
+日本語のネイティブ感が要るなら **Google Chirp 3 HD（`tts-gcloud.mjs`）** を推奨（`ja-JP-Chirp3-HD-<名前>`）。ほかに `tts-gemini.mjs`・`tts-openai.mjs`（英語寄りの訛りに注意）・`tts-voicevox.mjs`（無料・ローカル）。いずれも同一 CLI 契約で `pronunciation.json` を共有し、話速は `voice.json` の `tempo`（atempo 倍率）で調整する。ただし **voicevox は例外**: 話速は `VOICEVOX_SPEED`（speedScale）環境変数で調整し、`tempo` / `raw.wav` には対応しない。各エンジンの API キーは環境変数（`GOOGLE_TTS_API_KEY` 等）。声の聴き比べは `scripts/voice-sample.mjs`。
 
 ## 新規プロジェクトのセットアップ手順
 1. `video/` 一式をプロジェクトに置く（`npm install`。`@remotion/google-fonts` は remotion と同一バージョンに固定）

@@ -65,6 +65,9 @@ const KNOWN_TYPES = new Set([
   "outro",
 ]);
 const TERM_LINE_KEYS = ["cmd", "out", "comment", "user", "claude", "tool", "approve"];
+// terminalCompare のペインが描画できる行種（TerminalCompareScene.tsx の対応と一致させる。
+// シェル行 cmd・ツール実行 tool・承認 approve は terminal シーン専用）
+const TERM_COMPARE_LINE_KEYS = ["out", "comment", "user", "claude"];
 
 const errors = []; // { where, rule, msg }
 const warnings = [];
@@ -120,7 +123,7 @@ const checkFraction = (where, name, v) => {
   }
 };
 
-const checkTermLines = (where, lines, field) => {
+const checkTermLines = (where, lines, field, allowed = TERM_LINE_KEYS) => {
   if (!Array.isArray(lines) || lines.length === 0) {
     error(where, "required-field", `${field} が空です`);
     return;
@@ -131,7 +134,13 @@ const checkTermLines = (where, lines, field) => {
       error(
         where,
         "terminal-line",
-        `${field}[${j}] は ${TERM_LINE_KEYS.join("/")} のいずれか1つを持つ（現在 ${JSON.stringify(Object.keys(l ?? {}))}）`,
+        `${field}[${j}] は ${allowed.join("/")} のいずれか1つを持つ（現在 ${JSON.stringify(Object.keys(l ?? {}))}）`,
+      );
+    } else if (!allowed.includes(keys[0])) {
+      error(
+        where,
+        "terminal-line",
+        `${field}[${j}] の "${keys[0]}" は terminalCompare では描画できない（有効: ${allowed.join("/")}。シェル行・ツール実行・承認は terminal シーンで）`,
       );
     }
   });
@@ -194,6 +203,13 @@ scenes.forEach((scene, i) => {
       if (!Array.isArray(scene.cards) || scene.cards.length === 0) {
         error(where, "required-field", "cards がありません");
       } else {
+        if (scene.cards.length !== 2) {
+          countIssue(
+            where,
+            "keypoint-cards",
+            `cards は 2 枚（現在 ${scene.cards.length} 枚。3 枚以上は画面幅からはみ出す）`,
+          );
+        }
         scene.cards.forEach((c, j) => {
           if (typeof c?.title !== "string" || typeof c?.body !== "string") {
             error(where, "required-field", `cards[${j}] に title / body が必要です`);
@@ -220,7 +236,7 @@ scenes.forEach((scene, i) => {
         if (!scene[side]) {
           error(where, "required-field", `${side} ペインがありません`);
         } else {
-          checkTermLines(where, scene[side].lines, `${side}.lines`);
+          checkTermLines(where, scene[side].lines, `${side}.lines`, TERM_COMPARE_LINE_KEYS);
         }
       }
       break;

@@ -33,22 +33,16 @@ node scripts/qa-stills.mjs <sectionId>         # QA スチール一括書き出�
 node scripts/make-vtt.mjs <sectionId>          # WebVTT 字幕生成（任意・out/<id>.vtt）
 ```
 
-## プロジェクトごとのカスタマイズポイント
+## プロジェクトごとのカスタマイズ
 
-| ファイル | 内容 |
-|---|---|
-| `src/theme.ts` | デザイントークン。primary / accent を教材サイトのテーマカラーに合わせる |
-| `data/voice.json` | ナレーターの声と口調（writing.md のメンター人格に合わせる） |
-| `data/pronunciation.json` | 読み辞書。題材のドメイン用語を追加していく |
-| `src/anim.ts` | モーションプリセット（spring の強さ等） |
-| `src/scenes/` | シーン型。新しい見せ方が必要になったらここに追加 |
+カスタマイズ面は `src/brand.ts`（色・フォント・ロゴ）・`public/<logo>`・`data/voice.json`・`data/pronunciation.json` の4つだけ。エンジン（`src/scenes/`・`anim.ts`・`theme.ts` の構造・`scripts/`）は触らない。手順と区分は `.claude/skills/animate/references/customization.md` を参照。
 
 - TTS エンジンは差し替え可能（同一 CLI 契約）:
   - `scripts/tts-gcloud.mjs` — Google Cloud Chirp 3 HD（**日本語ネイティブ・放送品質**・要 `GOOGLE_TTS_API_KEY`）。声は `voice.json` の `gcloudVoice`（`ja-JP-Chirp3-HD-<名前>`）
   - `scripts/tts-gemini.mjs` — Gemini（要 `GEMINI_API_KEY`）。口調は `stylePrompt`
   - `scripts/tts-openai.mjs` — OpenAI `gpt-4o-mini-tts`（要 `OPENAI_API_KEY`。滑らかだが日本語は非ネイティブ感あり）。口調は `stylePrompt`→instructions
   - `scripts/tts-voicevox.mjs` — VOICEVOX（無料・ローカル・ネイティブ・要クレジット表記）
-  - 話速は全エンジン共通で `data/voice.json` の `tempo`（atempo 倍率）。生音声は `scene-NN.raw.wav` に保持され、tempo 変更は再合成不要
+  - 話速は `data/voice.json` の `tempo`（atempo 倍率）。生音声は `scene-NN.raw.wav` に保持され、tempo 変更は再合成不要（gcloud / gemini / openai）。**voicevox のみ非対応**: `VOICEVOX_SPEED`（speedScale）で調整し、`tempo` / `raw.wav` は使われない
 - **`data/*.props.json` はコミットする**: TTS の実測尺（`audioFrames` / `totalFrames`）を含み、再レンダ・QA スチール・字幕生成に必要なため（`public/audio/` と `out/` は ignore のまま）
 - 生成物（`public/audio/` と `out/`）は git 管理外。コミットするのは storyboard JSON・props JSON と設定
 - 配信は GitHub Releases を想定（mp4 はリポジトリにコミットしない）

@@ -171,7 +171,7 @@ Mermaid では表現しにくい「直感的なメンタルモデル」を概念
 
 ### /animate の流れ
 
-Remotion で、静止画では表しにくい「時間軸を持つ説明」（対比の展開・処理の流れ・状態変化）を Section 解説動画（1.5〜3分・1080p）として生成・挿入します。`/illustrate` の概念図を動画の素材としても再利用します。
+Remotion で、静止画では表しにくい「時間軸を持つ説明」（対比の展開・処理の流れ・状態変化）を Section 解説動画（3〜6分・1080p）として生成・挿入します。`/illustrate` の概念図を動画の素材としても再利用します。
 
 | モード | やること |
 |---|---|
@@ -181,7 +181,7 @@ Remotion で、静止画では表しにくい「時間軸を持つ説明」（�
 
 動画は Section タイトル直後に配置し、生成済み Section は再実行時にスキップします（冪等）。Remotion ワークスペースは `video/` にあります。
 
-> **前提**: `GEMINI_API_KEY`（ナレーション TTS）と Remotion ライセンス（量産・公開時は Company License）が必要です。詳細は `.claude/skills/animate/SKILL.md`。
+> **前提**: `GOOGLE_TTS_API_KEY`（既定のナレーション TTS: Chirp 3 HD。他エンジンへの切替は SKILL 参照）が必要です。Remotion のライセンス要否は運用者の判断に委ねます（ゲートなし）。詳細は `.claude/skills/animate/SKILL.md`。
 
 ### /github-pages の流れ
 
