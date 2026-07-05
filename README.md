@@ -10,6 +10,7 @@ Claude Code のスキルを使って、技術教材の設計から執筆・レ�
 # 1. テンプレートから教材リポジトリを作成（推奨。クローンでも可）
 gh repo create my-curriculum --template yotaro0616/curriculum-writer --private --clone
 cd my-curriculum
+npm ci   # 機械チェック（textlint）を有効化。省略すると hook / CI の文章チェックが黙ってスキップされる
 
 # 2. Claude Code で対話的にセットアップ（上流フェーズを案内）
 /setup
@@ -19,6 +20,16 @@ cd my-curriculum
 ```
 
 `/setup`（ルーター）が上流フェーズを順に案内します: `/research`（調査 → RESEARCH.md）→ `/define`（哲学 → CLAUDE.md）→ `/outline`（構造 → OUTLINE.md）→ `/pilot`（試作 → writing.md 様式ロック）。各ゲートを承認したら `/write` で量産し、`/review` でチェックします。小規模教材ではフェーズの省略（適応的深度）も提案されます。
+
+**前提環境**:
+
+| ツール | 用途 |
+|---|---|
+| Claude Code | すべてのスキルの実行環境 |
+| gh CLI | テンプレートからのリポジトリ作成・GitHub 操作 |
+| Python 3.9+ | 機械チェック `scripts/lint_curriculum.py`（標準ライブラリのみで動作） |
+| Node.js 22 + npm | textlint（`npm ci` で有効化）と `/animate` の Remotion |
+| API キー | メディア系スキルのみ必要。`/animate` は `GOOGLE_TTS_API_KEY`（既定 TTS）、`/illustrate` の生成AI経路は `GEMINI_API_KEY` / `OPENAI_API_KEY`。詳細は各 SKILL.md |
 
 ---
 
@@ -237,6 +248,10 @@ flowchart LR
 
 > ⚠️ 内部検討資料（価格・競合比較等）は教材リポジトリに含めず別管理にしてください（public リポジトリに内部資料が残った実例があります）。
 
+## 非技術教材への転用
+
+機械チェック・上流フロー・テンプレートは題材非依存で、そのまま使えます。技術教材の前提が集中しているのは `.claude/rules/writing.md` の「3. コンテンツ」（コード・ハンズオン・REPL の規範）と handson-verifier エージェントだけです。学習ノート・業務マニュアル等に転用する場合は、`/pilot` の初期調整でこの2箇所を題材に合わせて読み替え・削除してください。
+
 ---
 
 ## ファイル構成
@@ -260,7 +275,9 @@ project-root/
 │   ├── agents/               # カスタムエージェント（independent-reviewer /
 │   │                         #   learner-persona / handson-verifier）
 │   └── settings.json         # 権限 + PostToolUse hook の設定
-├── scripts/                  # lint_curriculum.py（機械チェックの単一の正）等
+├── scripts/                  # lint_curriculum.py（機械チェックの単一の正）
+├── package.json              # textlint の依存定義（npm ci で有効化。lock ファイル同梱）
+├── .textlintrc.json          # textlint の設定（文章・AI 臭。用語辞書は .claude/rules/prh.yml）
 ├── curriculums/              # 教材本体（階層構造に応じたディレクトリ）
 ├── assets/
 │   └── diagrams/             # 概念図（output/ 画像・prompts/ 依頼文の記録）
