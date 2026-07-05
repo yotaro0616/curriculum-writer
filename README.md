@@ -251,12 +251,14 @@ project-root/
 ├── README.md
 ├── .claude/
 │   ├── rules/writing.md      # 執筆ルール（文体・テンプレート・用語）
+│   ├── rules/prh.yml         # 用語辞書（writing.md の用語テーブルと同期。textlint が参照）
+│   ├── hooks/                # PostToolUse hook スクリプト（編集時 lint）
 │   ├── skills/               # 15スキル（setup/research/define/outline/pilot/
 │   │                         #   write/review/revise/status/check-updates/
 │   │                         #   illustrate/design-ingest/animate/github-pages/fw-sync）
 │   ├── agents/               # カスタムエージェント（independent-reviewer /
 │   │                         #   learner-persona / handson-verifier）
-│   └── settings.json         # 権限 + PostToolUse hook（編集時 lint）
+│   └── settings.json         # 権限 + PostToolUse hook の設定
 ├── .claude-plugin/           # plugin 配布マニフェスト（cw。marketplace 兼用）
 ├── scripts/                  # lint_curriculum.py（機械チェックの単一の正）等
 ├── curriculums/              # 教材本体（階層構造に応じたディレクトリ）

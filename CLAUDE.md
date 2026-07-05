@@ -88,6 +88,8 @@ project-root/
 ├── changes/                 # 改訂の変更管理（/revise。archive/ に履歴）
 ├── .claude/
 │   ├── rules/writing.md     # 執筆ルール
+│   ├── rules/prh.yml        # 用語辞書（writing.md と同期）
+│   ├── hooks/               # PostToolUse hook（編集時 lint）
 │   ├── skills/              # Skill 定義
 │   ├── agents/              # カスタムエージェント（レビュアー・検証者）
 │   └── settings.json

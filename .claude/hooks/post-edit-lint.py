@@ -29,7 +29,7 @@ def resolve_project_dir() -> Path:
     env = os.environ.get("CLAUDE_PROJECT_DIR")
     if env:
         return Path(env).resolve()
-    # scripts/hooks/post-edit-lint.py → 2 つ上がプロジェクトルート
+    # .claude/hooks/post-edit-lint.py → 2 つ上がプロジェクトルート
     return Path(__file__).resolve().parents[2]
 
 

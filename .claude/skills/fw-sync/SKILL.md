@@ -18,7 +18,7 @@ argument-hint: "[FW リポジトリの URL/ローカルパス(任意)]"
 
 | カテゴリ | 対象 | 方針 |
 |---|---|---|
-| **A. 更新提案してよい** | `video/src/`（`brand.ts` を **除く**）・`video/scripts/`・`scripts/`（`lint_curriculum.py`・`hooks/` 等）・`.claude/skills/github-pages/scripts/`・`.claude/skills/github-pages/assets/` | diff を提示し、**承認されたファイルのみ** `.bak` 退避のうえ上書き。FW にだけある新規ファイルは「追加提案」として提示 |
+| **A. 更新提案してよい** | `video/src/`（`brand.ts` を **除く**）・`video/scripts/`・`scripts/`（`lint_curriculum.py` 等）・`.claude/hooks/`・`.claude/skills/github-pages/scripts/`・`.claude/skills/github-pages/assets/` | diff を提示し、**承認されたファイルのみ** `.bak` 退避のうえ上書き。FW にだけある新規ファイルは「追加提案」として提示 |
 | **B. 不可侵** | `CLAUDE.md`・`OUTLINE.md`・`PROGRESS.md`・`RESEARCH.md`・`curriculums/`・`assets/`・`video/src/brand.ts`・`video/data/`・`.claude/rules/writing.md` | **diff 提示のみ。自動上書きしない**。プロジェクト固有の内容（哲学・設計・本文・ブランド値・/pilot で確定した writing.md の値）を含むため。FW 側で骨格（章立て・共通ルールの構造）が変わっていた場合は差分を提示して手動マージを提案する |
 | **対象外** | 上記以外の `.claude/skills/`（スキル本体）・`.claude/agents/` | このスキルでは触らない。スキル・エージェント本体は plugin `cw` の自動更新（commit = 新バージョン）で配布される。plugin 未導入のプロジェクトなら、同期ではなく plugin の導入（`/plugin marketplace add yotaro0616/curriculum-writer` → `install cw`）を案内する |
 

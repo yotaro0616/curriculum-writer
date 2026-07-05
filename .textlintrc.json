@@ -31,7 +31,7 @@
       "ai-tech-writing-guideline": false
     },
     "prh": {
-      "rulePaths": ["./prh.yml"]
+      "rulePaths": ["./.claude/rules/prh.yml"]
     }
   }
 }
