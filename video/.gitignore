@@ -6,5 +6,6 @@ dist
 # Ignore the output video from Git but not videos you import into src/.
 out
 
-# 生成物（TTS 音声・props・レンダ済み動画）
+# 生成物のうち音声・動画は ignore。data/*.props.json は TTS 実測尺
+# （audioFrames / totalFrames）を含み再レンダに必要なため **コミットする**
 public/audio/

@@ -18,6 +18,8 @@ import { FlowScene } from "./scenes/FlowScene";
 import { KeypointScene } from "./scenes/KeypointScene";
 import { NestScene } from "./scenes/NestScene";
 import { OutroScene } from "./scenes/OutroScene";
+import { TerminalScene } from "./scenes/TerminalScene";
+import { TerminalCompareScene } from "./scenes/TerminalCompareScene";
 import { TitleScene } from "./scenes/TitleScene";
 
 export const TRANSITION_FRAMES = 9;
@@ -39,6 +41,10 @@ const SceneContent = ({
       return <KeypointScene scene={scene} />;
     case "figure":
       return <FigureScene scene={scene} />;
+    case "terminal":
+      return <TerminalScene scene={scene} />;
+    case "terminalCompare":
+      return <TerminalCompareScene scene={scene} />;
     case "flow":
       return <FlowScene scene={scene} />;
     case "nest":
@@ -187,7 +193,9 @@ export const SectionVideo = ({
       }}
     >
       <Backdrop />
-      <TransitionSeries>{items}</TransitionSeries>
+      {/* from={1}: フレーム0を無地（背景のみ）にし、埋め込みプレイヤーのポスターや
+          --frame=0 の QA スチールが遷移途中の絵にならないようにする */}
+      <TransitionSeries from={1}>{items}</TransitionSeries>
       <ProgressBar />
       <EndFade />
     </AbsoluteFill>

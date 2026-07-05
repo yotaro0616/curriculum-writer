@@ -19,6 +19,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadDict, spokenForScene } from "./pronounce.mjs";
 
 const args = process.argv.slice(2);
 const sectionId = args.find((a) => !a.startsWith("--"));
@@ -39,6 +40,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const storyboard = JSON.parse(
   readFileSync(resolve(root, `data/${sectionId}.storyboard.json`), "utf8"),
 );
+const dict = loadDict(resolve(root, "data/pronunciation.json"));
 const audioDir = resolve(root, `public/audio/${sectionId}`);
 mkdirSync(audioDir, { recursive: true });
 
@@ -98,7 +100,7 @@ const main = async () => {
       wav = readFileSync(filePath);
       console.log(`  ↩ ${file} は生成済み（再利用）`);
     } else {
-      wav = await synthesize(scene.reading ?? scene.narration);
+      wav = await synthesize(spokenForScene(scene, dict));
       writeFileSync(filePath, wav);
     }
 

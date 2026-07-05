@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900">
+  <!-- 全シーン型デモ（_demo.props.json の figure シーン）用のプレースホルダー概念図。
+       実プロジェクトでは /illustrate の出力を public/figures/ へコピーして使う。 -->
+  <rect width="1600" height="900" fill="#FFFFFF"/>
+  <text x="800" y="170" font-family="'Hiragino Sans','Noto Sans JP',sans-serif" font-size="60" font-weight="bold" fill="#0E1620" text-anchor="middle">デモ用の概念図</text>
+  <rect x="220" y="300" width="420" height="380" rx="24" fill="#F5F7FA" stroke="#3B6FB0" stroke-width="6"/>
+  <line x1="700" y1="490" x2="1010" y2="490" stroke="#98A0A8" stroke-width="8"/>
+  <polygon points="1060,490 1000,455 1000,525" fill="#98A0A8"/>
+  <circle cx="1240" cy="490" r="190" fill="none" stroke="#3B6FB0" stroke-width="6"/>
+</svg>

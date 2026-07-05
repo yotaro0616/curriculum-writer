@@ -13,6 +13,12 @@ export const TitleScene = ({
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
+  // タイトル長に応じてサイズを段階的に下げ、1行に収める（長いタイトルで番号が改行されるのを防ぐ）
+  const titleLen = [...scene.title].length;
+  const titleSize =
+    titleLen <= 12 ? 88 : titleLen <= 16 ? 74 : titleLen <= 20 ? 62 : 54;
+  const noSize = Math.round(titleSize * 0.7);
+
   return (
     <AbsoluteFill
       style={{
@@ -43,14 +49,19 @@ export const TitleScene = ({
           ...springIn(frame, fps, 16),
           display: "flex",
           alignItems: "baseline",
-          gap: 36,
+          justifyContent: "center",
+          gap: 32,
+          maxWidth: 1760,
+          padding: "0 60px",
         }}
       >
         <span
           style={{
             fontFamily: theme.fontMono,
-            fontSize: 64,
+            fontSize: noSize,
             fontWeight: 700,
+            whiteSpace: "nowrap",
+            flexShrink: 0,
             backgroundImage: theme.accentGrad,
             WebkitBackgroundClip: "text",
             backgroundClip: "text",
@@ -62,11 +73,11 @@ export const TitleScene = ({
         </span>
         <h1
           style={{
-            fontSize: 90,
+            fontSize: titleSize,
             fontWeight: 700,
             color: theme.text,
             margin: 0,
-            letterSpacing: 2,
+            letterSpacing: 1.5,
           }}
         >
           {scene.title}

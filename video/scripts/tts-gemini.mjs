@@ -27,6 +27,7 @@ import {
 import { execFileSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadDict, spokenForScene } from "./pronounce.mjs";
 
 const args = process.argv.slice(2);
 const sectionId = args.find((a) => !a.startsWith("--"));
@@ -73,6 +74,7 @@ const MINIMAL_PROMPT =
   "次の日本語の文章を、原稿どおりに読み上げてください。原稿にない言葉は加えないでください。\n\n原稿: ";
 const storyboardPath = resolve(root, `data/${sectionId}.storyboard.json`);
 const storyboard = JSON.parse(readFileSync(storyboardPath, "utf8"));
+const dict = loadDict(resolve(root, "data/pronunciation.json"));
 const audioDir = resolve(root, `public/audio/${sectionId}`);
 mkdirSync(audioDir, { recursive: true });
 
@@ -173,7 +175,7 @@ const main = async () => {
 
     // 1) 生 wav を用意（--force か未生成のときだけ API 合成）。話速変更は API 不要
     if (force || !existsSync(rawPath)) {
-      const pcm = await synthesize(scene.reading ?? scene.narration);
+      const pcm = await synthesize(spokenForScene(scene, dict));
       writeFileSync(rawPath, pcmToWav(pcm, SAMPLE_RATE));
       await sleep(1200); // レート制限への配慮
     } else {
