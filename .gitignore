@@ -3,3 +3,6 @@
 # Python (github-pages スキルの同梱スクリプト由来)
 __pycache__/
 *.pyc
+
+# Node.js (textlint による機械チェック基盤)
+node_modules/

@@ -1,0 +1,56 @@
+# 教材本文（curriculums/**/*.md）の機械チェック
+# - scripts/lint_curriculum.py: 書式・構造（/write・/review の機械チェックの単一の正）
+# - textlint: 日本語文章・AI 臭・表記ゆれ（.textlintrc.json + prh.yml）
+# PR で教材ファイルに変更がない場合はチェックをスキップして green で終了する。
+
+name: lint-curriculum
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 変更された教材ファイルを抽出
+        id: changed
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git fetch --no-tags origin "$BASE_REF"
+          git diff --name-only --diff-filter=ACMR "origin/$BASE_REF"...HEAD -- 'curriculums/' \
+            | grep -E '\.md$' > changed_files.txt || true
+          if [ -s changed_files.txt ]; then
+            echo "any=true" >> "$GITHUB_OUTPUT"
+            echo "検査対象:"
+            cat changed_files.txt
+          else
+            echo "any=false" >> "$GITHUB_OUTPUT"
+            echo "教材ファイル（curriculums/**/*.md）の変更なし。チェックをスキップします。"
+          fi
+
+      - name: 書式・構造チェック（lint_curriculum.py）
+        if: steps.changed.outputs.any == 'true'
+        run: xargs -a changed_files.txt python3 scripts/lint_curriculum.py
+
+      - name: Node.js セットアップ
+        if: steps.changed.outputs.any == 'true' && !cancelled()
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: textlint 依存インストール
+        if: steps.changed.outputs.any == 'true' && !cancelled()
+        run: npm ci
+
+      - name: 文章チェック（textlint）
+        if: steps.changed.outputs.any == 'true' && !cancelled()
+        run: xargs -a changed_files.txt ./node_modules/.bin/textlint --no-color

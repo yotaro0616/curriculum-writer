@@ -1,0 +1,37 @@
+{
+  "rules": {
+    "preset-ja-technical-writing": {
+      "sentence-length": {
+        "max": 120
+      },
+      "no-exclamation-question-mark": false,
+      "no-mix-dearu-desumasu": {
+        "preferInHeader": "",
+        "preferInBody": "ですます",
+        "preferInList": "",
+        "strict": false
+      },
+      "no-doubled-joshi": {
+        "min_interval": 1,
+        "allow": ["と"]
+      }
+    },
+    "@textlint-ja/preset-ai-writing": {
+      "no-ai-list-formatting": {
+        "allows": [
+          "/^\\s*(?:[-*+]|\\d+[.)])\\s+(?:\\[[ xX]\\]\\s*)?[🎯✨💡⚠️📝🔑🏃🧠📌✅📖]\\uFE0F?/"
+        ]
+      },
+      "no-ai-emphasis-patterns": {
+        "allows": [
+          "/^(?:>\\s*)?[🎯✨💡⚠️📝🔑🏃🧠📌✅📖]\\uFE0F?\\s*\\*\\*[^*]{1,20}\\*\\*\\s*[:：]/",
+          "/^(?:>\\s*)?\\*\\*(?:原因|対処法)\\*\\*\\s*[:：]/"
+        ]
+      },
+      "ai-tech-writing-guideline": false
+    },
+    "prh": {
+      "rulePaths": ["./prh.yml"]
+    }
+  }
+}
