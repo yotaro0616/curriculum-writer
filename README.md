@@ -14,7 +14,7 @@ cd my-curriculum
 # 2. Claude Code で対話的にセットアップ（上流フェーズを案内）
 /setup
 
-# 3. 執筆（G4 様式ロック後に量産）
+# 3. 執筆（G4 様式ロック後に量産。2層の例。3層では /write Chapter 1-1）
 /write Chapter 1
 ```
 
@@ -63,7 +63,7 @@ flowchart TD
 
 ### 階層構造
 
-教材の規模に応じて `/setup` で選択します。
+教材の規模に応じて `/define`（哲学の HOW）で選択します。
 
 | 層数 | 構造 | 用途 |
 |---|---|---|

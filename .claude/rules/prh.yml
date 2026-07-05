@@ -1,5 +1,5 @@
 # 教材本文（curriculums/**/*.md）の表記・文言辞書（textlint-rule-prh が参照）
-# .claude/rules/writing.md の用語テーブルと同期（/setup で用語追加時にここも更新）
+# .claude/rules/writing.md の用語テーブルと同期（/pilot で用語追加時にここも更新）
 #
 # 書き方:
 #   - expected: 正しい表記（--fix 時の置換先。本フレームワークでは自動修正しない）

@@ -21,8 +21,8 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 `.claude/rules/writing.md` のプレースホルダ・選択コメントを、ユーザーと対話して確定する:
 
 1. **語りかけの人格**: `[人格名]` を具体化し、🧠 の頻度（毎 Section / 効果的な箇所のみ）を決める
-2. **用語テーブル**: {{TOPIC}} 固有の用語を追加（`.claude/rules/prh.yml` にも同期する）
-3. **コード表示ルール**: {{TOPIC}} 固有の言語指定（blade, jsonc 等）を追加
+2. **用語テーブル**: 教材トピック固有の用語を追加（`.claude/rules/prh.yml` にも同期する）
+3. **コード表示ルール**: トピック固有の言語指定（blade, jsonc 等）を追加
 4. **図表の形式**: ASCII フロー図 or Mermaid
 5. **Section あたりの目安文字数**
 6. **表現様式**: 絵文字（既定・GitHub 直読み向け） / admonition（MkDocs・LMS 向け）。RESEARCH.md Phase 0 の公開方式に従う。admonition の場合は対応表を正に確定し、`PROGRESS.md` frontmatter の `config.style` を `admonition` にする（lint・hook・CI・/review が自動で追随する）
