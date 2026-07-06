@@ -43,6 +43,9 @@ export const theme = {
   // 無彩色の線（矢印・区切り）
   line: "#C6CCD2",
   lineStrong: "#98A0A8",
+  // nest シーンの層枠（内側の枠は accent。中間・外側は無彩色で後退させる）
+  nestBorderMid: "#A7B2C0",
+  nestBorderOuter: "#CBD3DC",
 
   // コード面（フラットな IDE 風ダーク。汎用＝ブランド非依存）
   codeBg: "#1E232E",

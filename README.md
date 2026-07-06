@@ -10,15 +10,26 @@ Claude Code のスキルを使って、技術教材の設計から執筆・レ�
 # 1. テンプレートから教材リポジトリを作成（推奨。クローンでも可）
 gh repo create my-curriculum --template yotaro0616/curriculum-writer --private --clone
 cd my-curriculum
+npm ci   # 機械チェック（textlint）を有効化。省略すると hook / CI の文章チェックが黙ってスキップされる
 
 # 2. Claude Code で対話的にセットアップ（上流フェーズを案内）
 /setup
 
-# 3. 執筆（G4 様式ロック後に量産）
+# 3. 執筆（G4 様式ロック後に量産。2層の例。3層では /write Chapter 1-1）
 /write Chapter 1
 ```
 
 `/setup`（ルーター）が上流フェーズを順に案内します: `/research`（調査 → RESEARCH.md）→ `/define`（哲学 → CLAUDE.md）→ `/outline`（構造 → OUTLINE.md）→ `/pilot`（試作 → writing.md 様式ロック）。各ゲートを承認したら `/write` で量産し、`/review` でチェックします。小規模教材ではフェーズの省略（適応的深度）も提案されます。
+
+**前提環境**:
+
+| ツール | 用途 |
+|---|---|
+| Claude Code | すべてのスキルの実行環境 |
+| gh CLI | テンプレートからのリポジトリ作成・GitHub 操作 |
+| Python 3.9+ | 機械チェック `scripts/lint_curriculum.py`（標準ライブラリのみで動作） |
+| Node.js 22 + npm | textlint（`npm ci` で有効化）と `/animate` の Remotion |
+| API キー | メディア系スキルのみ必要。`/animate` は `GOOGLE_TTS_API_KEY`（既定 TTS）、`/illustrate` の生成AI経路は `GEMINI_API_KEY` / `OPENAI_API_KEY`。詳細は各 SKILL.md |
 
 ---
 
@@ -63,7 +74,7 @@ flowchart TD
 
 ### 階層構造
 
-教材の規模に応じて `/setup` で選択します。
+教材の規模に応じて `/define`（哲学の HOW）で選択します。
 
 | 層数 | 構造 | 用途 |
 |---|---|---|
@@ -156,11 +167,11 @@ Mermaid では表現しにくい「直感的なメンタルモデル」を概念
 | **Claude Design（既定）** | `/illustrate plan` が概念アンカーごとの作図依頼リストを出す → claude.ai/design で作図（部分修正・複数案比較・デザインシステムで統一）→ zip 書き出し → `/design-ingest` が自動検出・配置・タグ挿入まで実施 |
 | **生成AI（選択式）** | Gemini / OpenAI の API で生成（`generate-image.js`。プロバイダは Part 内で統一）。`GEMINI_API_KEY` または `OPENAI_API_KEY` が必要 |
 
-画像は Why ブロックの 🧠 直後に配置し（追加図は該当 `##` 見出し末尾）、取り込み済みは SHA-256 で判定してスキップします（冪等）。密度方針（[A] 各概念 Section 1枚 / [B] 判断ベース / [C] 概念アンカーごと=1 Section 複数図）は `/pilot` で選びます。
+画像は Why ブロックの 🧠 直後（🧠 が無い Section では Why ブロック本文の末尾）に配置し、追加図は該当 `##` 見出し末尾に置きます。配置済みかどうかは Section 内のファイル名既出で判定してスキップし（冪等）、`/design-ingest` の画像差し替え要否のみ SHA-256 で判定します。密度方針（[A] 各概念 Section 1枚 / [B] 判断ベース / [C] 概念アンカーごと=1 Section 複数図）は `/pilot` で選び、`PROGRESS.md` の `config.illustrate` に記録します。
 
 ### /animate の流れ
 
-Remotion で、静止画では表しにくい「時間軸を持つ説明」（対比の展開・処理の流れ・状態変化）を Section 解説動画（1.5〜3分・1080p）として生成・挿入します。`/illustrate` の概念図を動画の素材としても再利用します。
+Remotion で、静止画では表しにくい「時間軸を持つ説明」（対比の展開・処理の流れ・状態変化）を Section 解説動画（3〜6分・1080p）として生成・挿入します。`/illustrate` の概念図を動画の素材としても再利用します。
 
 | モード | やること |
 |---|---|
@@ -170,7 +181,7 @@ Remotion で、静止画では表しにくい「時間軸を持つ説明」（�
 
 動画は Section タイトル直後に配置し、生成済み Section は再実行時にスキップします（冪等）。Remotion ワークスペースは `video/` にあります。
 
-> **前提**: `GEMINI_API_KEY`（ナレーション TTS）と Remotion ライセンス（量産・公開時は Company License）が必要です。詳細は `.claude/skills/animate/SKILL.md`。
+> **前提**: `GOOGLE_TTS_API_KEY`（既定のナレーション TTS: Chirp 3 HD。他エンジンへの切替は SKILL 参照）が必要です。Remotion のライセンス要否は運用者の判断に委ねます（ゲートなし）。詳細は `.claude/skills/animate/SKILL.md`。
 
 ### /github-pages の流れ
 
@@ -216,15 +227,16 @@ flowchart LR
 
 ---
 
-## 配布・更新（2層構成）
+## 配布・更新（テンプレート + /fw-sync）
 
-| 層 | 中身 | 配布方法 | 更新 |
-|---|---|---|---|
-| **配布物** | skills・agents（`.claude/`） | Claude Code plugin `cw`（このリポジトリが marketplace を兼ねる） | marketplace の auto-update で起動時に自動配布 |
-| **生成物の雛形** | CLAUDE.md・OUTLINE.md・writing.md・curriculums/・video/ 等の骨格 | GitHub テンプレートリポジトリ（`gh repo create --template`） | `/fw-sync` で diff を確認しながら選択的に取り込み |
+| 場面 | 手段 |
+|---|---|
+| **新規プロジェクトの開始** | GitHub テンプレートリポジトリ（`gh repo create --template`）。skills・agents・雛形・機械チェック基盤が一式で入る |
+| **既存プロジェクトへの更新配布** | プロジェクト側で `/fw-sync`。skills / agents / scripts / video 等を diff 確認つきで選択的に取り込む（pull 型: 各プロジェクトが自分のタイミングで更新する） |
+| **下流の改善の還流** | FW リポジトリへの **PR** |
 
-- 現在は**段階導入の第1段階**（マニフェスト整備済み）。plugin 運用へ完全移行するまでは従来どおりテンプレート同梱の `.claude/skills` が有効です。導入手順と残りの移行ステップは `.claude-plugin/README.md` を参照
-- 下流の教材プロジェクトで生まれた改善は、従来どおり **FW への PR** で還流します（plugin 移行後は、マージすれば全プロジェクトに次回起動で届きます）
+- スキル・エージェントは**プロジェクト固有の決定を持たない純ロジック**として保つ。プロジェクト固有の値（様式・画像方針・ブランド等）は `PROGRESS.md` frontmatter の `config` と `writing.md` に置く（/fw-sync で skills を上書きしても決定が消えない）
+- Claude Code plugin（push 型の自動配布）は検討のうえ撤収した（量産中の教材に未検収のスキル変更が届くこと、読み取り専用キャッシュとプロジェクト別カスタムの相性を理由とする。経緯は Issue #65 #71）
 
 ## オーダーメイド教材（企業別展開）
 
@@ -235,6 +247,10 @@ flowchart LR
 3. 以降は共通フロー（/setup → 上流4フェーズ → /write）。既存の社内資料がある場合は `/research` のギャップ分析（Extend / Create New / Restructure）を使う
 
 > ⚠️ 内部検討資料（価格・競合比較等）は教材リポジトリに含めず別管理にしてください（public リポジトリに内部資料が残った実例があります）。
+
+## 非技術教材への転用
+
+機械チェック・上流フロー・テンプレートは題材非依存で、そのまま使えます。技術教材の前提が集中しているのは `.claude/rules/writing.md` の「3. コンテンツ」（コード・ハンズオン・REPL の規範）と handson-verifier エージェントだけです。学習ノート・業務マニュアル等に転用する場合は、`/pilot` の初期調整でこの2箇所を題材に合わせて読み替え・削除してください。
 
 ---
 
@@ -251,14 +267,17 @@ project-root/
 ├── README.md
 ├── .claude/
 │   ├── rules/writing.md      # 執筆ルール（文体・テンプレート・用語）
+│   ├── rules/prh.yml         # 用語辞書（writing.md の用語テーブルと同期。textlint が参照）
+│   ├── hooks/                # PostToolUse hook スクリプト（編集時 lint）
 │   ├── skills/               # 15スキル（setup/research/define/outline/pilot/
 │   │                         #   write/review/revise/status/check-updates/
 │   │                         #   illustrate/design-ingest/animate/github-pages/fw-sync）
 │   ├── agents/               # カスタムエージェント（independent-reviewer /
 │   │                         #   learner-persona / handson-verifier）
-│   └── settings.json         # 権限 + PostToolUse hook（編集時 lint）
-├── .claude-plugin/           # plugin 配布マニフェスト（cw。marketplace 兼用）
-├── scripts/                  # lint_curriculum.py（機械チェックの単一の正）等
+│   └── settings.json         # 権限 + PostToolUse hook の設定
+├── scripts/                  # lint_curriculum.py（機械チェックの単一の正）
+├── package.json              # textlint の依存定義（npm ci で有効化。lock ファイル同梱）
+├── .textlintrc.json          # textlint の設定（文章・AI 臭。用語辞書は .claude/rules/prh.yml）
 ├── curriculums/              # 教材本体（階層構造に応じたディレクトリ）
 ├── assets/
 │   └── diagrams/             # 概念図（output/ 画像・prompts/ 依頼文の記録）

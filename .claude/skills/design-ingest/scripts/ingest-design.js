@@ -14,15 +14,22 @@ const crypto = require('crypto');
 const { execFileSync } = require('child_process');
 
 // ---- リポジトリ内の基準パス ----
-// このスクリプトは <repo>/.claude/skills/design-ingest/scripts/ にある
-const SCRIPT_DIR = __dirname;
-const REPO_ROOT = path.resolve(SCRIPT_DIR, '..', '..', '..', '..');
+// カレントディレクトリから .git を上方探索してプロジェクトルートを決める（generate-image.js と同方式）。
+// plugin 配布ではスクリプトが教材リポジトリ外（プラグインキャッシュ等）に置かれ得るため、__dirname 基点にしない。
+function findProjectRoot(startDir) {
+  let dir = startDir || process.cwd();
+  while (dir !== path.dirname(dir)) {
+    if (fs.existsSync(path.join(dir, '.git'))) return dir;
+    dir = path.dirname(dir);
+  }
+  return process.cwd();
+}
+const REPO_ROOT = findProjectRoot();
 
 // 画像拡張子 / Section 番号で始まる図ファイルの命名規約（教材の階層 1〜3層に対応）
 // 例: 2-1-1-current-directory.png -> 2-1-1（3層）/ 2-1-http-request.png -> 2-1（2層）/ 3-cli-basics.png -> 3（1層）
 const IMG_EXT = /\.(png|jpe?g|svg)$/i;
 const SECTION_PREFIX = /^(\d+(?:-\d+){0,2})-/;
-const ZIP_HINT = /(assets\/diagrams\/output\/[^\n]*\.(png|jpe?g|svg)|(^|[\/\s])\d+(?:-\d+){0,2}-[^\/\n]*\.(png|jpe?g|svg))/im;
 
 // ---- 引数パース ----
 function parseArgs(argv) {
@@ -51,6 +58,7 @@ function parseArgs(argv) {
     else if (a === '--no-archive') o.noArchive = true;
     else if (a === '--json') o.json = true;
     else if (a === '-h' || a === '--help') o.help = true;
+    else if (!a.startsWith('--') && /^\d+(-\d+){0,2}$/.test(a) && !o.section) o.section = a; // 位置引数: Section 番号
     else if (!a.startsWith('--') && !o.zip) o.zip = a; // 位置引数: zip パス
     else throw new Error(`不明な引数: ${a}`);
   }
@@ -61,7 +69,8 @@ function parseArgs(argv) {
 const HELP = `design-ingest: Claude Design 書き出し zip を取り込み概念図を配置する
 
 使い方:
-  node ingest-design.js [zip] [オプション]
+  node ingest-design.js [zip | section番号] [オプション]
+  （位置引数が 2-1-4 のような番号なら --section、それ以外は --zip として解釈する）
 
 オプション:
   --zip <path>        取り込む zip を明示（既定: Downloads から最新の該当 zip を自動検出）
@@ -92,11 +101,22 @@ function walk(dir, acc = []) {
   return acc;
 }
 
-// zip 内に図ファイルが含まれるか（unzip -l の出力を正規表現で判定）
+// エントリ（zip 内パス / 展開後の相対パス）が「教材の図」か:
+// assets/diagrams/output/ 配下の画像、または basename が Section 番号始まりの画像に限定する。
+function isDiagramEntry(entryPath) {
+  const p = entryPath.trim();
+  if (!p || !IMG_EXT.test(p)) return false;
+  if (p.includes('assets/diagrams/output/')) return true;
+  return SECTION_PREFIX.test(path.posix.basename(p));
+}
+
+// zip 内に図ファイルが含まれるか（unzip -Z1 のパス一覧を 1 行ずつ判定）。
+// unzip -l の表形式は日付列（07-05-2026 等）が Section 番号様の並びにマッチして
+// 無関係な zip を誤検出するため使わない。
 function zipHasDiagrams(zipPath) {
   try {
-    const out = execFileSync('unzip', ['-l', zipPath], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
-    return ZIP_HINT.test(out);
+    const out = execFileSync('unzip', ['-Z1', zipPath], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
+    return out.split('\n').some(isDiagramEntry);
   } catch {
     return false;
   }
@@ -194,13 +214,11 @@ function main() {
   try {
     execFileSync('unzip', ['-o', '-q', zipPath, '-d', tmp], { stdio: ['ignore', 'ignore', 'pipe'] });
 
-    // 3) 図ファイルを収集（assets/diagrams/output 配下 or Section 番号始まりの画像）
+    // 3) 図ファイルを収集（zip 検出と同じ isDiagramEntry 判定: assets/diagrams/output 配下 or Section 番号始まり）
     const all = walk(tmp).filter((f) => IMG_EXT.test(f));
-    const picked = all.filter((f) => {
-      const rel = path.relative(tmp, f).split(path.sep).join('/');
-      const base = path.basename(f);
-      return rel.includes('assets/diagrams/output/') || SECTION_PREFIX.test(base);
-    });
+    const picked = all.filter((f) =>
+      isDiagramEntry(path.relative(tmp, f).split(path.sep).join('/'))
+    );
     // basename で重複排除（assets/diagrams/output 配下を優先）
     const byBase = new Map();
     for (const f of picked) {
@@ -263,9 +281,9 @@ function main() {
       });
     }
 
-    // 5) zip を退避
+    // 5) zip を退避（取り込み対象 0 件の zip は退避しない: 誤検出した無関係 zip を Downloads から動かさないため）
     let archived = null;
-    if (!opt.dryRun && !opt.noArchive) {
+    if (!opt.dryRun && !opt.noArchive && items.length > 0) {
       fs.mkdirSync(opt.archive, { recursive: true });
       const dest = uniqueDest(opt.archive, path.basename(zipPath));
       try { fs.renameSync(zipPath, dest); }

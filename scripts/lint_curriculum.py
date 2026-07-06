@@ -9,6 +9,9 @@
 使い方:
     python3 scripts/lint_curriculum.py [--style emoji|admonition] [--json] <file|dir>...
 
+    --style 省略時は、カレントディレクトリの PROGRESS.md frontmatter の `style:`
+    （/pilot が設定する様式の単一ソース）を読む。それも無ければ emoji。
+
 検出ルール（--style emoji: 既定。絵文字プレフィックス様式の教材向け）:
     🔵 broken-bold             閉じ ** の直後にスペースも改行もなく日本語・全角括弧が続く（太字が壊れる）
     🔵 sentence-bold           文全体の太字（** の中身が 30 字以上。太字は語句・キーフレーズに限定する）
@@ -23,7 +26,8 @@
     🔵 emoji-forbidden         絵文字全般（admonition スタイルでは絵文字プレフィックスを使わない）
     🔵 admonition-indent       !!! / ??? 直後の内容行の字下げが 4 スペース未満
     （broken-bold / sentence-bold / dash-char / code-fence-language / absolute-path は両スタイル共通。
-      🎯 / ✨ の構造チェックは emoji スタイル専用）
+      🎯 / ✨ の構造チェックは emoji スタイル専用。admonition 本文の字下げ 0 は通常段落と
+      区別できないため検出対象外＝1〜3 スペースのみ検出する）
 
 検査スコープ:
     - コードブロック内・インラインコード内は太字・ダッシュ・絵文字の検査対象外（フェンス追跡）
@@ -31,6 +35,9 @@
 
 出力:  path:line: [🔵|🟡] rule-id: メッセージ（--json で JSON 配列）
 終了コード:  🔵 違反あり = 2 / クリーン（🟡 のみを含む）= 0 / 引数・入出力エラー = 1
+    （🟡 のみのファイルは exit 0 のため PostToolUse hook・CI からは通知されない。
+      部分編集のたびに構造警告を出さないための意図的仕様で、🟡 は /write の
+      セルフチェックと /review が拾う）
 """
 
 from __future__ import annotations
@@ -73,8 +80,9 @@ INLINE_CODE_RE = re.compile(r"(`+)([^`]+?)\1")
 FENCE_RE = re.compile(r"^( {0,3})(`{3,}|~{3,})[ \t]*(.*)$")
 BLOCKQUOTE_PREFIX_RE = re.compile(r"^(?:[ \t]{0,3}>[ \t]?)+")
 
-# 環境依存の絶対パス
-ABS_PATH_RE = re.compile(r"/(?:Users|home)/[^\s'\"`)\]]*")
+# 環境依存の絶対パス（直前が英数字・ピリオドなら URL のパス部とみなして除外:
+# https://example.com/home/... を誤検出しない）
+ABS_PATH_RE = re.compile(r"(?<![A-Za-z0-9.])/(?:Users|home)/[^\s'\"`)\]]*")
 
 # Section の必須構造（見出しは ## レベル。前置きスペースは Markdown 仕様の 0-3 を許容）
 GOAL_HEADING_RE = re.compile(r"^ {0,3}##\s*🎯")
@@ -317,6 +325,28 @@ def check_emoji(findings: list[Finding], path: str, lineno: int, line: str, styl
 # エントリポイント
 # ---------------------------------------------------------------------------
 
+STYLE_RE = re.compile(r"^\s*style:\s*(emoji|admonition)\s*(?:#.*)?$", re.MULTILINE)
+
+
+def read_default_style() -> str:
+    """PROGRESS.md の frontmatter から様式を読む（/pilot が設定する単一ソース）。
+
+    ファイル先頭が '---' の frontmatter ブロックだけを対象にする（テンプレートの
+    コメント内サンプルには反応しない）。見つからなければ emoji。
+    """
+    try:
+        text = Path("PROGRESS.md").read_text(encoding="utf-8")
+    except OSError:
+        return "emoji"
+    if not text.startswith("---"):
+        return "emoji"
+    end = text.find("\n---", 3)
+    if end == -1:
+        return "emoji"
+    m = STYLE_RE.search(text[:end])
+    return m.group(1) if m else "emoji"
+
+
 def collect_targets(inputs: list[str]) -> list[Path]:
     """引数のファイル・ディレクトリから検査対象の .md を集める。"""
     targets: list[Path] = []
@@ -341,16 +371,17 @@ def main(argv: list[str]) -> int:
         description="教材本文（Markdown）の書式・構造の機械チェック（/write・/review の単一の正）",
     )
     parser.add_argument("paths", nargs="+", metavar="<file|dir>", help="検査対象の .md ファイルまたはディレクトリ")
-    parser.add_argument("--style", choices=("emoji", "admonition"), default="emoji",
-                        help="教材の様式（既定: emoji。admonition は将来用）")
+    parser.add_argument("--style", choices=("emoji", "admonition"), default=None,
+                        help="教材の様式（省略時: PROGRESS.md frontmatter の style: → 無ければ emoji）")
     parser.add_argument("--json", action="store_true", dest="as_json", help="結果を JSON 配列で出力する")
     args = parser.parse_args(argv)
+    style = args.style or read_default_style()
 
     try:
         targets = collect_targets(args.paths)
         findings: list[Finding] = []
         for target in targets:
-            findings.extend(lint_file(target, args.style))
+            findings.extend(lint_file(target, style))
     except RuntimeError as exc:
         print(f"エラー: {exc}", file=sys.stderr)
         return 1

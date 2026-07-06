@@ -4,17 +4,28 @@
 MkDocs のソースディレクトリ（docs/）に配置する。
 教材内のセクション間リンクも新しいパスに書き換える。
 
+3層構成（part-XX_*/chapter-XX_*/X-X-X_*.md）前提。1件もコピーできない場合は
+エラーメッセージを出して非ゼロ終了する（無言で空の docs/ を作らない）。
+
 このリポジトリの scripts/ に置いて `python scripts/build_docs.py` で実行する。
 """
 
 import re
 import shutil
+import sys
 from pathlib import Path
 from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parent.parent
 CURRICULUMS_DIR = ROOT / "curriculums"
 DOCS_DIR = ROOT / "docs"
+
+# Markdown リンク: [text](path) / ![alt](path) / [text](path#anchor)
+LINK_RE = re.compile(r"(\!?\[[^\]]*\]\()([^)#]+)((?:#[^)]*)?)\)")
+
+# コードフェンス追跡（フェンス内のリンクは書き換えない。blockquote 内のフェンスにも対応）
+FENCE_RE = re.compile(r"^( {0,3})(`{3,}|~{3,})[ \t]*(.*)$")
+BLOCKQUOTE_PREFIX_RE = re.compile(r"^(?:[ \t]{0,3}>[ \t]?)+")
 
 
 def extract_part_slug(dirname: str) -> str:
@@ -43,12 +54,24 @@ def rewrite_links(content: str) -> str:
       - ../chapter-XX_日本語/X-X-X_日本語.md
       - X-X-X_日本語.md
     URL エンコード（%20 等）にも対応する。
+
+    書き換えの対象外:
+      - 外部 URL（http:// / https://）: unquote すると %20 等が実文字に戻り
+        リンクが壊れるため、そのまま保つ
+      - アンカーのみのリンク（#section）
+      - コードフェンス内の行（``` / ~~~ を追跡。リンク記法の例示を保つ）
     """
 
     def replace_link(match: re.Match) -> str:
         prefix = match.group(1)  # [text]( or (
-        path = unquote(match.group(2))  # URL デコード
-        suffix = match.group(3)  # ) or anchor
+        raw_path = match.group(2)
+        suffix = match.group(3)  # #anchor（無ければ空文字）
+
+        # 外部 URL・アンカーのみのリンクは書き換え対象外
+        if raw_path.lower().startswith(("http://", "https://")) or raw_path.startswith("#"):
+            return prefix + raw_path + suffix
+
+        path = unquote(raw_path)  # URL デコード
 
         # パスの各セグメントをスラッグに変換
         segments = path.split("/")
@@ -76,13 +99,44 @@ def rewrite_links(content: str) -> str:
 
         return prefix + new_path + suffix
 
-    # Markdown リンク内のパスを書き換え: [text](path) or [text](path#anchor)
-    # ![alt](path) の画像記法にもマッチする
-    pattern = r"(\!?\[[^\]]*\]\()([^)#]+)((?:#[^)]*)?)\)"
-    return re.sub(pattern, lambda m: replace_link(m) + ")", content)
+    # コードフェンス外の行だけリンクを書き換える（フェンスは行単位で追跡）
+    out = []
+    in_fence = False
+    fence_char = ""
+    fence_len = 0
+    for raw in content.splitlines(keepends=True):
+        bq = BLOCKQUOTE_PREFIX_RE.match(raw)
+        body = raw[bq.end():] if bq else raw
+        fence_m = FENCE_RE.match(body)
+
+        if in_fence:
+            # 閉じフェンス: 同種の記号が開始時以上の長さで、後続文字列なし
+            if (
+                fence_m
+                and fence_m.group(2)[0] == fence_char
+                and len(fence_m.group(2)) >= fence_len
+                and fence_m.group(3).strip() == ""
+            ):
+                in_fence = False
+            out.append(raw)  # フェンス内と閉じ行はそのまま
+            continue
+
+        if fence_m:
+            in_fence = True
+            fence_char = fence_m.group(2)[0]
+            fence_len = len(fence_m.group(2))
+            out.append(raw)  # 開き行もそのまま
+            continue
+
+        out.append(LINK_RE.sub(lambda m: replace_link(m) + ")", raw))
+
+    return "".join(out)
 
 
 def build_docs():
+    if not CURRICULUMS_DIR.is_dir():
+        sys.exit(f"curriculums/ が見つかりません: {CURRICULUMS_DIR}")
+
     # docs/ 内の part-* ディレクトリだけをクリーン（index.md は保持）
     if DOCS_DIR.exists():
         for item in DOCS_DIR.iterdir():
@@ -90,6 +144,7 @@ def build_docs():
                 shutil.rmtree(item)
 
     # curriculums/ から docs/ にコピー（リンク書き換え付き）
+    copied = 0
     for part_dir in sorted(CURRICULUMS_DIR.iterdir()):
         if not part_dir.is_dir():
             continue
@@ -110,6 +165,13 @@ def build_docs():
                 content = md_file.read_text(encoding="utf-8")
                 content = rewrite_links(content)
                 dest_path.write_text(content, encoding="utf-8")
+                copied += 1
+
+    if copied == 0:
+        sys.exit(
+            "curriculums/ に part-XX_*/chapter-XX_* が見つかりません"
+            "（このスクリプトは3層構成前提です）"
+        )
 
     # assets/ を docs/assets/ にコピー
     # .md（概念図生成プロンプト等の作業メモ）は公開サイトに含めない。
@@ -123,7 +185,7 @@ def build_docs():
             assets_src, assets_dest, ignore=shutil.ignore_patterns("*.md")
         )
 
-    print(f"Done: copied curriculum files to {DOCS_DIR}")
+    print(f"Done: copied {copied} section files to {DOCS_DIR}")
 
 
 if __name__ == "__main__":

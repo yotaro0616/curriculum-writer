@@ -47,7 +47,11 @@ export const NestScene = ({ scene }: { scene: NestSceneType }) => {
         });
 
         // 配色: 外=白＋クールな枠、内=アクセント色で強調（濃淡フェードにしない）
-        const border = isInner ? theme.accent : i === 1 ? "#A7B2C0" : "#CBD3DC";
+        const border = isInner
+          ? theme.accent
+          : i === 1
+            ? theme.nestBorderMid
+            : theme.nestBorderOuter;
         const labelColor = isInner ? theme.accentText : theme.text;
 
         return (

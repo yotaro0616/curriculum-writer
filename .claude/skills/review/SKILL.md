@@ -33,7 +33,7 @@ CLAUDE.md の HOW セクションで定義された階層構造に基づいて�
 
 ## 1.5 機械的チェック（Grep/Bash ベース）
 
-サブエージェント起動前に `python3 scripts/lint_curriculum.py <対象ファイル>` を実行する（検出パターンの正はスクリプト側。/write のセルフチェック・PostToolUse hook と同一の検査）。admonition 様式の教材では `--style admonition` を付ける。<!-- /pilot で調整 --> 結果をサブエージェントに渡し、重複チェックを避ける。
+サブエージェント起動前に `python3 scripts/lint_curriculum.py <対象ファイル>` を実行する（検出パターンの正はスクリプト側。/write のセルフチェック・PostToolUse hook と同一の検査。様式は `PROGRESS.md` frontmatter の `config.style` から自動適用される）。結果をサブエージェントに渡し、重複チェックを避ける。
 
 スクリプトが扱わない OUTLINE 連動の2項目は、ここで Grep ツール（ripgrep ベース）を使って検証する（Bash の `grep` は macOS 互換性の問題があるため使用しない）:
 
@@ -46,7 +46,7 @@ CLAUDE.md の HOW セクションで定義された階層構造に基づいて�
 
 ## 2. 単体レビュー
 
-以下の4観点で検証する。各観点の具体的なチェック項目は `.claude/rules/writing.md` を参照すること（ここでは重複して列挙しない）。
+以下の5観点で検証する。各観点の具体的なチェック項目は `.claude/rules/writing.md` を参照すること（ここでは重複して列挙しない）。
 
 ### ルール準拠
 
@@ -58,7 +58,7 @@ CLAUDE.md の HOW セクションで定義された階層構造に基づいて�
 
 ### 正確性
 
-{{TOPIC}} の用語・内容が参考資料の表記に従っているか
+教材の用語・内容が参考資料の表記に従っているか
 
 > 📝 参考資料との詳細な照合は `/check-updates` の責務。
 

@@ -25,13 +25,14 @@
       "no-ai-emphasis-patterns": {
         "allows": [
           "/^(?:>\\s*)?[🎯✨💡⚠️📝🔑🏃🧠📌✅📖]\\uFE0F?\\s*\\*\\*[^*]{1,20}\\*\\*\\s*[:：]/",
+          "/^\\s*(?:[-*+]|\\d+[.)])\\s+(?:\\[[ xX]\\]\\s*)?[🎯✨💡⚠️📝🔑🏃🧠📌✅📖]\\uFE0F?\\s*\\*\\*[^*]{1,20}\\*\\*\\s*[:：]/",
           "/^(?:>\\s*)?\\*\\*(?:原因|対処法)\\*\\*\\s*[:：]/"
         ]
       },
       "ai-tech-writing-guideline": false
     },
     "prh": {
-      "rulePaths": ["./prh.yml"]
+      "rulePaths": ["./.claude/rules/prh.yml"]
     }
   }
 }

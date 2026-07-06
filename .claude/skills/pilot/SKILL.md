@@ -18,21 +18,20 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 
 ## 1. writing.md の初期調整
 
-`.claude/rules/writing.md` のプレースホルダ・選択コメントを、ユーザーと対話して確定する:
+`.claude/rules/writing.md` のプレースホルダ・選択コメントを、ユーザーと対話して確定する。**まず全12項目の既定値を1つの表で提示し、「既定のままで良い」項目は一括承認・変えたい項目だけ対話する**（12問を1問＋差分に圧縮する）:
 
 1. **語りかけの人格**: `[人格名]` を具体化し、🧠 の頻度（毎 Section / 効果的な箇所のみ）を決める
-2. **用語テーブル**: {{TOPIC}} 固有の用語を追加（prh.yml にも同期する）
-3. **コード表示ルール**: {{TOPIC}} 固有の言語指定（blade, jsonc 等）を追加
+2. **用語テーブル**: 教材トピック固有の用語を追加（`.claude/rules/prh.yml` にも同期する）
+3. **コード表示ルール**: トピック固有の言語指定（blade, jsonc 等）を追加
 4. **図表の形式**: ASCII フロー図 or Mermaid
 5. **Section あたりの目安文字数**
-6. **表現様式**: 絵文字（既定・GitHub 直読み向け） / admonition（MkDocs・LMS 向け）。RESEARCH.md Phase 0 の公開方式に従う。admonition の場合は対応表を正に確定し、review / lint を `--style admonition` に切り替える
+6. **表現様式**: 絵文字（既定・GitHub 直読み向け） / admonition（MkDocs・LMS 向け）。RESEARCH.md Phase 0 の公開方式に従う。admonition の場合は対応表を正に確定し、`PROGRESS.md` frontmatter の `config.style` を `admonition` にする（lint・hook・CI・/review が自動で追随する）
 7. **アークモード**: モード2（概要駆動・既定） / モード1（導入駆動）
 8. **ハンズオンの検証モデル**: コピペ再現型（既定） / AI委任型
 9. **やってみようの執筆タイミング**: A（Part 単位2パス・推奨） / B（本文と同一パス）
-10. **画像の方針**（/illustrate を使う場合）: 経路（Claude Design 手動＋/design-ingest（既定） / 生成AI（Gemini・OpenAI））と密度（[A] 各概念 Section 1枚 / [B] 判断ベース / [C] 概念アンカーごと）を選び、`.claude/skills/illustrate/references/criteria.md` の決定記録に反映する
-11. **ブランドの一元設定**: キーカラーを決めて3箇所へ反映（video/src/brand.ts・illustrate style-guide・github-pages custom.css）
-12. **write スキルのスコープ表**: 階層構造に合わせて調整
-13. **本文で使わない表現**: 制度名・組織名等の除外方針（あれば）
+10. **画像の方針**（/illustrate を使う場合）: 経路（Claude Design 手動＋/design-ingest（既定） / 生成AI（Gemini・OpenAI））と密度（[A] 各概念 Section 1枚 / [B] 判断ベース / [C] 概念アンカーごと）を選び、`PROGRESS.md` frontmatter の `config.illustrate` に記録する（/illustrate がこれを参照する）
+11. **ブランドの一元設定**: キーカラーを決めて `PROGRESS.md` の `config.brand` に記録し、3箇所へ反映する（`video/src/brand.ts`・illustrate の `references/style-guide.md`・github-pages の `custom.css`）
+12. **本文で使わない表現**: 制度名・組織名等の除外方針（あれば）
 
 この時点の writing.md は**ドラフト**。ロックは手順 5 で行う。
 
@@ -52,7 +51,7 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 ## 4. 検証
 
 - **公開形式プレビュー**: /github-pages を使う予定なら実レンダして確認（admonition・タブ・Mermaid の描画）。GitHub 直読みなら GitHub 上の表示を確認
-- **機械チェック**: lint・textlint がテンプレートの定型と衝突しないか（誤検出があれば allows を調整）
+- **機械チェック**: `npm ci` で textlint を有効化し、lint・textlint がテンプレートの定型と衝突しないか確認する（誤検出があれば `.textlintrc.json` の allows を調整。既知: 行頭の太字語＋半角スペース（broken-bold の修正形）は no-ai-emphasis-patterns と衝突しやすい）
 - **学習者視点の通読**: `.claude/agents/learner-persona` で通読させ、つまずき・未定義用語・例示/実践の混乱を収集
 - **メディアの様式**（使う場合）: /illustrate・/animate を1点ずつ試し、図・動画のトーンを確認
 

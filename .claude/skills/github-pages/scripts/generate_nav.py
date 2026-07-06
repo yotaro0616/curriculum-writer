@@ -64,8 +64,10 @@ def yaml_key(label: str) -> str:
     return label
 
 
-def build_nav() -> str:
+def build_nav() -> "tuple[str, int]":
+    """nav: ブロック文字列と、列挙できたセクション数を返す。"""
     lines = ["nav:", "  - トップ: index.md"]
+    sections = 0
     for part_dir in sorted(p for p in CURRICULUMS_DIR.iterdir() if p.is_dir()):
         pnum, ptitle = title_from_dir(part_dir.name, "part")
         if not pnum:
@@ -82,10 +84,17 @@ def build_nav() -> str:
                 label = h1_label(md)
                 path = f"{part_slug}/{chap_slug}/{section_slug(md.name)}"
                 lines.append(f"      - {yaml_key(label)}: {path}")
-    return "\n".join(lines) + "\n"
+                sections += 1
+    return "\n".join(lines) + "\n", sections
 
 
 if __name__ == "__main__":
     if not CURRICULUMS_DIR.is_dir():
         sys.exit(f"curriculums/ が見つかりません: {CURRICULUMS_DIR}")
-    sys.stdout.write(build_nav())
+    nav, sections = build_nav()
+    if sections == 0:
+        sys.exit(
+            "curriculums/ に part-XX_*/chapter-XX_* が見つかりません"
+            "（このスクリプトは3層構成前提です）"
+        )
+    sys.stdout.write(nav)

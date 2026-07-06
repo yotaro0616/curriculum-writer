@@ -84,13 +84,13 @@ function getApiKey(provider) {
     const k = process.env.OPENAI_API_KEY;
     if (k) return k;
     throw new Error(
-      "OpenAI APIキーが見つかりません。OPENAI_API_KEY 環境変数を設定してください（取得方法は SKILL.md の「前提条件 > API キー」を参照）。"
+      "OpenAI APIキーが見つかりません。OPENAI_API_KEY 環境変数を設定してください（取得方法は SKILL.md の「genai 経路（選択式）> API キー」を参照）。"
     );
   }
   const k = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
   if (k) return k;
   throw new Error(
-    "Gemini APIキーが見つかりません。GEMINI_API_KEY 環境変数を設定してください。"
+    "Gemini APIキーが見つかりません。GEMINI_API_KEY 環境変数を設定してください（取得方法は SKILL.md の「genai 経路（選択式）> API キー」を参照）。"
   );
 }
 
@@ -139,19 +139,9 @@ async function callGemini({ prompt, aspectRatio, resolution, tier }, apiKey) {
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`;
 
-  // プロンプトの強化
-  let enhancedPrompt = prompt;
-  if (tier === "pro") {
-    if (prompt.length < 50) {
-      enhancedPrompt = `Create a high-quality, detailed image: ${prompt}. Pay attention to composition, lighting, and fine details.`;
-    }
-    if (resolution === "4k") {
-      enhancedPrompt += " Render at maximum 4K quality with exceptional detail.";
-    }
-  }
-
+  // プロンプトは加工せずそのまま送る（style-guide の規範と assets/diagrams/prompts/ の保存記録を実送信文と一致させる）
   const requestBody = {
-    contents: [{ parts: [{ text: enhancedPrompt }] }],
+    contents: [{ parts: [{ text: prompt }] }],
     generationConfig: {
       responseModalities: ["TEXT", "IMAGE"],
       imageConfig: {
@@ -386,7 +376,9 @@ Gemini 用オプション:
 
 OpenAI 用オプション（--provider openai / --openai / --codex）:
   --model <id>     gpt-image-2（既定）/ gpt-image-1.5 / gpt-image-1-mini
-  --size <s>       gpt-image-2: 1792x1008（16:9・既定）/ 3840x2160（4K）等（両辺16の倍数）。1.5/mini: 1024x1024 / 1536x1024 / 1024x1536
+  --size <s>       gpt-image-2: 任意サイズ可。制約: 両辺16の倍数 / 長辺≤3840 / 比率≤3:1 / 総画素65.5万〜829万
+                   （16:9 は 1792x1008＝既定、4K は 3840x2160。2560x1440 超は公式に experimental 扱い）
+                   gpt-image-1.5 / mini: 1024x1024 / 1536x1024 / 1024x1536 の固定3サイズ
   --quality <q>    low / medium / high（既定）
   --format <f>     png（既定）/ jpeg / webp
 
@@ -398,7 +390,7 @@ OpenAI 用オプション（--provider openai / --openai / --codex）:
     process.exit(1);
   }
 
-  // デフォルト: provider=gemini / Pro / 16:9 / 4K（OpenAI 側の既定は high / 1536x1024 / png）
+  // デフォルト: provider=gemini / Pro / 16:9 / 4K（OpenAI 側の既定は gpt-image-2 / high / 1792x1008 / png）
   const options = {
     provider: "gemini",
     tier: "pro",

@@ -1,7 +1,7 @@
 ---
 name: fw-sync
 description: |
-  展開済みの教材プロジェクト側で実行し、教材執筆フレームワーク（curriculum-writer）の最新の共有資産（video/src・video/scripts・scripts/ の品質スクリプト等）を、カテゴリ別ポリシーに従って選択的に取り込む片道同期スキル。
+  展開済みの教材プロジェクト側で実行し、教材執筆フレームワーク（curriculum-writer）の最新の共有資産（.claude/skills・.claude/agents・scripts・video/src 等）を、カテゴリ別ポリシーに従って選択的に取り込む片道同期スキル。
   「FW の最新を取り込んで」「フレームワークと同期して」「fw-sync して」「lint スクリプトを最新化して」「video のテンプレを更新して」など、FW からプロジェクトへの更新取り込みの依頼で使用する。
 argument-hint: "[FW リポジトリの URL/ローカルパス(任意)]"
 ---
@@ -18,20 +18,16 @@ argument-hint: "[FW リポジトリの URL/ローカルパス(任意)]"
 
 | カテゴリ | 対象 | 方針 |
 |---|---|---|
-| **A. 更新提案してよい** | `video/src/`（`brand.ts` を **除く**）・`video/scripts/`・`scripts/`（`lint_curriculum.py`・`hooks/` 等）・`.claude/skills/github-pages/scripts/`・`.claude/skills/github-pages/assets/` | diff を提示し、**承認されたファイルのみ** `.bak` 退避のうえ上書き。FW にだけある新規ファイルは「追加提案」として提示 |
-| **B. 不可侵** | `CLAUDE.md`・`OUTLINE.md`・`PROGRESS.md`・`RESEARCH.md`・`curriculums/`・`assets/`・`video/src/brand.ts`・`video/data/`・`.claude/rules/writing.md` | **diff 提示のみ。自動上書きしない**。プロジェクト固有の内容（哲学・設計・本文・ブランド値・/pilot で確定した writing.md の値）を含むため。FW 側で骨格（章立て・共通ルールの構造）が変わっていた場合は差分を提示して手動マージを提案する |
-| **対象外** | 上記以外の `.claude/skills/`（スキル本体）・`.claude/agents/` | このスキルでは触らない。スキル・エージェント本体は plugin `cw` の自動更新（commit = 新バージョン）で配布される。plugin 未導入のプロジェクトなら、同期ではなく plugin の導入（`/plugin marketplace add yotaro0616/curriculum-writer` → `install cw`）を案内する |
+| **A. 更新提案してよい** | `.claude/skills/`（`github-pages/assets/custom.css` を **除く**）・`.claude/agents/`・`.claude/hooks/`・`scripts/`（`lint_curriculum.py` 等）・`video/src/`（`brand.ts` を **除く**）・`video/scripts/` | diff を提示し、**承認されたファイルのみ** `.bak` 退避のうえ上書き。FW にだけある新規ファイルは「追加提案」として提示 |
+| **B. 不可侵** | `CLAUDE.md`・`OUTLINE.md`・`PROGRESS.md`・`RESEARCH.md`・`curriculums/`・`assets/`・`video/src/brand.ts`・`video/data/`・`.claude/rules/writing.md`・`.claude/rules/prh.yml`・`.claude/skills/github-pages/assets/custom.css` | **diff 提示のみ。自動上書きしない**。プロジェクト固有の内容（哲学・設計・本文・ブランド値・/pilot で確定した writing.md / 用語辞書の値）を含むため。FW 側で骨格（章立て・共通ルールの構造）が変わっていた場合は差分を提示して手動マージを提案する |
 
-📝 カテゴリ B のうち `CLAUDE.md`・`OUTLINE.md`・`curriculums/` 等は、プロジェクト固有化されているのが正常な状態であり、FW テンプレートとの差分があること自体は問題ではない。B で報告する価値があるのは「FW 側の骨格・共通ルールが更新された」差分だけなので、単なるプレースホルダー置換の差分はノイズとして要約に留める。
+📝 スキル・エージェントはプロジェクト固有の決定を持たない純ロジック（決定は PROGRESS.md の `config` と writing.md 側にある）ため、カテゴリ A として上書きしても決定は消えない。カテゴリ B のうち `CLAUDE.md`・`OUTLINE.md`・`curriculums/` 等は、プロジェクト固有化されているのが正常な状態であり、FW テンプレートとの差分があること自体は問題ではない。B で報告する価値があるのは「FW 側の骨格・共通ルールが更新された」差分だけなので、単なるプレースホルダー置換の差分はノイズとして要約に留める。
 
 ## FW の取得元
 
-次の順で決める:
+$ARGUMENTS に FW の URL / ローカルパスがあればそれを使う。なければユーザーに確認し、一時ディレクトリ（scratchpad）へ `git clone --depth 1` する。
 
-1. **plugin `cw` 導入済みの場合**: `${CLAUDE_PLUGIN_ROOT}`（cw プラグインのキャッシュ。auto-update されていれば FW 最新のスナップショット）を取得元とする。変数が展開されない文脈では `claude plugin list` で cw の有無を確認し、`~/.claude/plugins/cache/` 配下の cw ディレクトリを探す
-2. **未導入の場合**: $ARGUMENTS に FW の URL / ローカルパスがあればそれを使う。なければユーザーに確認し、一時ディレクトリ（scratchpad）へ `git clone --depth 1` する
-
-取得した FW ルートを以降 `<fw>` と表記する。同期前に `<fw>` の commit（`git -C <fw> rev-parse --short HEAD`、plugin キャッシュならバージョン表示）を控え、報告に含める。
+取得した FW ルートを以降 `<fw>` と表記する。同期前に `<fw>` の commit（`git -C <fw> rev-parse --short HEAD`）を控え、報告に含める。
 
 ## 手順
 
@@ -76,7 +72,6 @@ argument-hint: "[FW リポジトリの URL/ローカルパス(任意)]"
 - 適用: <ファイル一覧>（.bak 退避先併記）
 - スキップ（ユーザー判断）: <一覧>
 - 不可侵差分あり（要手動判断）: <一覧と骨格差分の要約>
-- 対象外（plugin 管轄）: スキル・エージェント本体は /plugin update cw で更新
 ```
 
 `.bak` の削除は動作確認後にユーザーが判断する（このスキルからは自動削除しない）。

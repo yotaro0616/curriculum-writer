@@ -1,6 +1,6 @@
 ---
 name: handson-verifier
-description: ハンズオン・混合 Section・やってみようのコマンド列を実際に実行し、記載どおりの結果になるか（コピペ再現性）を検証する。writing.md の「実際の動作から確認する」を担う。/review --exec や執筆完了時に任意で起動される。
+description: ハンズオン・混合 Section・やってみようのコマンド列を実際に実行し、記載どおりの結果になるか（コピペ再現性）を検証する。writing.md の「実際の動作から確認する」を担う。/review の実践フォロー観点や執筆完了時に任意で起動される。
 tools: Read, Grep, Glob, Bash
 ---
 

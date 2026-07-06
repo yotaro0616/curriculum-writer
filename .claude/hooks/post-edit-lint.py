@@ -11,6 +11,11 @@ stdin の JSON（PostToolUse ペイロード）から tool_input.file_path を�
 違反があれば stderr に出力して exit 2 する。PostToolUse の exit 2 は非ブロッキングで、
 stderr が Claude にフィードバックされる（編集自体は完了済み）。対象外のファイルは exit 0。
 自動修正（--fix）は行わない。修正の判断は Claude / 執筆者に委ねる。
+
+lint_curriculum.py の 🟡（構造警告）は exit 0 のためこの hook からは通知されない
+（部分編集のたびに 🎯/✨ 欠落を警告しないための意図的仕様。🟡 は /write のセルフ
+チェックと /review が拾う）。様式（--style）はスクリプト自身が PROGRESS.md の
+frontmatter から読むため、この hook から渡す必要はない。
 """
 
 from __future__ import annotations
@@ -29,7 +34,7 @@ def resolve_project_dir() -> Path:
     env = os.environ.get("CLAUDE_PROJECT_DIR")
     if env:
         return Path(env).resolve()
-    # scripts/hooks/post-edit-lint.py → 2 つ上がプロジェクトルート
+    # .claude/hooks/post-edit-lint.py → 2 つ上がプロジェクトルート
     return Path(__file__).resolve().parents[2]
 
 
@@ -73,7 +78,7 @@ def main() -> int:
             output = (result.stdout + result.stderr).strip()
             sections.append(f"[lint_curriculum.py]\n{output}")
 
-    # 2) textlint（インストール済みの場合のみ。無ければ黙ってスキップ）
+    # 2) textlint（インストール済みの場合のみ）
     textlint_bin = root / "node_modules" / ".bin" / "textlint"
     if textlint_bin.is_file():
         result = subprocess.run(
@@ -83,6 +88,9 @@ def main() -> int:
         if result.returncode != 0:
             output = (result.stdout + result.stderr).strip()
             sections.append(f"[textlint]\n{output}")
+    elif sections and (root / "package.json").is_file():
+        # lint 違反を通知するついでに、textlint が動いていないことも知らせる
+        sections.append("[textlint] 未導入のためスキップしました（`npm ci` で有効化できます）")
 
     if sections:
         header = (

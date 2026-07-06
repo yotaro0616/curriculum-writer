@@ -1,12 +1,15 @@
 # 教材本文（curriculums/**/*.md）の機械チェック
 # - scripts/lint_curriculum.py: 書式・構造（/write・/review の機械チェックの単一の正）
-# - textlint: 日本語文章・AI 臭・表記ゆれ（.textlintrc.json + prh.yml）
-# PR で教材ファイルに変更がない場合はチェックをスキップして green で終了する。
+# - textlint: 日本語文章・AI 臭・表記ゆれ（.textlintrc.json + .claude/rules/prh.yml）
+# PR では変更された教材ファイルのみ、main への push では全教材ファイルを検査する。
+# 対象ファイルがない場合はチェックをスキップして green で終了する。
 
 name: lint-curriculum
 
 on:
   pull_request:
+  push:
+    branches: [main]
 
 permissions:
   contents: read
@@ -19,14 +22,24 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: 変更された教材ファイルを抽出
+      - name: 検査対象の教材ファイルを抽出
         id: changed
         env:
           BASE_REF: ${{ github.base_ref }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
-          git fetch --no-tags origin "$BASE_REF"
-          git diff --name-only --diff-filter=ACMR "origin/$BASE_REF"...HEAD -- 'curriculums/' \
-            | grep -E '\.md$' > changed_files.txt || true
+          # core.quotepath=false が必須: 既定（true）では日本語ファイル名が
+          # 引用符付き八進エスケープで出力され、grep '\.md$' が全ファイルを
+          # 取りこぼして「無検査のまま green」になる（FW の命名規則は日本語名を使う）
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            git fetch --no-tags origin "$BASE_REF"
+            git -c core.quotepath=false diff --name-only --diff-filter=ACMR \
+              "origin/$BASE_REF"...HEAD -- 'curriculums/' \
+              | grep -E '\.md$' > changed_files.txt || true
+          else
+            # main への push: 全教材ファイルを検査する
+            { find curriculums -name '*.md' -type f 2>/dev/null || true; } > changed_files.txt
+          fi
           if [ -s changed_files.txt ]; then
             echo "any=true" >> "$GITHUB_OUTPUT"
             echo "検査対象:"

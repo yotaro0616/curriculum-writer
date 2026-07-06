@@ -48,7 +48,7 @@ https://<org>.github.io/<repo>/                        ← 公開
 - `git remote -v` で GitHub リモートを確認（公開 URL は `https://<org>.github.io/<repo>/`）
 - 静的アセット（画像等）は `assets/` 配下に置かれているか
 
-> ⚠️ **同梱スクリプトは 3層構成（Part > Chapter > Section）を前提とする**。`build_docs.py` / `generate_nav.py` は `part-XX_*/chapter-XX_*/X-X-X_*.md` を走査する。2層（Chapter > Section）・1層（Section のみ）の教材で使う場合は、両スクリプトの階層走査ロジック（`part-` / `chapter-` プレフィックスの扱い）を構造に合わせて調整する。
+> ⚠️ **同梱スクリプトは 3層構成（Part > Chapter > Section）を前提とする**。`build_docs.py` / `generate_nav.py` は `part-XX_*/chapter-XX_*/X-X-X_*.md` を走査する。2層（Chapter > Section）・1層（Section のみ）の教材で使う場合は、両スクリプトの階層走査ロジック（`part-` / `chapter-` プレフィックスの扱い）を構造に合わせて調整する。3層構造を1件も見つけられない場合、両スクリプトはエラーメッセージを出して非ゼロ終了する（無言で空の docs/ や nav を作らない）。
 
 ### 2. バンドルファイルを配置する
 
@@ -90,6 +90,7 @@ https://<org>.github.io/<repo>/                        ← 公開
 | TypeScript | `#3178C6` | |
 | Claude / Anthropic | `#D97757` | （単色） |
 
+- 非技術教材（ビジネススキル・業務マニュアル等）は題材の連想色（例: 会計・簿記 → 深緑 `#1B5E20`）か、中立パレット（プライマリ: ネイビー `#1F3A5F` / アクセント: アンバー `#FFB300`）を使う。
 - ユーザーに色を提示して確認する（プライマリ＝ヘッダー、アクセント＝リンク/ホバー）。
 - プライマリの light / dark は元色から ±15〜20% 程度の明度違いを用意する（ホバーやグラデーションに使われる）。
 - ⚠️ 彩度の高いオレンジ等を**白背景の本文リンク**に使うとコントラストが弱い。気になる場合はライト時のリンク色をプライマリ（濃色）にするか、アクセントを少し濃くする。ダークモードでは映える。
@@ -147,7 +148,7 @@ gh api -X POST repos/<org>/<repo>/pages -f build_type=workflow
 gh run watch <run-id> --exit-status                 # build ✓ / deploy ✓
 curl -s -o /dev/null -w "%{http_code}\n" https://<org>.github.io/<repo>/
 ```
-- `actions/*` の「Node.js 20 非推奨」警告は無害（将来 action のバージョンを上げれば消える）。
+- 同梱 deploy.yml の checkout / setup-python は現行メジャー（v5 / v6）。他の `actions/*`（upload-pages-artifact 等）で「Node.js 20 非推奨」警告が出ても無害（当該 action のメジャーを上げれば消える）。
 - 反映確認は CSS をキャッシュバスター付きで取得すると確実: `.../stylesheets/custom.css?v=<時刻>`。
 
 ---
