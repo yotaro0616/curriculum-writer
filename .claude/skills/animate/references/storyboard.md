@@ -3,7 +3,7 @@
 ストーリーボードは動画の **単一の真実**（差分管理する設計図）。`video/data/<sectionId>.storyboard.json` に置く。
 TTS スクリプトがこれを読み、音声と実測尺を埋めた `<sectionId>.props.json` を生成する（props.json は成果物なので手で編集しない。ただし実測尺を含むためコミットはする）。
 
-動画の役割（要約ではなく Section の主たる学習路）と尺・シーン数の基準は `criteria.md` を参照する。本ファイルは JSON の形式と台本の書き方を定める。書き終えたら `node scripts/lint-storyboard.mjs <sectionId>` で機械検証してから TTS に進む。
+動画の役割（要約ではなく、時間軸を持つ解説。既定は判断ベースの補助 / [A] 選択時は主学習路）と尺・シーン数の基準は `criteria.md` を参照する。本ファイルは JSON の形式と台本の書き方を定める。書き終えたら `node scripts/lint-storyboard.mjs <sectionId>` で機械検証してから TTS に進む。
 
 ## トップレベル
 
