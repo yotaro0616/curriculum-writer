@@ -13,18 +13,18 @@
     （/pilot が設定する様式の単一ソース）を読む。それも無ければ emoji。
 
 検出ルール（--style emoji: 既定。絵文字プレフィックス様式の教材向け）:
-    🔵 broken-bold             閉じ ** の直後にスペースも改行もなく日本語・全角括弧が続く（太字が壊れる）
-    🔵 sentence-bold           文全体の太字（** の中身が 30 字以上。太字は語句・キーフレーズに限定する）
-    🔵 dash-char               ダッシュ記号（– — ― / ——）
-    🔵 code-fence-language     言語指定なしコードブロック（非コードコンテンツには text を指定する）
-    🔵 emoji-not-allowed       writing.md の定義済み 11 絵文字（🎯 ✨ 💡 ⚠️ 📝 🔑 🏃 🧠 📌 ✅ 📖）以外の絵文字
-    🔵 absolute-path           環境依存の絶対パス（/Users/ /home/）
+    🔴 broken-bold             閉じ ** の直後にスペースも改行もなく日本語・全角括弧が続く（太字が壊れる）
+    🔴 sentence-bold           文全体の太字（** の中身が 30 字以上。太字は語句・キーフレーズに限定する）
+    🔴 dash-char               ダッシュ記号（– — ― / ——）
+    🔴 code-fence-language     言語指定なしコードブロック（非コードコンテンツには text を指定する）
+    🔴 emoji-not-allowed       writing.md の定義済み 11 絵文字（🎯 ✨ 💡 ⚠️ 📝 🔑 🏃 🧠 📌 ✅ 📖）以外の絵文字
+    🔴 absolute-path           環境依存の絶対パス（/Users/ /home/）
     🟡 missing-goal-heading    「## 🎯」見出しが無い（Section の必須構造）
     🟡 missing-summary-heading 「## ✨」見出しが無い（Section の必須構造）
 
 検出ルール（--style admonition: 将来用。MkDocs Material の admonition 記法へ移行した教材向け）:
-    🔵 emoji-forbidden         絵文字全般（admonition スタイルでは絵文字プレフィックスを使わない）
-    🔵 admonition-indent       !!! / ??? 直後の内容行の字下げが 4 スペース未満
+    🔴 emoji-forbidden         絵文字全般（admonition スタイルでは絵文字プレフィックスを使わない）
+    🔴 admonition-indent       !!! / ??? 直後の内容行の字下げが 4 スペース未満
     （broken-bold / sentence-bold / dash-char / code-fence-language / absolute-path は両スタイル共通。
       🎯 / ✨ の構造チェックは emoji スタイル専用。admonition 本文の字下げ 0 は通常段落と
       区別できないため検出対象外＝1〜3 スペースのみ検出する）
@@ -33,8 +33,8 @@
     - コードブロック内・インラインコード内は太字・ダッシュ・絵文字の検査対象外（フェンス追跡）
     - 絶対パスはコードブロック内も検査する（コピペ手順への環境依存パス混入を検出するため）
 
-出力:  path:line: [🔵|🟡] rule-id: メッセージ（--json で JSON 配列）
-終了コード:  🔵 違反あり = 2 / クリーン（🟡 のみを含む）= 0 / 引数・入出力エラー = 1
+出力:  path:line: [🔴|🟡] rule-id: メッセージ（--json で JSON 配列）
+終了コード:  🔴 違反あり = 2 / クリーン（🟡 のみを含む）= 0 / 引数・入出力エラー = 1
     （🟡 のみのファイルは exit 0 のため PostToolUse hook・CI からは通知されない。
       部分編集のたびに構造警告を出さないための意図的仕様で、🟡 は /write の
       セルフチェックと /review が拾う）
@@ -53,6 +53,8 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 
 # writing.md「絵文字」テーブルで定義された 11 絵文字（⚠️ は ⚠ + VS16 のため基底文字で保持）
+# この 11 絵文字は .textlintrc.json の正規表現・writing.md の絵文字表にも重複定義がある（単一ソース無し）。
+# 追加・削除時は3箇所を同期すること。共有ソース化は #71（カスタムポイント外出し）で検討。
 ALLOWED_EMOJI = set("🎯✨💡📝🔑🏃🧠📌✅📖") | {"⚠"}  # ⚠
 
 # 絵文字とみなす Unicode 範囲（→ U+2192 などの矢印・罫線素片は含めない）
@@ -91,9 +93,9 @@ SUMMARY_HEADING_RE = re.compile(r"^ {0,3}##\s*✨")
 # MkDocs Material の admonition ヘッダ（!!! type / ??? type / ???+ type）
 ADMONITION_HEADER_RE = re.compile(r"^ {0,3}(?:!{3}|\?{3}\+?)(?:\s|$)")
 
-SEVERITY_ERROR = "error"      # 🔵
+SEVERITY_ERROR = "error"      # 🔴
 SEVERITY_WARNING = "warning"  # 🟡
-MARKS = {SEVERITY_ERROR: "🔵", SEVERITY_WARNING: "🟡"}
+MARKS = {SEVERITY_ERROR: "🔴", SEVERITY_WARNING: "🟡"}
 
 FULL_BOLD_THRESHOLD = 30  # ** の中身がこの字数以上なら「文全体の太字」とみなす
 
@@ -396,7 +398,7 @@ def main(argv: list[str]) -> int:
         errors = sum(1 for f in findings if f.severity == SEVERITY_ERROR)
         warnings = len(findings) - errors
         if findings:
-            print(f"\n🔵 {errors} 件 / 🟡 {warnings} 件（検査対象 {len(targets)} ファイル）")
+            print(f"\n🔴 {errors} 件 / 🟡 {warnings} 件（検査対象 {len(targets)} ファイル）")
 
     return 2 if any(f.severity == SEVERITY_ERROR for f in findings) else 0
 

@@ -18,10 +18,12 @@ argument-hint: "[FW リポジトリの URL/ローカルパス(任意)]"
 
 | カテゴリ | 対象 | 方針 |
 |---|---|---|
-| **A. 更新提案してよい** | `.claude/skills/`（`github-pages/assets/custom.css` を **除く**）・`.claude/agents/`・`.claude/hooks/`・`scripts/`（`lint_curriculum.py` 等）・`video/src/`（`brand.ts` を **除く**）・`video/scripts/` | diff を提示し、**承認されたファイルのみ** `.bak` 退避のうえ上書き。FW にだけある新規ファイルは「追加提案」として提示 |
-| **B. 不可侵** | `CLAUDE.md`・`OUTLINE.md`・`PROGRESS.md`・`RESEARCH.md`・`curriculums/`・`assets/`・`video/src/brand.ts`・`video/data/`・`.claude/rules/writing.md`・`.claude/rules/prh.yml`・`.claude/skills/github-pages/assets/custom.css` | **diff 提示のみ。自動上書きしない**。プロジェクト固有の内容（哲学・設計・本文・ブランド値・/pilot で確定した writing.md / 用語辞書の値）を含むため。FW 側で骨格（章立て・共通ルールの構造）が変わっていた場合は差分を提示して手動マージを提案する |
+| **A. 更新提案してよい** | `.claude/skills/`（`github-pages/assets/custom.css` を **除く**）・`.claude/agents/`・`.claude/hooks/`・`scripts/`（`lint_curriculum.py` 等）・`video/src/`（`brand.ts` を **除く**）・`video/scripts/`・`.textlintrc.json`・`.github/workflows/lint.yml`・`package.json`＋`package-lock.json`（**セットで**取り込み lock 不整合を避ける） | diff を提示し、**承認されたファイルのみ** `.bak` 退避のうえ上書き。FW にだけある新規ファイルは「追加提案」として提示 |
+| **B. 不可侵** | `CLAUDE.md`・`OUTLINE.md`・`PROGRESS.md`・`RESEARCH.md`・`curriculums/`・`assets/`・`video/src/brand.ts`・`video/data/`・`.claude/rules/writing.md`・`.claude/rules/prh.yml`・`.claude/skills/github-pages/assets/custom.css` | **diff 提示のみ。自動上書きしない**。プロジェクト固有の内容（哲学・設計・本文・決定録＝PROGRESS.md config・ブランド値・用語辞書 prh.yml）を含むため（writing.md は共有ルールだが、下流の移行前インライン値を保護するため既定は不可侵とする）。FW 側で骨格（章立て・共通ルールの構造）が変わっていた場合は差分を提示して手動マージを提案する |
 
-📝 スキル・エージェントはプロジェクト固有の決定を持たない純ロジック（決定は PROGRESS.md の `config` と writing.md 側にある）ため、カテゴリ A として上書きしても決定は消えない。カテゴリ B のうち `CLAUDE.md`・`OUTLINE.md`・`curriculums/` 等は、プロジェクト固有化されているのが正常な状態であり、FW テンプレートとの差分があること自体は問題ではない。B で報告する価値があるのは「FW 側の骨格・共通ルールが更新された」差分だけなので、単なるプレースホルダー置換の差分はノイズとして要約に留める。
+📝 スキル・エージェントはプロジェクト固有の決定を持たない純ロジック（決定は PROGRESS.md の `config`＝決定録・単一ソースにある）ため、カテゴリ A として上書きしても決定は消えない。カテゴリ B のうち `CLAUDE.md`・`OUTLINE.md`・`curriculums/` 等は、プロジェクト固有化されているのが正常な状態であり、FW テンプレートとの差分があること自体は問題ではない。B で報告する価値があるのは「FW 側の骨格・共通ルールが更新された」差分だけなので、単なるプレースホルダー置換の差分はノイズとして要約に留める。
+
+📝 `.claude/settings.json` は **個別確認**（hooks・permissions を含むため A の一括上書き対象にしない）。FW 側に新しい hook / 権限が増えていれば、既存設定を壊さないようマージ差分を提示して確認する（#71 の update でも同方針）。
 
 ## FW の取得元
 
@@ -56,7 +58,7 @@ $ARGUMENTS に FW の URL / ローカルパスがあればそれを使う。な�
 
 - 既存ファイルの上書き: `cp <対象> <対象>.bak` で退避してから FW 版で上書きする（既存の `.bak` は直前状態で上書き）
 - 新規ファイルの追加: そのまま配置（`.bak` は作らない）
-- [不可侵差分 (B)] は自動では適用しない。ユーザーが希望した場合のみ、diff を見ながらの手動マージを支援する（writing.md は /pilot で確定した値を保持したまま骨格だけ取り込む）
+- [不可侵差分 (B)] は自動では適用しない。ユーザーが希望した場合のみ、diff を見ながらの手動マージを支援する（writing.md は共有ルールなので骨格差分を手動マージできる。/pilot 確定値は config 側にあり影響しない）
 
 ### 5. 動作確認
 

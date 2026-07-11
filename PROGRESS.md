@@ -14,10 +14,19 @@ gates:
 adaptive:
   research: full         # full | light | skipped（理由を1行で添える）
   pilot: planned         # planned | done | skipped
-config:
-  style: emoji           # emoji | admonition（機械チェックが読む様式の単一ソース。/pilot が確定）
-  illustrate: null       # /illustrate の経路/密度（例: "claude-design / C"。/pilot が確定）
-  brand: null            # キーカラー（例: "#0EA5E9"）。brand.ts 等 3 箇所への反映は /pilot 手順を参照
+config:                    # /pilot が確定する「決定録」= 様式・執筆判断の単一ソース。skills が実行時に参照する（fw-sync 不可侵）
+  style: emoji             # emoji | admonition（機械チェックが読む様式の単一ソース）
+  arc_mode: mode2          # mode2(概要駆動・既定) | mode1(導入駆動)
+  verification_model: copypaste  # copypaste(コピペ再現型・既定) | ai-delegated(AI委任型)
+  tryit_timing: A          # A(Part単位2パス・推奨) | B(同一パス)。概念 Section の「やってみよう」
+  diagram_format: mermaid  # mermaid | ascii（処理フロー・関係図の形式）
+  char_target: 4000        # Section あたりの目安文字数
+  persona: null            # 🧠 コラムの語り手（人格名）
+  persona_frequency: every # every(毎 Section・既定) | selective(効果的な箇所のみ)
+  illustrate: null         # /illustrate の経路/密度（例: "claude-design / B"。未使用なら null）
+  brand: null              # キーカラー（例: "#0EA5E9"）。brand.ts 等 3 箇所への反映は /pilot 手順を参照
+  excluded_terms: []       # 本文で使わない表現（制度名・組織名等。あれば）
+  code_langs: []           # トピック固有のコード言語タグ（例: blade, jsonc）
 ---
 
 ## 進捗表（G3 承認時に /outline が Section 一覧を展開する）
