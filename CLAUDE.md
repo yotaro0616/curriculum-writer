@@ -1,4 +1,4 @@
-<!-- このリポジトリ（curriculum-writer）自体を開発・保守する場合は DEVELOPING.md を参照。以下は教材プロジェクト用のテンプレートで、/define が埋める（DEVELOPING.md は教材側では削除してよい）。 -->
+<!-- このリポジトリ（curriculum-writer）自体を開発・保守する場合は .github/CONTRIBUTING.md を参照。以下は教材プロジェクト用のテンプレートで、/define が埋める。 -->
 
 # [教材タイトルを記入]
 
@@ -72,7 +72,7 @@ CLAUDE.md は教材の哲学（WHO / WHY / WHAT / HOW）を定義し、`OUTLINE.
 | `/github-pages` | MkDocs Material + GitHub Actions で教材を GitHub Pages に公開 |
 | `/fw-sync` | FW 更新の選択的取り込み（展開済みプロジェクト側で実行） |
 
-<!-- スキルを追加・削除・改名したら、この表と README.md のスキル一覧の両方を必ず更新する（手順は DEVELOPING.md。更新漏れが実際に起きた） -->
+<!-- スキルを追加・削除・改名したら、この表と README.md のスキル一覧の両方を必ず更新する（手順は .github/CONTRIBUTING.md。更新漏れが実際に起きた） -->
 
 ### フォルダ構造・命名規則
 
