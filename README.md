@@ -269,9 +269,7 @@ project-root/
 │   ├── rules/writing.md      # 執筆ルール（文体・テンプレート・用語）
 │   ├── rules/prh.yml         # 用語辞書（writing.md の用語テーブルと同期。textlint が参照）
 │   ├── hooks/                # PostToolUse hook スクリプト（編集時 lint）
-│   ├── skills/               # 15スキル（setup/research/define/outline/pilot/
-│   │                         #   write/review/revise/status/check-updates/
-│   │                         #   illustrate/design-ingest/animate/github-pages/fw-sync）
+│   ├── skills/               # 15スキル（一覧と用途は上記「スキル一覧」／ CLAUDE.md の MAP を単一ソースとする）
 │   ├── agents/               # カスタムエージェント（independent-reviewer /
 │   │                         #   learner-persona / handson-verifier）
 │   └── settings.json         # 権限 + PostToolUse hook の設定
