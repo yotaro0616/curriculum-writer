@@ -83,8 +83,7 @@ project-root/
 ├── CLAUDE.md                # 教材の哲学（WHO/WHY/WHAT/HOW/MAP）
 ├── RESEARCH.md              # 設計前調査（/research が生成。裏取りの正）
 ├── OUTLINE.md               # カリキュラム設計（骨格 + 見出し骨子 + 付録）
-├── PROGRESS.md              # ゲート承認と進捗（/status が同期）
-├── CONTEXT.md               # 企業コンテキスト（オーダーメイド時のみ）
+├── PROGRESS.md              # ゲート承認・進捗・決定録（config）（/status が同期）
 ├── changes/                 # 改訂の変更管理（/revise。archive/ に履歴）
 ├── .claude/
 │   ├── rules/writing.md     # 執筆ルール
