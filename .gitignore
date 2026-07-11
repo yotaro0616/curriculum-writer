@@ -6,3 +6,6 @@ __pycache__/
 
 # Node.js (textlint による機械チェック基盤)
 node_modules/
+
+# fw-sync が上書き時に生成するバックアップ（削除はユーザー判断のため自動追跡しない）
+*.bak

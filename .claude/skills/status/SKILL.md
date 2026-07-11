@@ -18,7 +18,7 @@ argument-hint: "[スコープ(任意)]"
    - draft: `curriculums/` に実ファイルがあるか
    - 図: Section 内に `assets/diagrams/output/` への画像タグがあるか
    - 動画: Section 内に `<video>` タグがあるか
-   - 公開: docs/（ビルド出力）に該当ページがあるか（/github-pages 利用時のみ）
+   - 公開: 実デプロイ状態は `/github-pages` のデプロイ確認を正とし、この列は上書きしない（`docs/` はビルド出力で gitignore 対象。fresh clone・push 運用では存在しないため進捗判定に使わない）
 3. **報告**:
    - ゲート状態（G1 調査 / G2 哲学 / G3 構成 / G4 様式ロック。省略した場合はその旨）
    - 進捗率（Section 単位: 骨子 / draft / review / 図 / 動画 / 公開 の列ごと）
