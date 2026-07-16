@@ -7,7 +7,7 @@
 curriculum-writer は2つの顔を持ちます。
 
 1. **正典（source of truth）**: skills・agents・rules・scripts・機械チェック基盤の唯一の正。
-2. **テンプレート**: `gh repo create --template` で新しい教材リポジトリの雛形になる。ルート直下の `CLAUDE.md`・`OUTLINE.md`・`PROGRESS.md`・`CONTEXT.md` は**教材用の空テンプレート**（プレースホルダ）で、教材側の `/define`・`/outline` などが埋める。
+2. **テンプレート**: `gh repo create --template` で新しい教材リポジトリの雛形になる。ルート直下の `CLAUDE.md`・`OUTLINE.md`・`PROGRESS.md` は**教材用の空テンプレート**（プレースホルダ）で、教材側の `/define`・`/outline` などが埋める。
 
 ⚠️ FW 開発中は、Claude Code がこの空テンプレの `CLAUDE.md` を project instructions として自動ロードします。それは FW の設計哲学ではなく教材の雛形なので、**本体開発の指針はこの DEVELOPING.md を正**としてください。
 

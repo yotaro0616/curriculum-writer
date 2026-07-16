@@ -41,6 +41,8 @@ WebFetch 失敗時は失敗 URL と理由を記載し、取得できた情報源
 
 動画エンジン（/animate）を使う教材では、`video/package.json` の remotion 系バージョンと npm 最新、および remotion-best-practices スキル（remotion-dev/skills）の更新有無も照合対象に含める。
 
+画面キャプチャ（/capture）を使う教材では、`<!-- captured: YYYY-MM-DD -->` スタンプの日付が、その Section の参考資料のバージョン更新・確認日より古いスクリーンショットを 🟡（陳腐化の疑い。📸 コメントが再撮影レシピ）として報告する。
+
 ## ステップ3: 参考資料 URL の有効性チェック
 
 URL がある参考資料のリンク切れ・リダイレクトを確認。

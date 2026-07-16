@@ -18,24 +18,41 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 
 ## 1. 決定録の確定（PROGRESS.md の config）
 
-/pilot で確定する様式・執筆判断は `PROGRESS.md` frontmatter の `config`（**決定録＝単一ソース**）に記録する。skills はここを実行時に参照するため、確定値は writing.md ではなく config に書く（writing.md は題材非依存の共有ルールのまま保つ）。**まず全12項目の既定値を1つの表で提示し、「既定のままで良い」項目は一括承認・変えたい項目だけ対話する**（12問を1問＋差分に圧縮する）:
+/pilot で確定する様式・執筆判断は `PROGRESS.md` frontmatter の `config`（**決定録＝単一ソース**）に記録する。skills はここを実行時に参照するため、確定値は writing.md ではなく config に書く（writing.md は題材非依存の共有ルールのまま保つ）。
+
+**前段（初期値セットの適用）**: `config.section_model` は /define（G2）で確定済みの**構造決定**であり、ここでは追認のみ行う（変える場合は /revise 扱いで、/outline モード A の再実行＝G3 の取り直しを伴う）。section_model に応じて初期値セットを適用してから表を出す:
+
+- **reading-first**（section_model=separate）: 下表の既定のまま
+- **typing-first**（section_model=weave）: style は公開方式に従い提案（plain / zenn / admonition）・tryit_timing=N/A・review_gate=chapter・char_target=2000〜2500 を提案・persona_frequency=selective・capture の使用を提案
+
+**まず全項目の値を1つの表で提示し、「このままで良い」項目は一括承認・変えたい項目だけ対話する**（16問を1問＋差分に圧縮する）:
 
 | # | 項目 | 記録先 | 既定 |
 |---|---|---|---|
-| 1 | 語りかけの人格・🧠 頻度 | `config.persona` / `config.persona_frequency` | 頻度=毎 Section |
-| 2 | 用語テーブル（トピック固有） | `.claude/rules/prh.yml`（＋ writing.md 用語表） | — |
-| 3 | コード言語タグ（blade, jsonc 等） | `config.code_langs` | — |
-| 4 | 図表の形式 | `config.diagram_format` | mermaid |
-| 5 | Section の目安文字数 | `config.char_target` | 4000 |
-| 6 | 表現様式 | `config.style` | emoji（GitHub 直読み向け。admonition は MkDocs/LMS 向け・RESEARCH Phase 0 の公開方式に従う） |
-| 7 | アークモード | `config.arc_mode` | mode2（概要駆動） |
-| 8 | ハンズオン検証モデル | `config.verification_model` | copypaste（コピペ再現型） |
-| 9 | やってみよう執筆タイミング | `config.tryit_timing` | A（Part 単位2パス） |
-| 10 | 画像の経路/密度（/illustrate 使用時） | `config.illustrate` | claude-design / B |
-| 11 | ブランド（キーカラー） | `config.brand`（→ 下記3箇所へ反映） | — |
-| 12 | 本文で使わない表現 | `config.excluded_terms` | — |
+| **体験設計** | | | |
+| 1 | 学習モデル（G2 確定済みの追認） | `config.section_model` | separate |
+| 2 | アークモード | `config.arc_mode` | mode2（概要駆動。weave では N/A＝専用アーク） |
+| 3 | ハンズオン検証モデル | `config.verification_model` | copypaste（決定的再現型。**weave × ai-delegated は未サポート**＝選ばれたら警告して組み合わせを変える） |
+| 4 | やってみよう執筆タイミング | `config.tryit_timing` | A（Part 単位2パス。weave では N/A） |
+| 5 | Section の目安文字数 | `config.char_target` | 4000（weave 提案: 2000〜2500） |
+| **文体・様式** | | | |
+| 6 | 表現様式 | `config.style` | emoji（公開方式＝RESEARCH Phase 0 に従う。plain=汎用/AI感排除、admonition=MkDocs、zenn=Zenn互換レンダラ） |
+| 7 | 語りかけの人格・🧠 頻度 | `config.persona` / `config.persona_frequency` | 頻度=毎 Section（weave 提案: selective） |
+| 8 | 用語テーブル（トピック固有） | `.claude/rules/prh.yml`（＋ writing.md 用語表） | — |
+| 9 | 本文で使わない表現 | `config.excluded_terms` | — |
+| 10 | コード言語タグ（blade, jsonc 等） | `config.code_langs` | — |
+| **メディア** | | | |
+| 11 | 図表の形式 | `config.diagram_format` | mermaid |
+| 12 | 概念図の経路/密度（/illustrate 使用時） | `config.illustrate` | claude-design / B（不使用なら null） |
+| 13 | 画面キャプチャ（/capture 使用時） | `config.capture` | null（使う場合: "playwright / <viewport等>" か "manual"） |
+| 14 | 動画の密度（/animate 使用時） | `config.animate` | null（使う場合: "B" 等） |
+| 15 | ブランド（キーカラー） | `config.brand`（→ 下記3箇所へ反映） | — |
+| **運用** | | | |
+| 16 | 独立レビューの粒度 | `config.review_gate` | section（weave 提案: chapter） |
 
-各スキルはここを正として追随する: lint・hook・CI・/review は `config.style`、/illustrate は `config.illustrate`、/write・/review はアークモード・検証モデル・やってみようタイミング。ブランドは `config.brand` を正として3箇所（`video/src/brand.ts`・illustrate の `references/style-guide.md`・github-pages の `custom.css`）へ反映する。用語だけは辞書性質のため `prh.yml`（＋ writing.md 用語表）に置く。
+各スキルはここを正として追随する: lint・hook・CI・/review は `config.style` と `config.section_model`、/illustrate・/capture・/animate は各キー、/write・/review はアークモード・検証モデル・やってみようタイミング・レビュー粒度。ブランドは `config.brand` を正として3箇所（`video/src/brand.ts`・illustrate の `references/style-guide.md`・github-pages の `custom.css`）へ反映する。用語だけは辞書性質のため `prh.yml`（＋ writing.md 用語表）に置く。
+
+**骨格プレビュー（ドラフト確定後に必ず）**: 選択した 様式 × アークモード × 学習モデルの組み合わせで、Section 骨格のダミー（見出しとコールアウトの枠だけの短いサンプル）を提示して確認を取る。weave の場合は専用の開始アーク（`section-models/weave.md` の骨格）のダミーを含める。ここで見た目の違和感を潰してから試作に進む。
 
 この時点の config は**ドラフト**。ロックは手順 5 で行う。
 
@@ -43,7 +60,7 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 
 代表性で選ぶ:
 
-- 概念（やってみよう付き候補を含む）とハンズオン（または混合）の両方を含む Chapter
+- 選択した学習モデルの主要な種類を両方含む Chapter（separate: 概念＋ハンズオン/混合 / weave: 混合（織り込み）＋概念またはハンズオン）
 - 題材が教材の中心に近いもの
 - Part 1 の導入章は避ける（性格が特殊で、様式の代表にならない）
 
@@ -54,7 +71,7 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 
 ## 4. 検証
 
-- **公開形式プレビュー**: /github-pages を使う予定なら実レンダして確認（admonition・タブ・Mermaid の描画）。GitHub 直読みなら GitHub 上の表示を確認
+- **公開形式プレビュー**: /github-pages を使う予定なら実レンダして確認（admonition・タブ・Mermaid の描画）。GitHub 直読みなら GitHub 上の表示を確認。zenn 様式なら Zenn 互換レンダラ（公開先の LMS プレビュー等）で `:::message`・コード・画像・キャプションの実描画を確認する
 - **機械チェック**: `npm ci` で textlint を有効化し、lint・textlint がテンプレートの定型と衝突しないか確認する（誤検出があれば `.textlintrc.json` の allows を調整。既知: 行頭の太字語＋半角スペース（broken-bold の修正形）は no-ai-emphasis-patterns と衝突しやすい）
 - **学習者視点の通読**: `.claude/agents/learner-persona` で通読させ、つまずき・未定義用語・例示/実践の混乱を収集
 - **メディアの様式**（使う場合）: /illustrate・/animate を1点ずつ試し、図・動画のトーンを確認
