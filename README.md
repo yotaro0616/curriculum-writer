@@ -69,7 +69,7 @@ flowchart TD
 |---|---|---|
 | 哲学 | `CLAUDE.md` | 誰に、なぜ、何を、どう教えるか |
 | 設計 | `OUTLINE.md` | 各 Section のゴール・種類・順序・依存関係 |
-| ルール | `writing.md` | 文体・テンプレート・用語・図表形式 |
+| ルール | `writing.md` ＋ 様式 / 学習モデルのリファレンス | 文体・テンプレート・用語・図表形式（emoji 以外の様式と weave の規範は `.claude/skills/write/references/` 配下を JIT 参照） |
 | コンテンツ | `curriculums/` | 読者に届く教材そのもの |
 
 ### 階層構造
@@ -82,17 +82,22 @@ flowchart TD
 | 2層 | Chapter > Section | 中規模教材（1テーマを深掘り） |
 | 1層 | Section のみ | 小規模教材・ガイド集 |
 
-### 3種の Section
+### 3種の Section × 2つの学習モデル
 
-各 Section には種類を付与し、テンプレートの構造を決定します。
+各 Section には種類（概念 / ハンズオン / 混合）を付与し、テンプレートの構造を決定します。**どの種類を既定にするか**は教材の学習モデル（`config.section_model`。/define で確定）で切り替えます。
 
-| 種類 | 内容 | 選択基準 |
+| 種類 | 内容 |
+|---|---|
+| **概念** | 意義・仕組み・使い方を解説（コードは読む例）。末尾に任意の小実践「やってみよう」を置ける |
+| **ハンズオン** | 既習の複数機能を束ねて成果物を作る統合実践 |
+| **混合** | 説明と操作が不可分。**二段構成**（前半解説 → 後半実践）と**織り込み構成**（説明と Step を交互に流す）の2形 |
+
+| 学習モデル | 向く教材 | 既定の形 |
 |---|---|---|
-| **概念** | 意義・仕組み・使い方を解説（コードは読む例）。末尾に任意の小実践「やってみよう」を置ける | 分かるが目的（5〜15分の試行で定着するなら＋やってみよう） |
-| **ハンズオン** | 既習の複数機能を束ねて成果物を作る統合実践 | 既習機能の組み合わせで成果物を作る |
-| **混合** | 概念解説と実践を同一 Section 内で前半・後半に分けて構成 | 説明と操作が不可分（環境構築・初回体験） |
+| `separate`（分離型・既定） | 読解中心。概念を深く読み、実践を集約する | 概念中心 + 混合（二段）は環境構築等に限定 + 章末ハンズオン |
+| `weave`（織り込み型） | タイピング中心。「短い説明 → 打つ → 確認」のループが本文の主役（完全初心者向けチュートリアル等） | ほぼ全節が混合（織り込み）+ 概念は Chapter 0〜1 + 章末/部末ハンズオン。Step 粒度・完成イメージ先出し・観察文などの規範は学習研究の裏付け付き（`section-models/weave.md`） |
 
-すべての種類で共通の骨格（🎯学習目標 → Why ブロック（🧠）→ 本文 → ✨まとめ）を持ち、種類ごとに本文の構成が異なります。学習者が実行するコード・コマンドは 🏃 見出し（実践 / Step / やってみよう）の配下にのみ置きます（位置ルール）。
+すべての種類・モデルで共通の骨格（🎯学習目標 → 本文 → ✨まとめ）と状態契約（📌 / ✅）を持ちます。学習者が実行するコード・コマンドは**実践見出し**（🏃 実践 / Step / やってみよう。様式により絵文字なしのテキスト形）の配下にのみ置き、weave ではさらに役割行（**入力** / **実行** / **読む例**）で二重に示します（位置ルール。正規形は lint が機械検査）。
 
 ---
 
@@ -112,6 +117,7 @@ flowchart TD
 | `/check-updates` | 参考資料との鮮度チェック（🔴🟡 は /revise へ） | `/check-updates` |
 | `/illustrate` | 概念図の計画・作成・挿入（既定: Claude Design 手動 / 選択式: 生成AI） | `/illustrate plan 2-1`, `/illustrate Part 2` |
 | `/design-ingest` | claude.ai/Design で作った図の zip を自動取り込み・挿入 | `/design-ingest`, `/design-ingest --dry-run` |
+| `/capture` | 本文の 📸 撮影指示から画面キャプチャを一括撮影・挿入（Playwright） | `/capture 2-1`, `/capture` |
 | `/animate` | Remotion で Section 解説動画を生成・挿入 | `/animate Chapter 1`, `/animate plan 2-1` |
 | `/github-pages` | MkDocs Material で GitHub Pages に公開 | `/github-pages new`, `/github-pages deploy` |
 | `/fw-sync` | 展開済み教材プロジェクトへ FW 更新を選択的に取り込む | `/fw-sync` |
@@ -293,6 +299,7 @@ project-root/
 ├── .textlintrc.json          # textlint の設定（文章・AI 臭。用語辞書は .claude/rules/prh.yml）
 ├── curriculums/              # 教材本体（階層構造に応じたディレクトリ）
 ├── assets/
-│   └── diagrams/             # 概念図（output/ 画像・prompts/ 依頼文の記録）
+│   ├── diagrams/             # 概念図（output/ 画像・prompts/ 依頼文の記録。/illustrate）
+│   └── screenshots/          # 画面キャプチャ（Section 番号ごと。/capture）
 └── video/                    # /animate の Remotion ワークスペース（Section 解説動画）
 ```
