@@ -15,15 +15,19 @@ adaptive:
   research: full         # full | light | skipped（理由を1行で添える）
   pilot: planned         # planned | done | skipped
 config:                    # /pilot が確定する「決定録」= 様式・執筆判断の単一ソース。skills が実行時に参照する（fw-sync 不可侵）
-  style: emoji             # emoji | admonition（機械チェックが読む様式の単一ソース）
+  style: emoji             # emoji | plain | admonition | zenn（機械チェックが読む様式の単一ソース。emoji 以外の規則は .claude/skills/write/references/styles/ の様式リファレンス）
+  section_model: separate  # separate(分離型・既定=読解中心) | weave(織り込み型=タイピング中心)。/define の HOW で仮決定・/pilot で確定
   arc_mode: mode2          # mode2(概要駆動・既定) | mode1(導入駆動)
-  verification_model: copypaste  # copypaste(コピペ再現型・既定) | ai-delegated(AI委任型)
-  tryit_timing: A          # A(Part単位2パス・推奨) | B(同一パス)。概念 Section の「やってみよう」
+  verification_model: copypaste  # copypaste(決定的再現型・既定。コピペでも手打ちでも「記載どおりに動く」保証) | ai-delegated(AI委任型)
+  tryit_timing: A          # A(Part単位2パス・推奨) | B(同一パス)。概念 Section の「やってみよう」（weave では概念 Section が少なく実質 B 相当）
+  review_gate: section     # section(毎 Section・既定) | chapter(Chapter 単位でまとめて独立レビュー。小さい Section を量産する教材向け)
   diagram_format: mermaid  # mermaid | ascii（処理フロー・関係図の形式）
   char_target: 4000        # Section あたりの目安文字数
   persona: null            # 🧠 コラムの語り手（人格名）
   persona_frequency: every # every(毎 Section・既定) | selective(効果的な箇所のみ)
   illustrate: null         # /illustrate の経路/密度（例: "claude-design / B"。未使用なら null）
+  capture: null            # /capture の撮影環境（例: "playwright / 1280x800 light ja"。手動撮影のみなら "manual"、画面キャプチャ不使用なら null）
+  animate: null            # /animate の密度（例: "B"。未使用なら null）
   brand: null              # キーカラー（例: "#0EA5E9"）。brand.ts 等 3 箇所への反映は /pilot 手順を参照
   excluded_terms: []       # 本文で使わない表現（制度名・組織名等。あれば）
   code_langs: []           # トピック固有のコード言語タグ（例: blade, jsonc）
