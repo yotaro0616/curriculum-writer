@@ -33,6 +33,7 @@ https://<org>.github.io/<repo>/                        ← 公開
 
 - **新規構築**（mkdocs.yml が無い）→「セットアップ」→「ローカル検証」→「公開」を順に行う
 - **更新**（既に公開済みで内容や設定を変えた）→ 該当ファイルを編集し、「ローカル検証」→ `main` に push（自動デプロイ）
+- **公開・デプロイの前に必ず**: `python3 scripts/lint_curriculum.py --release curriculums/` を実行し、残作業（📸 未消化・TODO 画像・alt 欠落）が 🔴 ゼロであることを確認する（執筆中は 🟡 のものが公開前は 🔴 に昇格する）
 - **テーマカラー変更** → `docs/stylesheets/custom.css` 冒頭の色だけ変更 →「ローカル検証」→ push
 - **デプロイ確認** → `gh run watch` と公開 URL の疎通確認のみ
 

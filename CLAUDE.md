@@ -42,6 +42,8 @@
 
 **階層構造**: [/define で設定]
 
+**学習モデル**: [/define で設定。separate（分離型・読解中心） | weave（織り込み型・タイピング中心）。`PROGRESS.md` の config.section_model にも記録]
+
 [カリキュラムの表をここに記述する]
 
 各層の設計詳細は `OUTLINE.md` を参照。

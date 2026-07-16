@@ -81,7 +81,9 @@ ALLOWED_EMOJI = set("🎯✨💡📝🔑🏃🧠📌✅📖") | {"⚠"}  # ⚠
 # 絵文字とみなす Unicode 範囲（→ U+2192 などの矢印・罫線素片は含めない）
 EMOJI_RANGES = (
     (0x1F000, 0x1FBFF),  # 絵文字本体（Misc Symbols and Pictographs / Supplemental など）
-    (0x2300, 0x23FF),    # ⏱ ⏰ ⌛ など時計・技術記号（様式統一のため対象に含める）
+    (0x231A, 0x231B),    # ⌚ ⌛（時計・砂時計。⌘ ⌥ 等のキーボード記号は含めない）
+    (0x23E9, 0x23F3),    # ⏩〜⏳（再生・時計系）
+    (0x23F8, 0x23FA),    # ⏸ ⏹ ⏺
     (0x2600, 0x27BF),    # Miscellaneous Symbols / Dingbats（⚠ ✅ ✨ ✔ ➜ など）
     (0x2B00, 0x2BFF),    # ⭐ ⬆ など
     (0x203C, 0x203C),    # ‼
@@ -301,8 +303,8 @@ def lint_file(path: Path, style: str, section_model: str = "separate",
 
     residue_severity = SEVERITY_ERROR if release else SEVERITY_WARNING
 
-    goal_res = [GOAL_HEADING_RES[fam if fam == "emoji" else "text"]]
-    summary_res = [SUMMARY_HEADING_RES[fam if fam == "emoji" else "text"]]
+    goal_res = [GOAL_HEADING_RES[fam]]
+    summary_res = [SUMMARY_HEADING_RES[fam]]
 
     for lineno, raw in enumerate(lines, start=1):
         # blockquote 記号（> ）を剥がしてフェンス判定する（引用内のコードブロックに対応）

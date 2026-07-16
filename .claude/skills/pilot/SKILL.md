@@ -23,7 +23,7 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 **前段（初期値セットの適用）**: `config.section_model` は /define（G2）で確定済みの**構造決定**であり、ここでは追認のみ行う（変える場合は /revise 扱いで、/outline モード A の再実行＝G3 の取り直しを伴う）。section_model に応じて初期値セットを適用してから表を出す:
 
 - **reading-first**（section_model=separate）: 下表の既定のまま
-- **typing-first**（section_model=weave）: style は公開方式に従い提案（plain / zenn / admonition）・tryit_timing=N/A・review_gate=chapter・char_target=2000〜2500 を提案・persona_frequency=selective・capture の使用を提案
+- **typing-first**（section_model=weave）: style は公開方式に従い提案（plain / zenn / admonition）・tryit_timing=N/A・review_gate=chapter・char_target=2000〜2500 を提案・persona_frequency=selective・capture の使用を提案（デプロイ URL の無いローカル完結・エディタ画面中心の教材では `manual` を既定に提案する）
 
 **まず全項目の値を1つの表で提示し、「このままで良い」項目は一括承認・変えたい項目だけ対話する**（16問を1問＋差分に圧縮する）:
 
@@ -31,9 +31,9 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 |---|---|---|---|
 | **体験設計** | | | |
 | 1 | 学習モデル（G2 確定済みの追認） | `config.section_model` | separate |
-| 2 | アークモード | `config.arc_mode` | mode2（概要駆動。weave では N/A＝専用アーク） |
+| 2 | アークモード | `config.arc_mode` | mode2（概要駆動。weave でも記録する＝概念・ハンズオン Section に適用。混合（織り込み）のみ専用アーク） |
 | 3 | ハンズオン検証モデル | `config.verification_model` | copypaste（決定的再現型。**weave × ai-delegated は未サポート**＝選ばれたら警告して組み合わせを変える） |
-| 4 | やってみよう執筆タイミング | `config.tryit_timing` | A（Part 単位2パス。weave では N/A） |
+| 4 | やってみよう執筆タイミング | `config.tryit_timing` | A（Part 単位2パス。weave では N/A を記録＝概念 Section に置く場合のみ B 扱い・やってみよう表は作らない） |
 | 5 | Section の目安文字数 | `config.char_target` | 4000（weave 提案: 2000〜2500） |
 | **文体・様式** | | | |
 | 6 | 表現様式 | `config.style` | emoji（公開方式＝RESEARCH Phase 0 に従う。plain=汎用/AI感排除、admonition=MkDocs、zenn=Zenn互換レンダラ） |
@@ -71,7 +71,7 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 
 ## 4. 検証
 
-- **公開形式プレビュー**: /github-pages を使う予定なら実レンダして確認（admonition・タブ・Mermaid の描画）。GitHub 直読みなら GitHub 上の表示を確認。zenn 様式なら Zenn 互換レンダラ（公開先の LMS プレビュー等）で `:::message`・コード・画像・キャプションの実描画を確認する
+- **公開形式プレビュー**: /github-pages を使う予定なら実レンダして確認（admonition・タブ・Mermaid の描画）。GitHub 直読みなら GitHub 上の表示を確認。zenn 様式なら Zenn 互換レンダラ（公開先の LMS プレビュー等）で `:::message`・コード・画像・キャプションの実描画を確認する。plain なら貼り付け先レンダラ（LMS プレビュー・PDF 等）で blockquote・チェックボックス・画像パスの描画と折りたたみ非依存を確認する
 - **機械チェック**: `npm ci` で textlint を有効化し、lint・textlint がテンプレートの定型と衝突しないか確認する（誤検出があれば `.textlintrc.json` の allows を調整。既知: 行頭の太字語＋半角スペース（broken-bold の修正形）は no-ai-emphasis-patterns と衝突しやすい）
 - **学習者視点の通読**: `.claude/agents/learner-persona` で通読させ、つまずき・未定義用語・例示/実践の混乱を収集
 - **メディアの様式**（使う場合）: /illustrate・/animate を1点ずつ試し、図・動画のトーンを確認

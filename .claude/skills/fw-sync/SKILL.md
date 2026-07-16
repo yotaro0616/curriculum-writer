@@ -64,7 +64,7 @@ $ARGUMENTS に FW の URL / ローカルパスがあればそれを使う。な�
 
 適用対象に応じて最低限の確認を行う:
 
-- `scripts/lint_curriculum.py` を更新した場合: 任意の Section に対して実行してエラーが出ないこと
+- `scripts/lint_curriculum.py` を更新した場合: `curriculums/` 全体に対して実行し、**新規の 🔴 が出ないこと（出る場合は差分を報告して承認を得る）**。あわせて `PROGRESS.md` frontmatter に `config`（特に `style:` と `section_model:`）が存在することを確認する（無い旧形式のままだと lint が emoji / separate の既定で検査し、admonition 等の教材では実践見出しの正規形検査が誤検出になる）
 - `video/` を更新した場合: `npx remotion` 系コマンドまたは既存のビルド手順が通ること（プロジェクトの video/README.md に従う）
 
 ### 6. 報告
