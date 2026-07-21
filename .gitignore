@@ -9,3 +9,6 @@ node_modules/
 
 # fw-sync が上書き時に生成するバックアップ（削除はユーザー判断のため自動追跡しない）
 *.bak
+
+# /write 量産ループのブリーフ（参考資料の整理結果。作業ファイルでありコミットしない）
+.claude/state/write-briefs/
