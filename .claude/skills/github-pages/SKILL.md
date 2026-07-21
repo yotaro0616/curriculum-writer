@@ -35,7 +35,7 @@ https://<org>.github.io/<repo>/                        ← 公開
 - **更新**（既に公開済みで内容や設定を変えた）→ 該当ファイルを編集し、「ローカル検証」→ `main` に push（自動デプロイ）
 - **公開・デプロイの前に必ず**: `python3 scripts/lint_curriculum.py --release curriculums/` を実行し、残作業（📸 未消化・TODO 画像・alt 欠落）が 🔴 ゼロであることを確認する（執筆中は 🟡 のものが公開前は 🔴 に昇格する）
 - **テーマカラー変更** → `docs/stylesheets/custom.css` 冒頭の色だけ変更 →「ローカル検証」→ push
-- **デプロイ確認** → `gh run watch` と公開 URL の疎通確認のみ
+- **デプロイ確認** → `gh run watch` と公開 URL の疎通確認。成功したら公開スコープの PROGRESS 公開列を ✅ に更新する（公開列の書き手は本スキルだけ。/status は上書きしない）
 
 このスキルの場所を `<skill>` と表記する。同梱ファイルは `<skill>/scripts/` と `<skill>/assets/` にある。
 
@@ -49,7 +49,7 @@ https://<org>.github.io/<repo>/                        ← 公開
 - `git remote -v` で GitHub リモートを確認（公開 URL は `https://<org>.github.io/<repo>/`）
 - 静的アセット（画像等）は `assets/` 配下に置かれているか
 
-> ⚠️ **同梱スクリプトは 3層構成（Part > Chapter > Section）を前提とする**。`build_docs.py` / `generate_nav.py` は `part-XX_*/chapter-XX_*/X-X-X_*.md` を走査する。2層（Chapter > Section）・1層（Section のみ）の教材で使う場合は、両スクリプトの階層走査ロジック（`part-` / `chapter-` プレフィックスの扱い）を構造に合わせて調整する。3層構造を1件も見つけられない場合、両スクリプトはエラーメッセージを出して非ゼロ終了する（無言で空の docs/ や nav を作らない）。
+> ⚠️ **同梱スクリプトは 3層構成（Part > Chapter > Section）を前提とする**。`build_docs.py` / `generate_nav.py` は `part-XX_*/chapter-XX_*/X-X-X_*.md` を走査する。2層（Chapter > Section）・1層（Section のみ）の教材で使う場合は、両スクリプトの階層走査ロジック（`part-` / `chapter-` プレフィックスの扱い）を構造に合わせて調整する（あわせて同梱 gitignore の `docs/part-*/` 行と、公開ステップの生成物ステージ確認の対象パスも階層に合わせて読み替える）。3層構造を1件も見つけられない場合、両スクリプトはエラーメッセージを出して非ゼロ終了する（無言で空の docs/ や nav を作らない）。
 
 ### 2. バンドルファイルを配置する
 

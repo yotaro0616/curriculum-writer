@@ -80,5 +80,6 @@ plain 様式と同一（絵文字なしのテキスト見出し）:
 - 絵文字は**全面禁止**（`emoji-forbidden` 🔴。HTML コメント内の 📸 撮影指示・verified スタンプは検査対象外）
 - `container-unclosed`: `:::message` / `:::details` の閉じ `:::` が無い場合 🔴（ページ全体の描画が壊れるため）
 - `raw-html`: `<br>` と HTML コメント以外の HTML タグは 🔴（Zenn では描画されず露出する。折りたたみは `:::details` を使う）
+- `comment-multiline`: 複数行にまたがる HTML コメントは 🔴（Zenn は1行のみ対応。ページ描画が壊れる）
 - Section の必須構造は `## このセクションで学ぶこと` / `## まとめ` の見出しで判定する（🟡）
 - broken-bold・sentence-bold・dash-char・code-fence-language・absolute-path は全様式共通

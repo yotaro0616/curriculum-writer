@@ -77,6 +77,13 @@ def main() -> int:
         if result.returncode == 2:
             output = (result.stdout + result.stderr).strip()
             sections.append(f"[lint_curriculum.py]\n{output}")
+        elif result.returncode != 0:
+            # スクリプト自体の異常終了を握り潰さない（書式チェックが静かに消失するのを防ぐ）
+            output = (result.stdout + result.stderr).strip()
+            sections.append(
+                f"[lint_curriculum.py] スクリプトがエラー終了しました（exit {result.returncode}）。"
+                f"書式チェックは実行されていません:\n{output}"
+            )
 
     # 2) textlint（インストール済みの場合のみ）
     textlint_bin = root / "node_modules" / ".bin" / "textlint"

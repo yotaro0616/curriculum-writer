@@ -15,9 +15,10 @@ argument-hint: "[スコープ(任意)]"
 1. `PROGRESS.md` を Read する（無ければ `/setup` の実行を案内して終了）
 2. **実態との突合**: 表の各列を実ファイルから検証し、乖離があれば PROGRESS.md を実態に合わせて更新する
    - 骨子: OUTLINE.md の該当 Section に `見出し骨子:` が充填済みか
-   - draft: `curriculums/` に実ファイルがあるか（/write 量産ループが `保留` にしたセルは実態同期で上書きしない。保留の解除はユーザー判断）
+   - draft: `curriculums/` に実ファイルがあるか（/write 量産ループが `保留` にしたセルは実態同期で上書きしない。保留の解除はユーザー判断。draft 空欄なのに実ファイルがある Section は量産ループの残工程＝未検収の書きかけの可能性があるため、✅ にせず /write の同スコープ再実行を促す）
    - 図: Section 内に `assets/diagrams/output/`（概念図）または `assets/screenshots/`（画面キャプチャ）への画像タグがあるか。未消化の 📸 撮影指示（`<!-- 📸` の直後に画像参照なし）が残る Section は未完扱い
    - 動画: Section 内に /animate の配信パス（`releases/download/videos/`）を含む `<video>` タグがあるか（/animate の列。/lecture の授業動画は付録「授業動画表」で管理するため、/animate を使わない Section は `-`（対象外）とする）
+   - 図・動画列の `-`（対象外）の判定: 図列は config.illustrate と config.capture の両方が null、動画列は config.animate が null の教材で**列全体**を `-` に同期する。判断ベースの密度で Section 単位の対象外が確定している場合（/illustrate・/animate の plan 選定結果）は手動記入された `-` を尊重し、空欄へ戻さない
    - 公開: 実デプロイ状態は `/github-pages` のデプロイ確認を正とし、この列は上書きしない（`docs/` はビルド出力で gitignore 対象。fresh clone・push 運用では存在しないため進捗判定に使わない）
 3. **報告**:
    - ゲート状態（G1 調査 / G2 哲学 / G3 構成 / G4 様式ロック。省略した場合はその旨）
@@ -25,7 +26,7 @@ argument-hint: "[スコープ(任意)]"
    - 未着手・保留の一覧（OUTLINE 付録「やってみよう表」の保留、`<!-- TODO -->` プレースホルダと未消化 📸 撮影指示の残存を含む。config.lecture を使う教材では付録「授業動画表」の状態別件数と、本文更新が台本より新しい「要更新」台本も報告する）
    - 進行中の change（`changes/` 配下でアーカイブされていないもの）
    - 鮮度: `.claude/state/check-updates.json` があれば最終チェック日と未対応の 🔴🟡 件数を添える（/check-updates の実行は促すだけで、ここでは行わない）
-   - **次の推奨アクション**（/setup のルーター表と同じ判定。例: 「G4 未了 → /pilot」「2-3 の骨子が未充填 → /outline 2-3」）
+   - **次の推奨アクション**（/setup のルーター表と同じ判定。例: 「G4 未了 → /pilot」「2-3 の骨子が未充填 → /outline 2-3」。separate × tryit_timing=A の教材で Part 全 Section の draft が ✅ なのに、やってみよう表に未展開（保留以外）の節が残る場合は、やってみよう追加パス＝/write の A 手順を案内する）
 
 ## 注意
 

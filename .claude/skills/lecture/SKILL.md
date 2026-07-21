@@ -46,11 +46,11 @@ argument-hint: "<plan|script|スコープ> [対象]"
 ## 3. 収録後の運用
 
 - 収録・編集・公開は人間が行う。完了の申告を受けたら授業動画表の状態を「収録済」「公開済」へ更新する
-- 動画の掲載方法（LMS へ直接アップロード / 教材 Markdown への埋め込み）は教材の公開方式に従う。Markdown への埋め込みが必要な場合は /animate の配信規約（GitHub Releases + `<video>` タグ）を流用できる。その場合 Releases タグは /animate の `videos` と分けて `lecture-videos` を使う（PROGRESS の動画列は /animate の配信パスで判定されるため混同しない。授業動画の進行は引き続き授業動画表が正）
+- 動画の掲載方法（LMS へ直接アップロード / 教材 Markdown への埋め込み）は教材の公開方式に従う。Markdown への埋め込みが必要な場合は /animate の配信規約（GitHub Releases + `<video>` タグ）を流用できる。その場合 Releases タグは /animate の `videos` と分けて `lecture-videos` を使う（初回のみ `gh release create lecture-videos --title "授業動画" --notes "人間収録の授業動画アセット"` で作成する。PROGRESS の動画列は /animate の配信パスで判定されるため混同しない。授業動画の進行は引き続き授業動画表が正）
 - 字幕・トランスクリプトが必要な場合、台本のトーク欄（フル文）がそのまま原稿になる（`references/script-format.md` の字幕の項）
 
 ## 規律
 
-- **役割分担**: AI 生成動画は /animate、人間収録の台本は本スキル。概念図は /illustrate、画面キャプチャは /capture（台本の「画面」欄からこれらの成果物を参照してよい）
+- **役割分担**: AI 生成動画は /animate、人間収録の台本は本スキル。概念図は /illustrate、画面キャプチャは /capture（台本の「画面」欄からこれらの成果物を参照してよい）。収録済みの授業動画から静止画を切り出し、/capture の手動撮影経路（BLOCKED 引き継ぎ・既存画像の取り込み）へ流用してもよい（エディタ・ターミナル画面など Playwright で撮れない対象の二度手間を減らす）
 - 台本はプリプロ成果物であり、lint（`scripts/lint_curriculum.py`）の対象外（`lecture/` は教材本文ではない）。文体は話し言葉を許容する
 - 収録形態（ワイプの有無・機材・編集方針）が未定でも台本は作れる: 台本はシーン＝画面状態＋トークの粒度で書かれ、形態の決定に依存しない（ワイプ指示欄は収録時に読み飛ばせる）
