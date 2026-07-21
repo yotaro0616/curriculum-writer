@@ -14,7 +14,7 @@ tools: Read, Grep, Glob, Bash
 
 ## 手順
 
-1. 依頼に含まれる対象 Section ファイル・`OUTLINE.md`・`.claude/rules/writing.md` を Read する。`PROGRESS.md` の config を確認し、**style が emoji 以外なら `styles/<style>.md`、section_model が weave なら `section-models/weave.md`、verification_model が ai-delegated なら `verification-ai-delegated.md`（いずれも `.claude/skills/write/references/` 配下）も Read する**（読み替えが writing.md より優先。これを読まずに emoji・二段構成の既定を根拠に指摘しない）
+1. 依頼に含まれる対象 Section ファイル・`OUTLINE.md`・`.claude/rules/writing.md` を Read する。Chapter 単位の一括検証（複数 Section）の依頼では全対象ファイルを Read し、1つの VERDICT で判定する（FINDINGS はファイルごとに行を分ける）。`PROGRESS.md` の config を確認し、**style が emoji 以外なら `styles/<style>.md`、section_model が weave なら `section-models/weave.md`、verification_model が ai-delegated なら `verification-ai-delegated.md`（いずれも `.claude/skills/write/references/` 配下）も Read する**（読み替えが writing.md より優先。これを読まずに emoji・二段構成の既定を根拠に指摘しない）
 2. `python3 scripts/lint_curriculum.py <対象ファイル>` を実行し、機械検出の結果を取り込む
 3. 次の観点で検証する:
    - **ルール準拠**: writing.md の文体・テンプレート・コンテンツ規則（骨格見出しの有無と順序、種別ごとの差分、コードの見せ方）

@@ -31,7 +31,7 @@ curriculum-writer は2つの顔を持ちます。
 
 `/setup`（ルーター）→ `/research`(G1) → `/define`(G2) → `/outline`(G3) → `/pilot`(G4＝量産解禁) → `/write` → `/review`。ゲート承認は `PROGRESS.md` に永続化する。構成変更（Section の追加・削除・移動・改番、横断的な方針変更）は `/write` から `/revise`（変更管理）へ回す。この4フェーズ分割は「単一 /setup で承認が揮発し、設計の手戻りが本文へ波及する」問題への対処なので、1スキルへ統合し直さない。
 
-複数 Section の量産は `/write` の量産ループ（`write/references/production-loop.md`）が担う: タスク＝Section ごとに fresh な執筆→独立レビュー→修正のサイクルをサブエージェントで回し、メインはオーケストレーション（起動・厳密パース・記帳・コミット）に徹する。状態は PROGRESS と git 上に置き、再実行＝再開になる（cc-sdd v3 `/kiro-impl` の執筆移植。有界ループ＝修正2回→診断→保留 の上限を外さない）。
+複数 Section の量産は `/write` の量産ループ（`write/references/production-loop.md`）が担う: タスク＝Section ごとに fresh な執筆→独立レビュー→修正のサイクルをサブエージェントで回し、メインはオーケストレーション（起動・厳密パース・記帳・コミット）に徹する。状態は PROGRESS と git 上に置き、再実行＝再開になる（cc-sdd v3 `/kiro-impl` の執筆移植。有界ループ＝修正2回→診断→RETRY は追加1回のみ→保留 の上限を外さない）。
 
 検証エージェント3種（責務と権限で分離）:
 

@@ -15,9 +15,9 @@ argument-hint: "[スコープ(任意)]"
 1. `PROGRESS.md` を Read する（無ければ `/setup` の実行を案内して終了）
 2. **実態との突合**: 表の各列を実ファイルから検証し、乖離があれば PROGRESS.md を実態に合わせて更新する
    - 骨子: OUTLINE.md の該当 Section に `見出し骨子:` が充填済みか
-   - draft: `curriculums/` に実ファイルがあるか
+   - draft: `curriculums/` に実ファイルがあるか（/write 量産ループが `保留` にしたセルは実態同期で上書きしない。保留の解除はユーザー判断）
    - 図: Section 内に `assets/diagrams/output/`（概念図）または `assets/screenshots/`（画面キャプチャ）への画像タグがあるか。未消化の 📸 撮影指示（`<!-- 📸` の直後に画像参照なし）が残る Section は未完扱い
-   - 動画: Section 内に `<video>` タグがあるか（/animate の列。/lecture の授業動画は付録「授業動画表」で管理するため、この列は `-` 対象外とする）
+   - 動画: Section 内に /animate の配信パス（`releases/download/videos/`）を含む `<video>` タグがあるか（/animate の列。/lecture の授業動画は付録「授業動画表」で管理するため、/animate を使わない Section は `-`（対象外）とする）
    - 公開: 実デプロイ状態は `/github-pages` のデプロイ確認を正とし、この列は上書きしない（`docs/` はビルド出力で gitignore 対象。fresh clone・push 運用では存在しないため進捗判定に使わない）
 3. **報告**:
    - ゲート状態（G1 調査 / G2 哲学 / G3 構成 / G4 様式ロック。省略した場合はその旨）
