@@ -119,6 +119,7 @@ flowchart TD
 | `/design-ingest` | claude.ai/Design で作った図の zip を自動取り込み・挿入 | `/design-ingest`, `/design-ingest --dry-run` |
 | `/capture` | 本文の 📸 撮影指示から画面キャプチャを一括撮影・挿入（Playwright） | `/capture 2-1`, `/capture` |
 | `/animate` | Remotion で Section 解説動画を生成・挿入 | `/animate Chapter 1`, `/animate plan 2-1` |
+| `/lecture` | 人間収録の授業動画の台本・収録支援（動画は作らない） | `/lecture plan`, `/lecture script 2-1` |
 | `/github-pages` | MkDocs Material で GitHub Pages に公開 | `/github-pages new`, `/github-pages deploy` |
 | `/fw-sync` | 展開済み教材プロジェクトへ FW 更新を選択的に取り込む | `/fw-sync` |
 
@@ -164,6 +165,7 @@ flowchart LR
 - 準備の最初に PROGRESS のゲート（G4 量産解禁）と OUTLINE の見出し骨子を検査する（未承認なら該当フェーズを案内）
 - 参考資料は RESEARCH.md を正として参照し、Web 取得は差分確認に留める。記憶ではなく整理結果を参照して書く
 - セルフチェック後に AI 臭チェックと独立レビュアー（サブエージェント）のゲートを通す
+- **複数 Section のスコープは量産ループで完走する**（`.claude/skills/write/references/production-loop.md`）: タスク＝Section ごとに新しいサブエージェントで 執筆 → 独立レビュー → 修正 のサイクルを回し、メインセッションはオーケストレーション（起動・機械検証・PROGRESS 記帳・コミット）に徹する。参考資料の整理はブリーフファイルに永続化し、状態は PROGRESS と git に毎タスク記帳するため、中断しても同じスコープの再実行がそのまま再開になる（spec 駆動開発ツール cc-sdd v3 の自律実装ループの執筆移植）
 - 完了後に `/review` の実行を提案する
 
 ### /review の観点
@@ -203,6 +205,17 @@ Remotion で、静止画では表しにくい「時間軸を持つ説明」（�
 
 > **前提**: `GOOGLE_TTS_API_KEY`（既定のナレーション TTS: Chirp 3 HD。他エンジンへの切替は SKILL 参照）が必要です。Remotion のライセンス要否は運用者の判断に委ねます（ゲートなし）。詳細は `.claude/skills/animate/SKILL.md`。
 
+### /lecture の流れ
+
+人間の講師が収録する授業動画（画面収録 + ワイプ顔出し解説）のプリプロダクションを支援します。/animate が動画そのものを AI 生成するのに対し、/lecture は**収録用の台本と段取り**を納品し、収録・編集は人間が行います。
+
+| モード | やること |
+|---|---|
+| `plan` | 動画が効く Section の選定と分割プラン（1本 = 1学習目標・6分未満目標）を提案し、OUTLINE 付録「授業動画表」に記録 |
+| `script` | Section 本文を話し言葉の台本（シーン = リテイク単位・トーク全文 + 要点・ワイプ指示・収録メモ）へ変換し `lecture/` に保存 |
+
+台本は本文から派生させます（台本で新しい説明を導入しない）。書式・話し言葉化の規範・収録前チェックリストは `.claude/skills/lecture/references/script-format.md`（動画長・ワイプ・分割の設計は視聴データ研究の裏付け付き）。進行状態（計画 / 台本 / 収録済 / 公開済）は OUTLINE 付録「授業動画表」が単一ソースで、`/status` が報告します。
+
 ### /github-pages の流れ
 
 教材を MkDocs Material + GitHub Actions で GitHub Pages に公開します。`curriculums/`（日本語パス）を `build_docs.py` が英語スラッグの `docs/` に変換し、`mkdocs build --strict` でビルド、`main` への push で GitHub Actions が自動デプロイします。
@@ -230,6 +243,7 @@ flowchart LR
     revise -->|承認済み提案| write
     illustrate["/illustrate"] -->|画像挿入| write
     animate["/animate"] -->|動画挿入| write
+    review --> lecture["/lecture\n（収録台本）"]
     status["/status"] -.->|進捗同期| write
 ```
 
@@ -290,7 +304,7 @@ project-root/
 │   ├── rules/writing.md      # 執筆ルール（文体・テンプレート・用語）
 │   ├── rules/prh.yml         # 用語辞書（writing.md の用語テーブルと同期。textlint が参照）
 │   ├── hooks/                # PostToolUse hook スクリプト（編集時 lint）
-│   ├── skills/               # 15スキル（一覧と用途は上記「スキル一覧」／ CLAUDE.md の MAP を単一ソースとする）
+│   ├── skills/               # 17スキル（一覧と用途は上記「スキル一覧」／ CLAUDE.md の MAP を単一ソースとする）
 │   ├── agents/               # カスタムエージェント（independent-reviewer /
 │   │                         #   learner-persona / handson-verifier）
 │   └── settings.json         # 権限 + PostToolUse hook の設定
@@ -301,5 +315,6 @@ project-root/
 ├── assets/
 │   ├── diagrams/             # 概念図（output/ 画像・prompts/ 依頼文の記録。/illustrate）
 │   └── screenshots/          # 画面キャプチャ（Section 番号ごと。/capture）
+├── lecture/                  # 授業動画の収録台本（/lecture。使う教材のみ）
 └── video/                    # /animate の Remotion ワークスペース（Section 解説動画）
 ```
