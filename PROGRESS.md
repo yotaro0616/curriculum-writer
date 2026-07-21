@@ -29,6 +29,7 @@ config:                    # /pilot が確定する「決定録」= 様式・執
   illustrate: null         # /illustrate の経路/密度（例: "claude-design / B"。未使用なら null）
   capture: null            # /capture の撮影環境（例: "playwright / 1280x800 light ja"。手動撮影のみなら "manual"、画面キャプチャ不使用なら null）
   animate: null            # /animate の密度（例: "B"。未使用なら null）
+  lecture: null            # /lecture（人間収録の授業動画）の方針（例: "selective / screencast-wipe"。未使用なら null）
   brand: null              # キーカラー（例: "#0EA5E9"）。brand.ts 等 3 箇所への反映は /pilot 手順を参照
   excluded_terms: []       # 本文で使わない表現（制度名・組織名等。あれば）
   code_langs: []           # トピック固有のコード言語タグ（例: blade, jsonc）

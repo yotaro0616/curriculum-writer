@@ -25,7 +25,7 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 - **reading-first**（section_model=separate）: 下表の既定のまま
 - **typing-first**（section_model=weave）: style は公開方式に従い提案（plain / zenn / admonition）・tryit_timing=N/A・review_gate=chapter・char_target=2000〜2500 を提案・persona_frequency=selective・capture の使用を提案（デプロイ URL の無いローカル完結・エディタ画面中心の教材では `manual` を既定に提案する）
 
-**まず全項目の値を1つの表で提示し、「このままで良い」項目は一括承認・変えたい項目だけ対話する**（16問を1問＋差分に圧縮する）:
+**まず全項目の値を1つの表で提示し、「このままで良い」項目は一括承認・変えたい項目だけ対話する**（17問を1問＋差分に圧縮する）:
 
 | # | 項目 | 記録先 | 既定 |
 |---|---|---|---|
@@ -46,11 +46,12 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 | 12 | 概念図の経路/密度（/illustrate 使用時） | `config.illustrate` | claude-design / B（不使用なら null） |
 | 13 | 画面キャプチャ（/capture 使用時） | `config.capture` | null（使う場合: "playwright / <viewport等>" か "manual"） |
 | 14 | 動画の密度（/animate 使用時） | `config.animate` | null（使う場合: "B" 等） |
-| 15 | ブランド（キーカラー） | `config.brand`（→ 下記3箇所へ反映） | — |
+| 15 | 授業動画＝人間収録（/lecture 使用時） | `config.lecture` | null（使う場合: "selective / screencast-wipe" 等。/animate と同一 Section で併用しない） |
+| 16 | ブランド（キーカラー） | `config.brand`（→ 下記3箇所へ反映） | — |
 | **運用** | | | |
-| 16 | 独立レビューの粒度 | `config.review_gate` | section（weave 提案: chapter） |
+| 17 | 独立レビューの粒度 | `config.review_gate` | section（weave 提案: chapter） |
 
-各スキルはここを正として追随する: lint・hook・CI・/review は `config.style` と `config.section_model`、/illustrate・/capture・/animate は各キー、/write・/review はアークモード・検証モデル・やってみようタイミング・レビュー粒度。ブランドは `config.brand` を正として3箇所（`video/src/brand.ts`・illustrate の `references/style-guide.md`・github-pages の `custom.css`）へ反映する。用語だけは辞書性質のため `prh.yml`（＋ writing.md 用語表）に置く。
+各スキルはここを正として追随する: lint・hook・CI・/review は `config.style` と `config.section_model`、/illustrate・/capture・/animate・/lecture は各キー、/write・/review はアークモード・検証モデル・やってみようタイミング・レビュー粒度。ブランドは `config.brand` を正として3箇所（`video/src/brand.ts`・illustrate の `references/style-guide.md`・github-pages の `custom.css`）へ反映する。用語だけは辞書性質のため `prh.yml`（＋ writing.md 用語表）に置く。
 
 **骨格プレビュー（ドラフト確定後に必ず）**: 選択した 様式 × アークモード × 学習モデルの組み合わせで、Section 骨格のダミー（見出しとコールアウトの枠だけの短いサンプル）を提示して確認を取る。weave の場合は専用の開始アーク（`section-models/weave.md` の骨格）のダミーを含める。ここで見た目の違和感を潰してから試作に進む。
 
@@ -74,7 +75,7 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 - **公開形式プレビュー**: /github-pages を使う予定なら実レンダして確認（admonition・タブ・Mermaid の描画）。GitHub 直読みなら GitHub 上の表示を確認。zenn 様式なら Zenn 互換レンダラ（公開先の LMS プレビュー等）で `:::message`・コード・画像・キャプションの実描画を確認する。plain なら貼り付け先レンダラ（LMS プレビュー・PDF 等）で blockquote・チェックボックス・画像パスの描画と折りたたみ非依存を確認する
 - **機械チェック**: `npm ci` で textlint を有効化し、lint・textlint がテンプレートの定型と衝突しないか確認する（誤検出があれば `.textlintrc.json` の allows を調整。既知: 行頭の太字語＋半角スペース（broken-bold の修正形）は no-ai-emphasis-patterns と衝突しやすい）
 - **学習者視点の通読**: `.claude/agents/learner-persona` で通読させ、つまずき・未定義用語・例示/実践の混乱を収集
-- **メディアの様式**（使う場合）: /illustrate・/animate を1点ずつ試し、図・動画のトーンを確認
+- **メディアの様式**（使う場合）: /illustrate・/animate を1点ずつ試し、図・動画のトーンを確認。/lecture を使う教材ではパイロット Section の台本を1本作り、話し言葉のトーンと収録段取りが現場に合うか確認
 
 ## 5. 様式ロック（G4）
 
