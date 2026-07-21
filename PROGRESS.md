@@ -7,14 +7,14 @@
 
 ---
 gates:
-  G1_research: null      # /research 承認日（YYYY-MM-DD。省略時は「(省略) YYYY-MM-DD」）
+  G1_research: null      # /research 承認日（YYYY-MM-DD。省略時は「(省略) YYYY-MM-DD」、旧フロー移行時は「YYYY-MM-DD (旧フロー)」。他ゲートも同様）
   G2_philosophy: null    # /define 承認日
   G3_outline: null       # /outline 骨格承認日
   G4_style_lock: null    # /pilot 様式ロック日（量産解禁）
 adaptive:
   research: full         # full | light | skipped（理由を1行で添える）
   define: full           # full | light（発注仕様のインポート等。理由を1行で添える）
-  pilot: planned         # planned | done | skipped
+  pilot: planned         # planned | done | skipped（パイロット Chapter を併記: 例 planned (2-1)。skipped は理由も併記）
 config:                    # /pilot が確定する「決定録」= 様式・執筆判断の単一ソース。skills が実行時に参照する（fw-sync 不可侵）
   style: emoji             # emoji | plain | admonition | zenn（機械チェックが読む様式の単一ソース。emoji 以外の規則は .claude/skills/write/references/styles/ の様式リファレンス）
   section_model: separate  # separate(分離型・既定=読解中心) | weave(織り込み型=タイピング中心)。/define（G2）で確定する構造決定。/pilot は追認のみ・変更は /revise 扱い（G3 取り直し）
@@ -42,7 +42,7 @@ config:                    # /pilot が確定する「決定録」= 様式・執
 | 1-1-1 | 2026-07-05 | ✅ | ✅ | - | - | ✅ |
 | 1-1-2 |  |  |  | - | - |  |
 
-記法: 日付 = 承認日 / ✅ = 完了 / 空欄 = 未着手 / - = 対象外 / 保留 = 意図的保留（理由を OUTLINE 側に明記）
+記法: 日付 = 承認日 / ✅ = 完了 / 空欄 = 未着手 / - = 対象外 / 保留 = 意図的保留（理由を OUTLINE 側に明記）。Section ID は階層に応じた形式（3層 1-1-1 / 2層 1-1 / 1層 1）
 
 ## 進行中の change
 

@@ -62,7 +62,7 @@ storyboard 執筆 → lint-storyboard（機械検証）→ TTS → Studio プレ
 ```
 
 1. **Section ファイルを全文読む**
-2. **ストーリーボードを書く**: `video/data/<sectionId>.storyboard.json`。シーン構成・台本の書き方は `references/storyboard.md`、シーン型の選び方と尺は `references/criteria.md` に従う。読み上げは **narration から自動生成**される（`pronunciation.json` で英語・記号だけカタカナ化、漢字は残す。全 TTS エンジン共通）。通常 `reading` は書かず、聞いて違和感がある箇所だけ個別に上書きする（詳細は `storyboard.md`）。新しい英語用語は `pronunciation.json` に追加する。書いたら `narration` を `stop-ai-slop-jp`（Skill ツール）で AI 臭チェックし、不自然な言い回しを平易に直す（本文と表現を揃える）。誤読しやすい漢字は `references/reading-pitfalls.md` に従って対策する（単一読みは `pronunciation.json`、読みが割れる字はひらがな）
+2. **ストーリーボードを書く**: `video/data/<sectionId>.storyboard.json`。シーン構成・台本の書き方は `references/storyboard.md`、シーン型の選び方と尺は `references/criteria.md` に従う。読み上げは **narration から自動生成**される（`pronunciation.json` で英語・記号だけカタカナ化、漢字は残す。全 TTS エンジン共通）。通常 `reading` は書かず、聞いて違和感がある箇所だけ個別に上書きする（詳細は `storyboard.md`）。新しい英語用語は `pronunciation.json` に追加する。書いたら `narration` の AI 臭をチェックし、不自然な言い回しを平易に直す（`stop-ai-slop-jp` Skill が利用可能ならそれを使い、無ければ `.claude/skills/review/references/ai-slop-curriculum.md` の語彙観点で点検する。本文と表現を揃える）。誤読しやすい漢字は `references/reading-pitfalls.md` に従って対策する（単一読みは `pronunciation.json`、読みが割れる字はひらがな）
 3. **lint（機械検証）**: `cd video && node scripts/lint-storyboard.mjs <sectionId>`（シーン数・narration 字数・型名・figure 参照切れを TTS の前に止める）。エラーが出たら storyboard を直してから先へ進む
 4. **既存概念図を素材化**: 導入の概念図（/illustrate の出力）を使う場合は `cp assets/diagrams/output/<name>.（jpg|png） video/public/figures/`
 5. **TTS（音声つきプレビューの材料）**: `cd video && node scripts/tts-gcloud.mjs <sectionId>`（既定: Google Chirp 3 HD。生成済み wav は再利用される。既定の理由とエンジンの差し替えは下記「コストと品質の注意」）。実測尺入りの `data/<id>.props.json` が生成される。ここまではレンダ不要。reveal 同期は `node scripts/caption-times.mjs <sectionId> [語...]` で字幕セグメントの開始位置を実測してから storyboard に入れる（当て推量しない）。**storyboard を修正したら TTS を再実行して props を更新する**（wav は再利用され API は呼ばれない。Studio・レンダが読むのは props.json のため）
@@ -87,11 +87,11 @@ storyboard 執筆 → lint-storyboard（機械検証）→ TTS → Studio プレ
 
 - `crossorigin` 属性は**付けない**（Releases は CORS ヘッダを返さないため再生が壊れる）
 - GitHub.com 上の Markdown 表示では再生されない（CSP 制約）。**正式な閲覧経路は GitHub Pages**
-- （任意・アクセシビリティ）`node scripts/make-vtt.mjs <sectionId>` で WebVTT 字幕を生成できる。`<track>` は**同一オリジン配信が必要**なため、.vtt は Releases ではなくリポジトリ内 `assets/videos/` 等にコミットし、`<video>` 内に `<track kind="captions" srclang="ja" src="...">` で添える
+- （任意・アクセシビリティ）`node scripts/make-vtt.mjs <sectionId>` で WebVTT 字幕を生成できる。`<track>` は**同一オリジン配信が必要**なため、.vtt は Releases ではなくリポジトリ内 `assets/videos/` 等にコミットし、`<video>` 内に `<track kind="captions" srclang="ja" src="...">` で添える（/github-pages で公開する教材では、生 HTML 内の相対パスはビルドで書き換えられないため `src` は公開サイト上の絶対パスにする）
 
 ## 冪等性（再実行の安全性）
 
-- **判定の真実は Section ファイル**: タイトル直後に `releases/download/videos/<sectionId>.mp4` を含む `<video>` タグがあれば「挿入済み」としてスキップ
+- **判定の真実は Section ファイル**: タイトル直後に `releases/download/videos/<sectionId>.mp4` を含む `<video>` タグがあれば「挿入済み」としてスキップ。**別経路の `<video>` タグ**（/lecture の授業動画等）が既にタイトル直後にある Section も生成対象から外し、同一 Section への動画二重挿入になる旨を報告する
 - タグが無く `video/out/<sectionId>.mp4` が存在するなら「生成済み・未挿入」＝配信と挿入のみ行う。どちらも無ければ未生成（フル実行）
 - `--force` 指定時のみ再生成（storyboard から作り直す場合は TTS も `--force`）
 

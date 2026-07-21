@@ -51,7 +51,7 @@ argument-hint: "[変更の概要 | --archive <slug>]"
 4. **番号・パス・スラッグ**: Section 番号・ファイル/ディレクトリ名・GitHub Pages の nav とスラッグ（公開後の改番は原則避け、やむを得ない場合はリダイレクトの要否を明記）
 5. **図・動画の再生成**: assets/diagrams・video/data（storyboard）・GitHub Releases の該当有無と再生成コストの見積もり
 6. **PROGRESS.md のキー**: 進捗表の Section 行の追加・削除・改番
-7. **CLAUDE.md のカリキュラム表**・OUTLINE 付録（やってみよう表・ハンズオン共通方針）
+7. **CLAUDE.md のカリキュラム表**・OUTLINE 付録（やってみよう表・ハンズオンの共通方針・授業動画表）
 
 ## 2. 承認
 
@@ -59,18 +59,18 @@ proposal（＋delta・tasks）をユーザーに提示する。**承認までは
 
 ## 3. 適用
 
-/write を再利用する（proposal と delta をブリーフとして渡す。トリアージは「構成変更を伴う」扱いだが、承認済み提案があるため停止しない）。tasks.md を1件ずつチェックしながら進め、専用コミットにする（他の変更と混載しない）。
+/write を再利用する（proposal と delta をブリーフとして渡す。トリアージは「構成変更を伴う」扱いだが、承認済み提案があるため停止しない）。対象が複数 Section なら量産ループを使ってよい（承認済みの proposal・delta・tasks がランプラン承認を代替する＝再承認は不要。ブリーフにこの3点を含める。tasks.md の Section に紐づかない項目＝図・動画の再生成等はループ外で消化する）。**適用中の独立レビュー・検収には outline-delta.md を「設計の正」として渡す**（OUTLINE 本体は --archive まで旧版のため、渡さないと新本文が旧設計を基準に REJECT される）。tasks.md を1件ずつチェックしながら進め、専用コミットにする（他の変更と混載しない）。
 
 ## 4. 検収
 
-/review を「変更スコープモード」で実行する: 網羅性（tasks 全消化・delta 全反映）/ 正確性（本文が新ゴールを満たす）/ 整合性（接続文・初出参照・用語・全体像テーブルの横断一致）。
+/review を「変更スコープモード」で実行する: 網羅性（tasks 全消化・delta の**本文への**反映。OUTLINE 本体への反映は手順5のマージが担う）/ 正確性（本文が新ゴールを満たす）/ 整合性（接続文・初出参照・用語・全体像テーブルの横断一致）。
 
 ## 5. アーカイブ（`/revise --archive <slug>`）
 
-1. outline-delta.md を OUTLINE.md へセクション単位でマージする（ADDED は追加・MODIFIED は置換・REMOVED は削除）
+1. outline-delta.md を OUTLINE.md へセクション単位でマージする（ADDED は追加・MODIFIED は置換・REMOVED は削除）。マージ後、delta 全項目が OUTLINE に反映されたことを確認する
 2. `CHANGELOG.md`（読者向け更新履歴。無ければ作成）に1行追記する: `- YYYY-MM-DD: [Why/What の要約]`
 3. `changes/<slug>/` を `changes/archive/YYYY-MM-DD-<slug>/` へ移動する
-4. PROGRESS.md を更新する（改番の反映・該当 Section の review 列リセット等）
+4. PROGRESS.md を更新する（改番の反映・**適用中に再レビューを通過していない** Section のみ review 列をリセットする。適用中に独立レビューを通過して記帳済みの ✅ は消さない）
 
 ## 運用
 

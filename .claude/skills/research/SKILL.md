@@ -27,7 +27,7 @@ argument-hint: "[light(任意)] [追加指示(任意)]"
 - **TOPIC**: 何を教えるか（例: Vercel デプロイ、Laravel、Docker）
 - **スコープの外縁**: 含むものと含まないもの
 - **対象技術の確定**: 具体的なツール・フレームワーク・バージョン
-- **公開方式**: GitHub 直読み / GitHub Pages（MkDocs Material）/ Zenn・Zenn 互換レンダラの LMS / その他 LMS 等（表現様式の決定材料。確定は /pilot。LMS の場合は **Markdown レンダラの方言**（Zenn 記法・admonition・素の CommonMark のどれが描画されるか）まで確認する）
+- **公開方式**: GitHub 直読み / GitHub Pages（MkDocs Material）/ Zenn・Zenn 互換レンダラの LMS / その他 LMS 等（表現様式の決定材料。確定は /pilot。LMS の場合は **Markdown レンダラの方言**（Zenn 記法・admonition・素の CommonMark のどれが描画されるか）まで確認する。動画教材を併用する場合は配信方式＝LMS 直アップ / 埋め込み も確認する）
 
 深掘りの例:
 - 「○○まで含めますか？それとも○○に絞りますか？」

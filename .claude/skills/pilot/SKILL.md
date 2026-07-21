@@ -23,7 +23,9 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 **前段（初期値セットの適用）**: `config.section_model` は /define（G2）で確定済みの**構造決定**であり、ここでは追認のみ行う（変える場合は /revise 扱いで、/outline モード A の再実行＝G3 の取り直しを伴う）。section_model に応じて初期値セットを適用してから表を出す:
 
 - **reading-first**（section_model=separate）: 下表の既定のまま
-- **typing-first**（section_model=weave）: style は公開方式に従い提案（plain / zenn / admonition）・tryit_timing=N/A・review_gate=chapter・char_target=2000〜2500 を提案・persona_frequency=selective・capture の使用を提案（デプロイ URL の無いローカル完結・エディタ画面中心の教材では `manual` を既定に提案する）
+- **typing-first**（section_model=weave）: style は公開方式に従い提案（GitHub 直読みなら emoji のまま・LMS 等は plain / zenn / admonition）・tryit_timing=N/A・review_gate=chapter・char_target=2000〜2500 を提案・persona_frequency=selective・capture の使用を提案（デプロイ URL の無いローカル完結・エディタ画面中心の教材では `manual` を既定に提案する）
+
+初期値セットは下表の既定値を置き換えた形で提示する（適用の承認は次の一括承認に含まれ、個別の対話は変えたい項目だけでよい）。
 
 **まず全項目の値を1つの表で提示し、「このままで良い」項目は一括承認・変えたい項目だけ対話する**（17問を1問＋差分に圧縮する）:
 
@@ -65,6 +67,8 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 - 題材が教材の中心に近いもの
 - Part 1 の導入章は避ける（性格が特殊で、様式の代表にならない）
 
+選定した Chapter を PROGRESS の `adaptive.pilot` に併記する（例: `planned (2-1)`。/write のゲート免除判定と、セッションを跨いだ再開の材料になる）。
+
 ## 3. 骨子充填と試作
 
 1. `/outline <Chapter>` で見出し骨子を充填・承認
@@ -81,7 +85,7 @@ argument-hint: "[パイロット Chapter 番号(任意)] [追加指示(任意)]"
 
 1. 検証の指摘を writing.md・テンプレートに反映する
 2. パイロット Section を確定様式で書き直す（差分がある場合）
-3. ユーザー承認を得て `PROGRESS.md` の `G4_style_lock` に日付を記録 = **量産解禁**
+3. ユーザー承認を得て `PROGRESS.md` の `G4_style_lock` に日付を記録し、`adaptive.pilot` を `done` に更新 = **量産解禁**
 
 ロック後の様式変更は `/revise` で扱う（全 Section への横断修正の計画付き）。
 

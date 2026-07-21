@@ -85,7 +85,7 @@ CLAUDE.md の HOW セクションで定義された階層構造に基づいて�
 
 /revise の適用後に呼ばれた場合、`changes/<slug>/` を Read し、通常観点に加えて3軸で検収する:
 
-- **網羅性**: tasks.md が全消化され、outline-delta.md の全項目が本文・OUTLINE に反映されているか
+- **網羅性**: `changes/<slug>/` の tasks.md が全消化され、outline-delta.md の全項目が**本文に**反映されているか（OUTLINE 本体への反映は `--archive` のマージが担うため、ここでは delta と本文の一致を見る。量産ループのタスクリスト＝PROGRESS 進捗表とは別物）
 - **正確性**: 変更後の本文が新しい OUTLINE のゴールを満たすか
 - **整合性**: 接続文・初出参照・用語・グループ全体像テーブルが変更をまたいで一致しているか
 
