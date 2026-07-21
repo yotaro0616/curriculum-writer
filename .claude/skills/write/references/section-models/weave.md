@@ -119,7 +119,7 @@
 
 | ルール | 重要度 | 内容 |
 |---|---|---|
-| role-line-missing | 🟡 | Step 配下のコードブロックに役割行が無い（**weave のみ**） |
+| role-line-missing | 🟡 | 実践見出し（Step 等）配下のコードブロックに役割行が無い（**weave のみ**。§3 の「Step 間の地の文」は lint では「実践見出し外」＝read-example 側の扱い。役割行はコードブロックごとに宣言する＝連続ブロックへの使い回しと、Step 配下の読む例宣言は検出対象） |
 | read-example-missing | 🟡 | 実践見出し外のコードブロックに読む例宣言が無い（**weave のみ**） |
 | practice-heading-form | 🔴 | 実践見出しの正規形違反（参考: 全様式・全モデル共通。正規形の単一ソースは lint の PRACTICE_* 定数） |
 | step-numbering | 🟡 | Step 通し連番の飛び・重複（参考: 全様式・全モデル共通） |

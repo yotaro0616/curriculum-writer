@@ -39,6 +39,7 @@
     zenn       🔴 emoji-forbidden     絵文字全般
                🔴 container-unclosed  :::message / :::details の閉じ ::: が無い（ページ描画が壊れる）
                🔴 raw-html            <br> 以外の HTML タグ（Zenn では描画されず露出する）
+               🔴 comment-multiline   複数行にまたがる HTML コメント（Zenn は1行のみ対応。ページ描画が壊れる）
 
 section_model=weave 専用ルール（役割行。書式は section-models/weave.md リファレンス）:
     🟡 role-line-missing       実践見出し配下のコードブロック直前に役割行（**入力**: / **実行**:）が無い
@@ -51,7 +52,7 @@ section_model=weave 専用ルール（役割行。書式は section-models/weave
       （コメント自体の内容は capture-pending / todo-image が扱う）
     - 絶対パスはコードブロック内も検査する（コピペ手順への環境依存パス混入を検出するため）
 
-出力:  path:line: [🔴|🟡] rule-id: メッセージ（--json で JSON 配列）
+出力:  path:line: [🔴|🟡] rule-id: メッセージ（--json で JSON 配列。severity は error=🔴 / warning=🟡）
 終了コード:  🔴 違反あり = 2 / クリーン（🟡 のみを含む）= 0 / 引数・入出力エラー = 1
     （🟡 のみのファイルは exit 0 のため PostToolUse hook・CI からは通知されない。
       部分編集のたびに構造警告を出さないための意図的仕様で、🟡 は /write の
@@ -88,10 +89,11 @@ EMOJI_RANGES = (
     (0x2B00, 0x2BFF),    # ⭐ ⬆ など
     (0x203C, 0x203C),    # ‼
     (0x2049, 0x2049),    # ⁉
+    (0x20E3, 0x20E3),    # ⃣ 囲みキー（1️⃣ 等。基底が ASCII 数字のためここで捕捉する）
 )
 
 # 表示に影響しない結合用コードポイント（検査時に読み飛ばす）
-JOINER_CHARS = {"️", "‍", "⃣"}  # VS16 / ZWJ / 囲み用キー
+JOINER_CHARS = {"️", "‍"}  # VS16 / ZWJ（U+20E3 囲みキーは絵文字として検出するため含めない）
 
 # 禁止ダッシュ（writing.md: ——・—・– を使わない。― は同型の全角ダッシュとして含める）
 DASH_CHARS = {"–": "–", "—": "—", "―": "―"}
@@ -140,8 +142,7 @@ PRACTICE_CANONICAL = {
 PRACTICE_LOOKALIKE_RE = re.compile(
     r"^ {0,3}#{1,6}\s*(?:"
     r"🏃"                                   # 🏃 を含む見出しすべて
-    r"|(?:実践|やってみよう)\s*[:：]"        # 実践:/やってみよう:（全角コロン含む）
-    r"|(?:実践|やってみよう)\s*$"            # コロン欠落の裸見出し
+    r"|(?:実践|やってみよう)(?:\s*[:：]|\s|$)"  # 実践:/やってみよう:（全角コロン・コロン欠落＝裸見出し / タイトル付きを含む）
     r"|Step\s*\d"                            # Step N（コロン・レベル違い含む）
     r")"
 )
@@ -345,7 +346,8 @@ def lint_file(path: Path, style: str, section_model: str = "separate",
                 if lang not in ROLE_EXEMPT_LANGS:
                     has_role = any(ROLE_LINE_RE.match(l) for l in recent_nonblank)
                     has_read = any(READ_EXAMPLE_RE.match(l) for l in recent_nonblank)
-                    if in_practice_scope and not (has_role or has_read):
+                    # 実践見出し配下では役割行（入力/実行）だけを認める（読む例は Step 外に置く規則のため免除しない）
+                    if in_practice_scope and not has_role:
                         findings.append(Finding(
                             display, lineno, SEVERITY_WARNING, "role-line-missing",
                             "実践見出し配下のコードブロックに役割行（**入力**: / **実行**:）がありません"
@@ -357,6 +359,8 @@ def lint_file(path: Path, style: str, section_model: str = "separate",
                             "実践見出し外のコードブロックに **読む例** 行がありません"
                             "（読む例なら宣言を付け、打たせるコードなら実践見出しの配下へ移してください）",
                         ))
+            # 役割行はコードブロックごとに宣言する（1本の宣言を後続ブロックへ使い回させない）
+            recent_nonblank.clear()
             continue
 
         # ---- フェンス外の検査 ----
@@ -383,6 +387,14 @@ def lint_file(path: Path, style: str, section_model: str = "separate",
                 display, lineno, residue_severity, "todo-image",
                 "TODO 画像プレースホルダが残っています（初回リリース前に画像を用意するか、方針を確定してください）",
             ))
+
+        # zenn: 複数行にまたがる HTML コメントはページ描画を壊す（1行のみ対応）
+        if style == "zenn" and not in_comment and HTML_COMMENT_OPEN in raw:
+            if HTML_COMMENT_CLOSE not in raw.rsplit(HTML_COMMENT_OPEN, 1)[1]:
+                findings.append(Finding(
+                    display, lineno, SEVERITY_ERROR, "comment-multiline",
+                    "複数行にまたがる HTML コメントです。Zenn は1行コメントのみ対応のため1行に収めてください",
+                ))
 
         # HTML コメントをマスクする（📸 指示・スタンプ内の絵文字等を以降の検査から除外）
         visible, in_comment = mask_html_comments(raw, in_comment)
@@ -427,7 +439,7 @@ def lint_file(path: Path, style: str, section_model: str = "separate",
         if style == "admonition":
             if pending_admonition_line and visible.strip():
                 indent = len(visible) - len(visible.lstrip(" "))
-                if 1 <= indent <= 3:
+                if indent <= 3:  # 0 字下げ（本文が箱の外に出る）も含めて 4 未満を検出する
                     findings.append(Finding(
                         display, lineno, SEVERITY_ERROR, "admonition-indent",
                         f"admonition の内容行の字下げが {indent} スペースです。"
@@ -666,7 +678,10 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--release", action="store_true",
                         help="リリース前検査（📸 未消化・TODO 画像・alt 欠落を 🔴 に昇格）")
     parser.add_argument("--json", action="store_true", dest="as_json", help="結果を JSON 配列で出力する")
-    args = parser.parse_args(argv)
+    try:
+        args = parser.parse_args(argv)
+    except SystemExit as exc:  # argparse は引数エラーで exit 2 を投げるため、exit 契約（違反あり=2）と衝突しないよう 1 に写像する（--help は 0 のまま）
+        return 0 if exc.code == 0 else 1
     style = args.style or read_default_style()
     section_model = args.section_model or read_default_section_model()
 
