@@ -40,7 +40,7 @@ CLAUDE.md の HOW で定義された階層構造に基づいてスコープを�
 
 ## 1. 準備
 
-**ゲート検査（最初に）**: `PROGRESS.md` があれば読む。①複数 Section の量産は G4（様式ロック）後にのみ行う（未了なら `/pilot` を案内。パイロット執筆自体は /pilot 経由のため免除） ②対象スコープの見出し骨子が OUTLINE.md に未充填なら停止し、`/outline <Chapter>` を先に案内する。いずれも `--force` で明示的にバイパスできる（その場合は方針合わせで見出し列をゼロから提示する）。あわせて `config`（決定録。キーの意味は PROGRESS テンプレのコメントを正とする）を読み、以降の執筆判断に適用する。**config.style が emoji 以外なら `.claude/skills/write/references/styles/<style>.md`、config.section_model が weave なら同 `section-models/weave.md`、config.verification_model が ai-delegated なら同 `verification-ai-delegated.md` を必ず Read してから書く**（該当リファレンスが存在しない場合は停止し、/fw-sync（writing.md の手動マージを含む）を案内する）。
+**ゲート検査（最初に）**: `PROGRESS.md` があれば読む。①複数 Section の量産は G4（様式ロック）後にのみ行う（未了なら `/pilot` を案内。パイロット執筆自体は /pilot 経由のため免除） ②対象スコープの見出し骨子が OUTLINE.md に未充填なら停止し、`/outline <Chapter>` を先に案内する。いずれも `--force` で明示的にバイパスできる（その場合は方針合わせで見出し列をゼロから提示する）。あわせて `config`（決定録。キーの意味は PROGRESS テンプレのコメントを正とする）を読み、以降の執筆判断に適用する。**config.style が emoji 以外なら `.claude/skills/write/references/styles/<style>.md`、config.section_model が weave なら同 `section-models/weave.md`、config.verification_model が ai-delegated なら同 `verification-ai-delegated.md`、複数 Section のスコープなら同 `production-loop.md`（量産ループ）を必ず Read してから書く**（該当リファレンスが存在しない場合は停止し、/fw-sync（writing.md の手動マージを含む）を案内する）。
 
 1. `CLAUDE.md` を Read し、哲学（ペルソナ・コンセプト・ゴール）と階層構造を確認
 2. `OUTLINE.md` を Read し、対象スコープの設計を把握（ゴール、種類、参考資料、前提 Section 等）。末尾に「執筆ノート」節があれば必読し、既往の横断的決定（用語・題材・バージョン）に従う
