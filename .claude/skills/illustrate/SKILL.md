@@ -20,7 +20,7 @@ Mermaid（正確な処理フロー）では表現しにくい「直感的なメ�
 
 ## 対象範囲と密度方針
 
-- **対象**: 「概念」種別の Section（種別は OUTLINE.md の「種類」フィールドで判定。「ハンズオン」「混合」は手順主体のため既定ではスキップし、明示指定時のみ対象にする）
+- **対象**: 「概念」種別の Section（種別は OUTLINE.md の「種類」フィールドで判定。「ハンズオン」「混合」は手順主体のため既定ではスキップし、明示指定時のみ対象にする）。**weave 教材（config.section_model=weave）では概念 Section がほぼ無いため、混合（織り込み）も対象に含めてよい**（挿入アンカーは冒頭ブロック。スコープの明示指定を推奨し、密度 [A] は「Chapter ごとに効く 1〜2 Section」と読み替える）
 - **未執筆の Section はスキップ**する（`curriculums/` に実ファイルがあるものだけ処理する）
 - **密度方針**: **[A]** 各概念 Section に 1 枚 / **[B]** 判断ベース（既定） / **[C]** 概念アンカーごと（1 Section 複数図）。定義と判断基準は `references/criteria.md`、決定の正は `PROGRESS.md` の `config.illustrate`
 
@@ -90,19 +90,7 @@ Claude Design 経路では、この図リストが **そのまま作図依頼リ
 [ -n "$OPENAI_API_KEY" ] && echo "OpenAI OK" || echo "OpenAI 未設定"
 ```
 
-**Gemini**（`GEMINI_API_KEY`）未設定の場合:
-
-1. [Google AI Studio](https://aistudio.google.com/apikey) で API キーを作成
-2. `~/.zshrc`（または `~/.bashrc`）に追加: `export GEMINI_API_KEY="取得したキー"`
-3. `source ~/.zshrc` で反映
-
-**OpenAI**（`OPENAI_API_KEY`）未設定の場合:
-
-1. [OpenAI Platform](https://platform.openai.com/) にサインアップ／ログイン
-2. [Billing 設定](https://platform.openai.com/settings/organization/billing/overview) で支払い方法を登録しクレジットを購入する（画像生成は従量課金。残高がないと `401 / insufficient_quota` になる）
-3. [API keys](https://platform.openai.com/api-keys) で「Create new secret key」を押し、表示されたキー（`sk-...`）をコピーする（**作成時しか全体表示されない**ので必ず控える）
-4. `~/.zshrc` に追加: `export OPENAI_API_KEY="取得したキー"`
-5. `source ~/.zshrc` で反映
+未設定のキーがある場合の取得・設定手順は `references/genai-setup.md` を参照（初回のみ）。
 
 ### モデルと出力先
 
@@ -176,9 +164,10 @@ node .claude/skills/illustrate/scripts/generate-image.js "<プロンプト>" [�
 
 ### 挿入位置とパス
 
-**代表図**: Why ブロック配下の 🧠 ブロッククオートの直後、`---` 区切りの直前に挿入する（アークモードがモード2なら「なぜ〇〇を使うのか」配下、モード1なら「導入:」配下にある）。**🧠 が無い Section**（/pilot で頻度を「効果的な Section のみ」にした場合等）では、Why ブロック本文の末尾（`---` の直前）に挿入する。この規定は表現様式（絵文字 / admonition）に依存しない。
+**代表図**: Why ブロック配下の 🧠 ブロッククオートの直後、`---` 区切りの直前に挿入する（アークモードがモード2なら「なぜ〇〇を使うのか」配下、モード1なら「導入:」配下にある）。**🧠 が無い Section**（/pilot で頻度を「効果的な Section のみ」にした場合等）では、Why ブロック本文の末尾（`---` の直前）に挿入する。**weave の混合（織り込み構成）Section** では Why ブロックが無いため、冒頭ブロック（🧠 があればその直後・無ければ完成イメージの直後）・最初の `---` の直前と読み替える（`section-models/weave.md`）。この規定は表現様式（4様式）に依存しない。
 
-<!-- /pilot で admonition 様式を選んだ場合: 🧠 は !!! quote "現場での考え方" になるため、「🧠 ブロッククオートの直後」は「quote ブロックの直後・次の --- の直前」と読み替える -->
+<!-- emoji 以外の様式では 🧠 マーカーが本文に無いため、人格コラムのブロックを同じアンカーとして読み替える:
+     admonition = !!! quote "現場での考え方" ブロックの直後 / plain・zenn = 「### [人格名]はこう考える」見出し＋ブロッククオートの直後（いずれも次の --- の直前） -->
 
 **追加図**（密度方針 [C]）: 該当する `##` 見出しセクションの末尾、次の `##` 見出しまたは `---` の直前に挿入する。
 

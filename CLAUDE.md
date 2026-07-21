@@ -42,6 +42,8 @@
 
 **階層構造**: [/define で設定]
 
+**学習モデル**: [/define で設定。separate（分離型・読解中心） | weave（織り込み型・タイピング中心）。`PROGRESS.md` の config.section_model にも記録]
+
 [カリキュラムの表をここに記述する]
 
 各層の設計詳細は `OUTLINE.md` を参照。
@@ -68,7 +70,9 @@ CLAUDE.md は教材の哲学（WHO / WHY / WHAT / HOW）を定義し、`OUTLINE.
 | `/check-updates` | 公式ドキュメントとの鮮度チェック（🔴🟡 は /revise へ） |
 | `/illustrate` | 概念図の計画・作成・挿入（既定: Claude Design / 選択式: 生成AI） |
 | `/design-ingest` | claude.ai/Design で作図した zip の自動取り込み・挿入 |
+| `/capture` | 📸 撮影指示コメントからの画面キャプチャ一括撮影・挿入（Playwright） |
 | `/animate` | Remotion による Section 解説動画の生成・挿入 |
+| `/lecture` | 授業動画（人間収録）の対象選定・収録台本の生成（plan / script） |
 | `/github-pages` | MkDocs Material + GitHub Actions で教材を GitHub Pages に公開 |
 | `/fw-sync` | FW 更新の選択的取り込み（展開済みプロジェクト側で実行） |
 

@@ -19,7 +19,7 @@ argument-hint: "[FW リポジトリの URL/ローカルパス(任意)]"
 | カテゴリ | 対象 | 方針 |
 |---|---|---|
 | **A. 更新提案してよい** | `.claude/skills/`（`github-pages/assets/custom.css` を **除く**）・`.claude/agents/`・`.claude/hooks/`・`scripts/`（`lint_curriculum.py` 等）・`video/src/`（`brand.ts` を **除く**）・`video/scripts/`・`.textlintrc.json`・`.github/workflows/lint.yml`・`package.json`＋`package-lock.json`（**セットで**取り込み lock 不整合を避ける） | diff を提示し、**承認されたファイルのみ** `.bak` 退避のうえ上書き。FW にだけある新規ファイルは「追加提案」として提示 |
-| **B. 不可侵** | `CLAUDE.md`・`OUTLINE.md`・`PROGRESS.md`・`RESEARCH.md`・`curriculums/`・`assets/`・`video/src/brand.ts`・`video/data/`・`.claude/rules/writing.md`・`.claude/rules/prh.yml`・`.claude/skills/github-pages/assets/custom.css` | **diff 提示のみ。自動上書きしない**。プロジェクト固有の内容（哲学・設計・本文・決定録＝PROGRESS.md config・ブランド値・用語辞書 prh.yml）を含むため（writing.md は共有ルールだが、下流の移行前インライン値を保護するため既定は不可侵とする）。FW 側で骨格（章立て・共通ルールの構造）が変わっていた場合は差分を提示して手動マージを提案する |
+| **B. 不可侵** | `CLAUDE.md`・`OUTLINE.md`・`PROGRESS.md`・`RESEARCH.md`・`curriculums/`・`assets/`・`lecture/`（収録台本）・`video/src/brand.ts`・`video/data/`・`.claude/rules/writing.md`・`.claude/rules/prh.yml`・`.claude/skills/github-pages/assets/custom.css` | **diff 提示のみ。自動上書きしない**。プロジェクト固有の内容（哲学・設計・本文・決定録＝PROGRESS.md config・ブランド値・用語辞書 prh.yml）を含むため（writing.md は共有ルールだが、下流の移行前インライン値を保護するため既定は不可侵とする）。FW 側で骨格（章立て・共通ルールの構造）が変わっていた場合は差分を提示して手動マージを提案する |
 
 📝 スキル・エージェントはプロジェクト固有の決定を持たない純ロジック（決定は PROGRESS.md の `config`＝決定録・単一ソースにある）ため、カテゴリ A として上書きしても決定は消えない。カテゴリ B のうち `CLAUDE.md`・`OUTLINE.md`・`curriculums/` 等は、プロジェクト固有化されているのが正常な状態であり、FW テンプレートとの差分があること自体は問題ではない。B で報告する価値があるのは「FW 側の骨格・共通ルールが更新された」差分だけなので、単なるプレースホルダー置換の差分はノイズとして要約に留める。
 
@@ -64,7 +64,7 @@ $ARGUMENTS に FW の URL / ローカルパスがあればそれを使う。な�
 
 適用対象に応じて最低限の確認を行う:
 
-- `scripts/lint_curriculum.py` を更新した場合: 任意の Section に対して実行してエラーが出ないこと
+- `scripts/lint_curriculum.py` を更新した場合: `curriculums/` 全体に対して実行し、**新規の 🔴 が出ないこと（出る場合は差分を報告して承認を得る）**。あわせて `PROGRESS.md` frontmatter に `config`（特に `style:` と `section_model:`）が存在することを確認する（無い旧形式のままだと lint が emoji / separate の既定で検査し、admonition 等の教材では実践見出しの正規形検査が誤検出になる）
 - `video/` を更新した場合: `npx remotion` 系コマンドまたは既存のビルド手順が通ること（プロジェクトの video/README.md に従う）
 
 ### 6. 報告
@@ -80,5 +80,6 @@ $ARGUMENTS に FW の URL / ローカルパスがあればそれを使う。な�
 
 ## ⚠️ 注意
 
+- **体系・様式の変更を含む同期は writing.md の手動マージを先に行う**: skills（カテゴリ A）だけ先に取り込むと、新しいスキルが旧い writing.md（カテゴリ B・不可侵）の体系を参照して不整合になる。FW 側で writing.md の骨格（Section の種類・様式・テンプレート）が変わっている場合は、B の手動マージ → A の取り込みの順で進める
 - **片道専用**: 下流 → FW の還流はこのスキルでは行わない。改善を FW に反映したい場合は FW リポジトリへ PR を出す
 - 不可侵カテゴリ（CLAUDE.md・OUTLINE.md・curriculums/ 等）は、たとえユーザーに「全部上書きして」と言われても、ファイルごとに差分内容を確認してから明示的な承認を取り直す（教材本文と哲学の消失は復旧コストが大きい）

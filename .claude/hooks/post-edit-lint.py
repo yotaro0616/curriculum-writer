@@ -14,8 +14,8 @@ stderr が Claude にフィードバックされる（編集自体は完了済�
 
 lint_curriculum.py の 🟡（構造警告）は exit 0 のためこの hook からは通知されない
 （部分編集のたびに 🎯/✨ 欠落を警告しないための意図的仕様。🟡 は /write のセルフ
-チェックと /review が拾う）。様式（--style）はスクリプト自身が PROGRESS.md の
-frontmatter から読むため、この hook から渡す必要はない。
+チェックと /review が拾う）。様式（--style）・学習モデル（--section-model）は
+スクリプト自身が PROGRESS.md の frontmatter から読むため、この hook から渡す必要はない。
 """
 
 from __future__ import annotations

@@ -2,7 +2,7 @@
 
 ## 0. 密度方針
 
-<!-- /pilot で設定。既定は [B] 判断ベース -->
+<!-- 決定の正は PROGRESS.md の config.animate（/pilot が記録。例: "B"。未記録・null の既定は [B] 判断ベース。/animate 不使用なら null のまま） -->
 
 - **[B] 判断ベース（既定）**: 動画が最も効く Section に限定する（時間軸を持つ説明＝対比の展開・処理の流れ・状態変化がある Section）。目安は 1 Chapter に 1〜2 本。安価な `/illustrate` の既定密度と揃える
 - [A] すべての「概念」Section に 1 本ずつ生成する: 動画を主たる学習路に据える教材で選ぶ（全 Section 分の storyboard・TTS・レンダのコストを引き受ける）
